@@ -172,7 +172,6 @@ export class SpatialManager {
     }
 
     for (let i = 0; i < resolveBatch.length; i++) {
-
       let roomName = resolveBatch[i].info.name.get();
       let room = tmpRoom.find(room => {
         return this.roomManager.getPropertyValueByName(room.properties.properties, 'name') === roomName;
@@ -186,9 +185,7 @@ export class SpatialManager {
           `Floor of ${this.roomManager.getPropertyValueByName(room.properties.properties, 'name')}`,
           model
         );
-
-        await this.roomManager.addAttribute(resolveBatch[i], room.properties);
-
+        const result = await this.roomManager.addAttribute(resolveBatch[i], room.properties.properties);
         resolveBatch[i].info.add_attr({
           'dbId': room.properties.dbId,
           'externalId': room.properties.externalId
@@ -229,14 +226,13 @@ export class SpatialManager {
     return GeographicService.addFloor(contextId, buildingId, name)
       .then(async floor => {
         floor.info.add_attr({'externalId': floorProps.externalId});
-        await this.floorManager.addAttribute(floor, floorProps.properties);
-
+        const result = await this.floorManager.addAttribute(floor, floorProps.properties);
+        console.log('icici',result);
         GeographicService.addZone(this.contextId, floor.info.id.get(), 'Stucture')
           .then(async structureZone => {
             for (const key in structures) {
               if (structures.hasOwnProperty(key)) {
                 try {
-                  console.log('structure', structures[key], );
                     const objName = this.roomManager.getPropertyValueByName(structures[key].properties.properties, 'name')
                   // @ts-ignore
                   await window.spinal.BimObjectService.addBIMObject(
@@ -395,7 +391,8 @@ export class SpatialManager {
 
   private async updateRoom(externalId: string, room) {
     this.roomManager.getByExternalId(externalId, SpinalGraphService
-      .getContext(GeographicService.constants.ROOM_REFERENCE_CONTEXT).info.id.get(), GeographicService.constants.ROOM_RELATION).then(r => {
+      .getContext(GeographicService.constants.ROOM_REFERENCE_CONTEXT).info.id.get(), GeographicService.constants.ROOM_RELATION)
+      .then(r => {
       this.roomManager.addAttribute(SpinalGraphService.getRealNode(r.id.get()), room.properties.properties);
       // @ts-ignore
       SpinalGraphService.modifyNode(r.id.get(), {dbId: room.properties.dbId});

@@ -73,12 +73,18 @@ class AbstractEntityManager {
      * @param properties
      */
     addAttribute(node, attributes) {
-        let proms = [];
-        for (let i = 0; i < attributes.length; i++) {
-            const prop = attributes[i];
-            proms.push(spinal_env_viewer_plugin_documentation_service_1.serviceDocumentation.addAttribute(node, prop.name, prop.value));
-        }
-        return Promise.all(proms);
+        return __awaiter(this, void 0, void 0, function* () {
+            let proms = [];
+            let category = yield spinal_env_viewer_plugin_documentation_service_1.serviceDocumentation.getCategoryByName(node, 'Spatial');
+            if (typeof category === "undefined") {
+                category = yield spinal_env_viewer_plugin_documentation_service_1.serviceDocumentation.addCategoryAttribute(node, 'Spatial');
+            }
+            for (let i = 0; i < attributes.length; i++) {
+                const prop = attributes[i];
+                proms.push(spinal_env_viewer_plugin_documentation_service_1.serviceDocumentation.addAttributeByCategory(node, category, prop.name, prop.value));
+            }
+            return Promise.all(proms);
+        });
     }
     /**
      * Get the entity for entityId

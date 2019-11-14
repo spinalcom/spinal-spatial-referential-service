@@ -18,12 +18,12 @@ export declare const config: {
     };
     roomNiveau: string;
     props: {
-        room: string[];
+        room: {};
         level: {
             'components': {
                 type: string;
             };
         };
-        floors: string[];
+        floors: {};
     };
 };

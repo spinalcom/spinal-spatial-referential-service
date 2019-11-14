@@ -8,7 +8,7 @@ export declare class InvalidObjectManager {
     private spatialStartNode;
     private readonly initialized;
     constructor();
-    addObject(nodeId: any): Promise<any>;
+    addObject(nodeId: any): unknown;
     private init;
     private getSpatialStartNode;
     private static getContext;

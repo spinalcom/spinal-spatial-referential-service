@@ -20,13 +20,13 @@ declare const _default: {
         };
         roomNiveau: string;
         props: {
-            room: string[];
+            room: {};
             level: {
                 'components': {
                     type: string;
                 };
             };
-            floors: string[];
+            floors: {};
         };
     };
     SpatialManager: typeof SpatialManager;

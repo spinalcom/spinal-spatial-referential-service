@@ -7,20 +7,23 @@ import {
 } from "spinal-env-viewer-graph-service";
 import { InvalidObjectManager } from "./InvalidObjectManager";
 
-import {serviceDocumentation}
+import { serviceDocumentation }
   from 'spinal-env-viewer-plugin-documentation-service'
+
 export interface EntityProp {
   propName: string,
   propVal: any
 }
+
 import GeographicService from 'spinal-env-viewer-context-geographic-service'
 import { SpinalProps } from "../SpatialManager";
+
 const InvalidManager = new InvalidObjectManager();
 
 export abstract class AbstractEntityManager {
-  private invalidObjectManager : InvalidObjectManager;
+  private invalidObjectManager: InvalidObjectManager;
 
-  protected constructor(){
+  protected constructor() {
     this.invalidObjectManager = new InvalidObjectManager();
   }
 
@@ -35,7 +38,7 @@ export abstract class AbstractEntityManager {
    */
   abstract create(name: string, info: SpinalProps[], attributes: string[]): Promise<SpinalNodeRef>;
 
-  abstract  getParents(node): SpinalNode;
+  abstract getParents(node): SpinalNode;
 
   /**
    * Update the entity with all the props of info
@@ -67,12 +70,13 @@ export abstract class AbstractEntityManager {
       .addChildInContext(parentId, childId, contextId, relationName, relationType)
       .then(node => SpinalGraphService.getNode(node.info.id.get()))
   }
+
   /**
    * Delete the entity
    * @param entityId {string} id of the entity
    * @returns true if the entity has been deleted false otherwise
    */
-  async delete(entityId: string): Promise<boolean>{
+  async delete(entityId: string): Promise<boolean> {
     const roomNode = await SpinalGraphService.getNodeAsync(entityId);
     const parent = await this.getParents(roomNode);
     if (typeof parent === "undefined")
@@ -102,11 +106,16 @@ export abstract class AbstractEntityManager {
    * @param attributes
    * @param properties
    */
-  addAttribute(node : SpinalNode,  attributes : SpinalProps[],) {
+  async addAttribute(node: SpinalNode, attributes: SpinalProps[],) {
     let proms = [];
+    let category = await serviceDocumentation.getCategoryByName(node, 'Spatial');
+    if (typeof category === "undefined") {
+      category = await serviceDocumentation.addCategoryAttribute(node, 'Spatial')
+    }
     for (let i = 0; i < attributes.length; i++) {
       const prop = attributes[i];
-      proms.push(serviceDocumentation.addAttribute(node, prop.name, prop.value));
+
+      proms.push(serviceDocumentation.addAttributeByCategory(node, category, prop.name, prop.value));
     }
     return Promise.all(proms);
   }
@@ -120,7 +129,7 @@ export abstract class AbstractEntityManager {
     return SpinalGraphService.getNodeAsync(entityId);
   }
 
-  getPropertyValueByName(properties: SpinalProps[], name :string): string{
+  getPropertyValueByName(properties: SpinalProps[], name: string): string {
     for (let i = 0; i < properties.length; i++) {
       if (properties[i].name.toLowerCase() === name.toLowerCase())
         return properties[i].value;
@@ -128,14 +137,14 @@ export abstract class AbstractEntityManager {
     return undefined;
   }
 
-  getByExternalId(externalId : string, parentId, relationName){
+  getByExternalId(externalId: string, parentId, relationName) {
     return SpinalGraphService.getChildren(parentId, [relationName])
       .then(children => {
         if (typeof children === "undefined")
           return undefined;
 
         for (let i = 0; i < children.length; i++) {
-          if (children[i].hasOwnProperty('externalId') &&children[i].externalId.get() === externalId)
+          if (children[i].hasOwnProperty('externalId') && children[i].externalId.get() === externalId)
             return children[i];
         }
         return undefined;

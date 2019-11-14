@@ -119,7 +119,7 @@ class SpatialManager {
                 if (typeof room !== "undefined" && typeof room.child !== "undefined") {
                     // @ts-ignore
                     window.spinal.BimObjectService.addReferenceObject(resolveBatch[i].info.id.get(), room.child.dbId, `Floor of ${this.roomManager.getPropertyValueByName(room.properties.properties, 'name')}`, model);
-                    yield this.roomManager.addAttribute(resolveBatch[i], room.properties);
+                    const result = yield this.roomManager.addAttribute(resolveBatch[i], room.properties.properties);
                     resolveBatch[i].info.add_attr({
                         'dbId': room.properties.dbId,
                         'externalId': room.properties.externalId
@@ -158,13 +158,13 @@ class SpatialManager {
         return spinal_env_viewer_context_geographic_service_1.default.addFloor(contextId, buildingId, name)
             .then((floor) => __awaiter(this, void 0, void 0, function* () {
             floor.info.add_attr({ 'externalId': floorProps.externalId });
-            yield this.floorManager.addAttribute(floor, floorProps.properties);
+            const result = yield this.floorManager.addAttribute(floor, floorProps.properties);
+            console.log('icici', result);
             spinal_env_viewer_context_geographic_service_1.default.addZone(this.contextId, floor.info.id.get(), 'Stucture')
                 .then((structureZone) => __awaiter(this, void 0, void 0, function* () {
                 for (const key in structures) {
                     if (structures.hasOwnProperty(key)) {
                         try {
-                            console.log('structure', structures[key]);
                             const objName = this.roomManager.getPropertyValueByName(structures[key].properties.properties, 'name');
                             // @ts-ignore
                             yield window.spinal.BimObjectService.addBIMObject(this.contextId, structureZone.info.id.get(), structures[key].properties.dbId, objName, model);
@@ -287,7 +287,8 @@ class SpatialManager {
     updateRoom(externalId, room) {
         return __awaiter(this, void 0, void 0, function* () {
             this.roomManager.getByExternalId(externalId, spinal_env_viewer_graph_service_1.SpinalGraphService
-                .getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT).info.id.get(), spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION).then(r => {
+                .getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT).info.id.get(), spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION)
+                .then(r => {
                 this.roomManager.addAttribute(spinal_env_viewer_graph_service_1.SpinalGraphService.getRealNode(r.id.get()), room.properties.properties);
                 // @ts-ignore
                 spinal_env_viewer_graph_service_1.SpinalGraphService.modifyNode(r.id.get(), { dbId: room.properties.dbId });
