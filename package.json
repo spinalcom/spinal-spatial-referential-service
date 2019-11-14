@@ -1,0 +1,23 @@
+{
+  "name": "spinal-spatial-referential",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.6.4",
+    "@types/forge-viewer": "^7.0.1",
+    "@types/three": "^0.103.2"
+  },
+  "dependencies": {
+    "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git",
+    "spinal-env-viewer-context-geographic-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-geographic-service.git",
+    "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git"
+  }
+}
