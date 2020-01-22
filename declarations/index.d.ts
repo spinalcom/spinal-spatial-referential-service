@@ -32,4 +32,3 @@ declare const _default: {
     SpatialManager: typeof SpatialManager;
 };
 export default _default;
-import './test';

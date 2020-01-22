@@ -29,5 +29,4 @@ exports.default = {
     config: Config_1.config,
     SpatialManager: SpatialManager_1.SpatialManager
 };
-require("./test");
 //# sourceMappingURL=index.js.map
