@@ -1,22 +1,17 @@
 import { Model } from "spinal-core-connectorjs_type";
-export interface RevitAttributes {
-    room: {
-        attrName: string;
-        attrVal: string;
-    };
-    level: {
-        attrName: string;
-        attrVal: string;
-    };
-    floor: {
-        attrName: string;
-        attrVal: string;
-    };
+interface RevitAttributesObj extends spinal.Model {
+    attrName: spinal.Str;
+    attrVal: spinal.Str;
 }
-export interface ObjectProperties {
-    room: string[];
-    level: string[];
-    floor: string[];
+export interface RevitAttributes extends spinal.Model {
+    room: RevitAttributesObj;
+    level: RevitAttributesObj;
+    floors: RevitAttributesObj;
+}
+export interface ObjectProperties extends spinal.Model {
+    room: spinal.Lst<spinal.Str>;
+    level: spinal.Lst<spinal.Str>;
+    floor: spinal.Lst<spinal.Str>;
 }
 export declare class SpatialConfig extends Model {
     contextName: string;
@@ -25,3 +20,4 @@ export declare class SpatialConfig extends Model {
     objectProperties: ObjectProperties;
     constructor();
 }
+export {};

@@ -1,3 +1,27 @@
+/*
+ * Copyright 2020 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
+
 import Model = Autodesk.Viewing.Model;
 import {
   SPINAL_RELATION_LST_PTR_TYPE,
@@ -36,9 +60,9 @@ export abstract class AbstractEntityManager {
    * return the entity newly created
 
    */
-  abstract create(name: string, info: SpinalProps[], attributes: string[]): Promise<SpinalNodeRef>;
+  abstract async create(name: string, info: SpinalProps[], attributes: SpinalProps[]): Promise<SpinalNodeRef>;
 
-  abstract getParents(node): SpinalNode;
+  abstract async getParents(node): Promise<SpinalNode<any>>;
 
   /**
    * Update the entity with all the props of info
@@ -46,7 +70,7 @@ export abstract class AbstractEntityManager {
    * @param info {EntityProp[]}
    * @returns return the entity updated
    */
-  abstract update(entityId: string, info: SpinalProps[]): SpinalNodeRef;
+  abstract update(entityId: string, info: any[]): SpinalNodeRef;
 
   /**
    * add a new entity to the parent if the entity is not already present
@@ -57,7 +81,7 @@ export abstract class AbstractEntityManager {
    * @param relationType {string}
    */
   async addChild(contextId: string, parentId: string, childId: string,
-                 relationName: string, relationType: string): Promise<SpinalNodeRef> {
+    relationName: string, relationType: string): Promise<SpinalNodeRef> {
 
     const parentChild: SpinalNodeRef[] = await SpinalGraphService.getChildren(parentId, [relationName]);
     if (typeof parentChild !== "undefined")
@@ -106,7 +130,7 @@ export abstract class AbstractEntityManager {
    * @param attributes
    * @param properties
    */
-  async addAttribute(node: SpinalNode, attributes: SpinalProps[],) {
+  async addAttribute(node: SpinalNode<any>, attributes: SpinalProps[]) {
     let proms = [];
     let category = await serviceDocumentation.getCategoryByName(node, 'Spatial');
     if (typeof category === "undefined") {

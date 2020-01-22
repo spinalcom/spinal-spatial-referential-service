@@ -1,5 +1,6 @@
 /// <reference types="forge-viewer" />
 import Model = Autodesk.Viewing.Model;
+import { SpinalNodeRef } from "spinal-env-viewer-graph-service";
 interface ComparisionObject {
     deleted: {
         levels: object;
@@ -17,15 +18,23 @@ interface ComparisionObject {
 export interface ModelArchi {
     [dbId: string]: Level;
 }
+export declare type LevelRooms = {
+    [externalId: string]: Room;
+};
+export declare type LevelStructures = {
+    [externalId: string]: Structure;
+};
 export interface Level {
     properties: Properties;
-    children: {
-        [externalId: string]: Room;
-    };
+    children: LevelRooms;
+    structures: LevelStructures;
 }
 export interface Room {
     properties: Properties;
-    child: Properties;
+    children: Properties[];
+}
+export interface Structure {
+    properties: Properties;
 }
 export interface Properties {
     dbId: number;
@@ -35,6 +44,7 @@ export interface Properties {
 export interface SpinalProps {
     name: string;
     value: any;
+    [type: string]: any;
 }
 export declare class SpatialManager {
     private context;
@@ -46,41 +56,49 @@ export declare class SpatialManager {
     private initialized;
     private model;
     private modelArchi;
+    private modelArchiLib;
     constructor();
     init(): Promise<any>;
     generateContext(buildingName: string, model: Model): Promise<void>;
-    createRooms(rooms: any, contextId: any, floorId: any, model: any): Promise<void>;
+    addRoomValueParam(target: SpinalProps[], other: Room): void;
+    addIfExist(array: Room[], room: Room): boolean;
+    getRoomName(room: Room): string;
+    createRooms(rooms: LevelRooms, contextId: string, floorId: string, model: Model): Promise<void>;
     /**
      * Waits for the nodes to be in the FileSystem.
      * @param {Array<Promise>} promises Array of promises containing the nodes
      * @returns {Promise<any>} An empty promise
      */
-    waitForFileSystem(promises: any): Promise<any[]>;
-    createFloor(contextId: any, buildingId: any, name: any, level: any, model: any): any;
+    waitForFileSystem(promises: Promise<any>[]): Promise<any[]>;
+    private addRefStructureToFloor;
+    createFloor(contextId: string, buildingId: string, name: string, level: Level, model: Model): any;
     updateContext(buildingName: string, model: Model): Promise<void>;
     /**
      * remove $room from the floor, the .room context and at it to the invalid
      * context
      * @param room
      */
-    removeRoom(room: any): Promise<unknown>;
-    addToInvalidContext(id: any): Promise<boolean>;
-    getFloorFromRoom(room: any): Promise<any>;
+    removeRoom(room: SpinalNodeRef): Promise<{}>;
+    addToInvalidContext(id: string): Promise<boolean>;
+    getFloorFromRoom(room: any): Promise<void>;
     private updateLevel;
     private updateRoom;
-    compareArchi(oldArchi: object, newArchi: object): ComparisionObject;
+    compareArchi(oldArchi: ModelArchi, newArchi: ModelArchi): ComparisionObject;
     private static getContext;
     private getSpatialConfig;
     /**
      * use propertyDb to create a representation of the architecture of the model
-     * @param model
+     * @private
+     * @param {Model} model
+     * @returns {Promise<ModelArchi>}
+     * @memberof SpatialManager
      */
     private getArchiModel;
     private findLevel;
     private getBuilding;
-    getFloorFinish(model: any): Promise<Properties[]>;
+    getFloorFinish(model: Model): Promise<Properties[]>;
     getRoomIdFromDbId(externalId: string): Promise<any>;
-    getRoomIdFromFloorFinish(floorId: any): string;
-    getFloorFinishId(model: any): Promise<number[]>;
+    getRoomIdFromFloorFinish(floorId: number): string;
+    getFloorFinishId(model: Model): Promise<number[]>;
 }
 export {};

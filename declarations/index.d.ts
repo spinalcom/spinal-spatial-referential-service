@@ -20,15 +20,16 @@ declare const _default: {
         };
         roomNiveau: string;
         props: {
-            room: {};
+            room: string[];
             level: {
                 'components': {
                     type: string;
                 };
             };
-            floors: {};
+            floors: string[];
         };
     };
     SpatialManager: typeof SpatialManager;
 };
 export default _default;
+import './test';

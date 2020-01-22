@@ -1,3 +1,27 @@
+/*
+ * Copyright 2020 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
+
 import {
   SpinalGraphService,
   SPINAL_RELATION_TYPE,
@@ -14,7 +38,7 @@ export const SPATIAL_START_NODE_NAME: string = 'Object invalid du' +
 
 export class InvalidObjectManager {
 
-  private context: SpinalContext;
+  private context: SpinalContext<any>;
   public contextId: string;
   private spatialStartNode: SpinalNodeRef;
   private readonly initialized: Promise<boolean>;
@@ -23,10 +47,10 @@ export class InvalidObjectManager {
     this.initialized = this.init();
   }
 
-  public async addObject(nodeId){
+  public async addObject(nodeId) {
     await this.initialized;
     return SpinalGraphService.addChildInContext(this.spatialStartNode.id.get(),
-      nodeId, this.context.info.id.get(),SPATIAL_RELATION_NAME, SPINAL_RELATION_TYPE );
+      nodeId, this.context.info.id.get(), SPATIAL_RELATION_NAME, SPINAL_RELATION_TYPE);
   }
 
   private init(): Promise<boolean> {
@@ -53,7 +77,7 @@ export class InvalidObjectManager {
         return children[i];
       }
     }
-    const startNodeId = SpinalGraphService.createNode({name: SPATIAL_START_NODE_NAME}, undefined);
+    const startNodeId = SpinalGraphService.createNode({ name: SPATIAL_START_NODE_NAME }, undefined);
     const contextId = this.context.info.id.get();
     await SpinalGraphService.addChildInContext(contextId, startNodeId, contextId, SPATIAL_START_NODE_RELATION_NAME, SPINAL_RELATION_TYPE);
     return SpinalGraphService.getNode(startNodeId);

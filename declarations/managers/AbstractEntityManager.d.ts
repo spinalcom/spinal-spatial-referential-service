@@ -17,15 +17,15 @@ export declare abstract class AbstractEntityManager {
      * return the entity newly created
   
      */
-    abstract create(name: string, info: SpinalProps[], attributes: string[]): Promise<SpinalNodeRef>;
-    abstract getParents(node: any): SpinalNode;
+    abstract create(name: string, info: SpinalProps[], attributes: SpinalProps[]): Promise<SpinalNodeRef>;
+    abstract getParents(node: any): Promise<SpinalNode<any>>;
     /**
      * Update the entity with all the props of info
      * @param entityId {string}
      * @param info {EntityProp[]}
      * @returns return the entity updated
      */
-    abstract update(entityId: string, info: SpinalProps[]): SpinalNodeRef;
+    abstract update(entityId: string, info: any[]): SpinalNodeRef;
     /**
      * add a new entity to the parent if the entity is not already present
      * @param contextId {string}
@@ -49,7 +49,7 @@ export declare abstract class AbstractEntityManager {
      * @param attributes
      * @param properties
      */
-    addAttribute(node: SpinalNode, attributes: SpinalProps[]): Promise<any[]>;
+    addAttribute(node: SpinalNode<any>, attributes: SpinalProps[]): Promise<any[]>;
     /**
      * Get the entity for entityId
      * @param entityId {string} id of the entity
