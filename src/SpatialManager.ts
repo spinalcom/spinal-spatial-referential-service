@@ -219,16 +219,24 @@ export class SpatialManager {
         return this.getRoomName(r) === roomName;
       });
       if (typeof room !== "undefined" && typeof room.children !== "undefined") {
-        const prom = [
+        const prom: any[] = [
           this.roomManager.addAttribute(resolveBatch[i], room.properties.properties)
         ]
         for (const child of room.children) {
-          // @ts-ignore
-          window.spinal.BimObjectService.addReferenceObject(
-            resolveBatch[i].info.id.get(), child.dbId,
-            `Floor of ${this.getRoomName(room)}`,
-            model
-          )
+          const roomAttrName = this.getRoomName(room);
+          prom.push(
+            this.addReferenceObject(
+              child.dbId, `Floor of ${roomAttrName}`, model,
+              resolveBatch[i]).catch(e => e)
+          );
+
+          // prom.push(
+
+          //   // @ts-ignore
+          //   window.spinal.BimObjectService.addReferenceObject(
+          //     resolveBatch[i].info.id.get(), child.dbId, `Floor of ${roomAttrName}`, model
+          //   )
+          // )
         }
         await Promise.all(prom);
         // add or set attribut to  dbId & externalId
@@ -265,22 +273,34 @@ export class SpatialManager {
     });
   }
 
+  async addReferenceObject(dbId: number, name: string, model: Model, targetNode: SpinalNode<any>): Promise<SpinalNode<any>> {
+    // @ts-ignore
+    let bimObj = await window.spinal.BimObjectService.getBIMObject(dbId, model)
+    if (typeof bimObj === "undefined") {
+      // @ts-ignore
+      bimObj = await window.spinal.BimObjectService.createBIMObject(dbId, name, model)
+    }
+    return targetNode.addChild(bimObj, 'hasReferenceObject', SPINAL_RELATION_PTR_LST_TYPE)
+  }
+
+
   private async addRefStructureToFloor(floorId: string, structures: LevelStructures, model: Model) {
-    for (const key in structures) {
-      if (structures.hasOwnProperty(key)) {
-        try {
+    const prom = [];
+    try {
+      for (const key in structures) {
+        if (structures.hasOwnProperty(key)) {
           const objName = this.roomManager.getPropertyValueByName(structures[key].properties.properties, 'name')
-          // @ts-ignore
-          window.spinal.BimObjectService.addReferenceObject(
-            floorId,
-            structures[key].properties.dbId,
-            objName,
-            model
-          );
-        } catch (e) {
-          console.error(e);
+          prom.push(
+            this.addReferenceObject(
+              structures[key].properties.dbId, objName, model,
+              // @ts-ignore
+              spinal.spinalGraphService.nodes[floorId]).catch(e => e)
+          )
         }
       }
+      await Promise.all(prom)
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -289,14 +309,19 @@ export class SpatialManager {
     const rooms = level.children;
     const structures = level.structures;
     return GeographicService.addFloor(contextId, buildingId, name)
-      .then(floor => {
+      .then(async floor => {
         floor.info.add_attr({ 'externalId': floorProps.externalId });
+        await this.addRefStructureToFloor(floor.info.id.get(), structures, model)
+
         return Promise.all([
           this.floorManager.addAttribute(floor, floorProps.properties),
-          this.addRefStructureToFloor(floor.info.id.get(), structures, model),
           this.createRooms(rooms, contextId, floor.info.id.get(), model)
         ])
-      }).catch(console.error);
+      })
+
+
+
+      .catch(console.error);
   }
 
   public async updateContext(buildingName: string, model: Model) {

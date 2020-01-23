@@ -1,6 +1,6 @@
 /// <reference types="forge-viewer" />
 import Model = Autodesk.Viewing.Model;
-import { SpinalNodeRef } from "spinal-env-viewer-graph-service";
+import { SpinalNode, SpinalNodeRef } from "spinal-env-viewer-graph-service";
 interface ComparisionObject {
     deleted: {
         levels: object;
@@ -70,6 +70,7 @@ export declare class SpatialManager {
      * @returns {Promise<any>} An empty promise
      */
     waitForFileSystem(promises: Promise<any>[]): Promise<any[]>;
+    addReferenceObject(dbId: number, name: string, model: Model, targetNode: SpinalNode<any>): Promise<SpinalNode<any>>;
     private addRefStructureToFloor;
     createFloor(contextId: string, buildingId: string, name: string, level: Level, model: Model): any;
     updateContext(buildingName: string, model: Model): Promise<void>;
