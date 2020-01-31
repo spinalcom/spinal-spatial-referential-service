@@ -23,10 +23,11 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -80,7 +81,9 @@ class SpatialManager {
                         Object.entries(this.modelArchi[key].children).length !== 0 &&
                         this.modelArchi[key].constructor === Object) {
                         const level = this.modelArchi[key];
-                        prom.push(this.createFloor(this.contextId, building.info.id.get(), this.floorManager.getPropertyValueByName(level.properties.properties, 'name'), level, model));
+                        // prom.push(
+                        yield this.createFloor(this.contextId, building.info.id.get(), this.floorManager.getPropertyValueByName(level.properties.properties, 'name'), level, model);
+                        // )
                     }
                 }
                 yield Promise.all(prom);
@@ -205,6 +208,11 @@ class SpatialManager {
                 // @ts-ignore
                 bimObj = yield window.spinal.BimObjectService.createBIMObject(dbId, name, model);
             }
+            console.log("addReferenceObject", bimObj);
+            if (typeof bimObj.id !== "undefined") {
+                // @ts-ignore
+                bimObj = window.spinal.spinalGraphService.nodes[bimObj.id.get()];
+            }
             return targetNode.addChild(bimObj, 'hasReferenceObject', spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE);
         });
     }
@@ -234,13 +242,10 @@ class SpatialManager {
         return spinal_env_viewer_context_geographic_service_1.default.addFloor(contextId, buildingId, name)
             .then((floor) => __awaiter(this, void 0, void 0, function* () {
             floor.info.add_attr({ 'externalId': floorProps.externalId });
+            yield this.floorManager.addAttribute(floor, floorProps.properties),
+                yield this.createRooms(rooms, contextId, floor.info.id.get(), model);
             yield this.addRefStructureToFloor(floor.info.id.get(), structures, model);
-            return Promise.all([
-                this.floorManager.addAttribute(floor, floorProps.properties),
-                this.createRooms(rooms, contextId, floor.info.id.get(), model)
-            ]);
-        }))
-            .catch(console.error);
+        })).catch(console.error);
     }
     updateContext(buildingName, model) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -261,7 +266,7 @@ class SpatialManager {
                 if (cmpObject.new.levels.hasOwnProperty(levelId)) {
                     let building = yield this.getBuilding(buildingName);
                     if (typeof building !== "undefined" && building.hasOwnProperty('id'))
-                        this.createFloor(this.contextId, building.id.get(), this.floorManager.getPropertyValueByName(cmpObject.new.levels[levelId].properties.properties, 'name'), cmpObject.new.levels[levelId].properties.properties, model);
+                        yield this.createFloor(this.contextId, building.id.get(), this.floorManager.getPropertyValueByName(cmpObject.new.levels[levelId].properties.properties, 'name'), cmpObject.new.levels[levelId].properties.properties, model);
                 }
                 // cmpObject.new.levels[levelId].children, model)
             }
@@ -557,9 +562,12 @@ function userFunction(pdb) {
     }
     for (let i = 0; i < object.rooms.length; i++) {
       const obj = object.rooms[i];
-      archiModel[getAttrValue(obj, 'Level')].children[obj.externalId] = {
-        properties: obj,
-        children: findFloor(obj, object)
+      const lvl = getAttrValue(obj, 'Level'); // check here;
+      if (lvl)  {
+          archiModel[lvl].children[obj.externalId] = {
+          properties: obj,
+          children: findFloor(obj, object)
+        }
       }
     }
     for (let i = 0; i < object.structures.length; i++) {

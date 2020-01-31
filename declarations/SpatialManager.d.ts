@@ -79,7 +79,7 @@ export declare class SpatialManager {
      * context
      * @param room
      */
-    removeRoom(room: SpinalNodeRef): Promise<{}>;
+    removeRoom(room: SpinalNodeRef): Promise<unknown>;
     addToInvalidContext(id: string): Promise<boolean>;
     getFloorFromRoom(room: any): Promise<void>;
     private updateLevel;

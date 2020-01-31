@@ -29,3 +29,5 @@ export default {
   config: config,
   SpatialManager
 }
+
+// import './test'

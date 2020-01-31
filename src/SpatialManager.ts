@@ -144,11 +144,11 @@ export class SpatialManager {
           this.modelArchi[key].constructor === Object) {
           const level = this.modelArchi[key];
 
-          prom.push(
-            this.createFloor(this.contextId, building.info.id.get(),
-              this.floorManager.getPropertyValueByName(level.properties.properties, 'name'),
-              level, model)
-          )
+          // prom.push(
+          await this.createFloor(this.contextId, building.info.id.get(),
+            this.floorManager.getPropertyValueByName(level.properties.properties, 'name'),
+            level, model)
+          // )
         }
       }
       await Promise.all(prom);
@@ -280,6 +280,12 @@ export class SpatialManager {
       // @ts-ignore
       bimObj = await window.spinal.BimObjectService.createBIMObject(dbId, name, model)
     }
+    console.log("addReferenceObject", bimObj);
+    if (typeof bimObj.id !== "undefined") {
+      // @ts-ignore
+      bimObj = window.spinal.spinalGraphService.nodes[bimObj.id.get()];
+    }
+
     return targetNode.addChild(bimObj, 'hasReferenceObject', SPINAL_RELATION_PTR_LST_TYPE)
   }
 
@@ -311,17 +317,10 @@ export class SpatialManager {
     return GeographicService.addFloor(contextId, buildingId, name)
       .then(async floor => {
         floor.info.add_attr({ 'externalId': floorProps.externalId });
+        await this.floorManager.addAttribute(floor, floorProps.properties),
+          await this.createRooms(rooms, contextId, floor.info.id.get(), model)
         await this.addRefStructureToFloor(floor.info.id.get(), structures, model)
-
-        return Promise.all([
-          this.floorManager.addAttribute(floor, floorProps.properties),
-          this.createRooms(rooms, contextId, floor.info.id.get(), model)
-        ])
-      })
-
-
-
-      .catch(console.error);
+      }).catch(console.error);
   }
 
   public async updateContext(buildingName: string, model: Model) {
@@ -345,7 +344,7 @@ export class SpatialManager {
         let building: any = await this.getBuilding(buildingName);
         if (typeof building !== "undefined" && building.hasOwnProperty('id'))
 
-          this.createFloor(this.contextId, building.id.get(),
+          await this.createFloor(this.contextId, building.id.get(),
             this.floorManager.getPropertyValueByName(cmpObject.new.levels[levelId].properties.properties, 'name'),
             cmpObject.new.levels[levelId].properties.properties,
             model)
@@ -661,9 +660,12 @@ function userFunction(pdb) {
     }
     for (let i = 0; i < object.rooms.length; i++) {
       const obj = object.rooms[i];
-      archiModel[getAttrValue(obj, 'Level')].children[obj.externalId] = {
-        properties: obj,
-        children: findFloor(obj, object)
+      const lvl = getAttrValue(obj, 'Level'); // check here;
+      if (lvl)  {
+          archiModel[lvl].children[obj.externalId] = {
+          properties: obj,
+          children: findFloor(obj, object)
+        }
       }
     }
     for (let i = 0; i < object.structures.length; i++) {
