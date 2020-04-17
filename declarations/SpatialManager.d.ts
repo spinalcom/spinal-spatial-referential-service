@@ -1,6 +1,7 @@
 /// <reference types="forge-viewer" />
 import Model = Autodesk.Viewing.Model;
-import { SpinalNode, SpinalNodeRef } from "spinal-env-viewer-graph-service";
+import { SpinalContext, SpinalNode, SpinalNodeRef } from "spinal-env-viewer-graph-service";
+import { SpatialConfig, IMConfigArchi } from "./models/SpatialConfig";
 interface ComparisionObject {
     deleted: {
         levels: object;
@@ -47,8 +48,6 @@ export interface SpinalProps {
     [type: string]: any;
 }
 export declare class SpatialManager {
-    private context;
-    private contextId;
     private spatialConfig;
     private buildingManager;
     private floorManager;
@@ -59,7 +58,7 @@ export declare class SpatialManager {
     private modelArchiLib;
     constructor();
     init(): Promise<any>;
-    generateContext(buildingName: string, model: Model): Promise<void>;
+    generateContext(configName: string, model: Model): Promise<void>;
     addRoomValueParam(target: SpinalProps[], other: Room): void;
     addIfExist(array: Room[], room: Room): boolean;
     getRoomName(room: Room): string;
@@ -73,7 +72,7 @@ export declare class SpatialManager {
     addReferenceObject(dbId: number, name: string, model: Model, targetNode: SpinalNode<any>): Promise<SpinalNode<any>>;
     private addRefStructureToFloor;
     createFloor(contextId: string, buildingId: string, name: string, level: Level, model: Model): any;
-    updateContext(buildingName: string, model: Model): Promise<void>;
+    updateContext(configName: string, model: Model): Promise<void>;
     /**
      * remove $room from the floor, the .room context and at it to the invalid
      * context
@@ -86,7 +85,7 @@ export declare class SpatialManager {
     private updateRoom;
     compareArchi(oldArchi: ModelArchi, newArchi: ModelArchi): ComparisionObject;
     private static getContext;
-    private getSpatialConfig;
+    getSpatialConfig(): Promise<SpatialConfig>;
     /**
      * use propertyDb to create a representation of the architecture of the model
      * @private
@@ -96,10 +95,11 @@ export declare class SpatialManager {
      */
     private getArchiModel;
     private findLevel;
+    getContextFromConfig(config: IMConfigArchi): Promise<SpinalContext<any>>;
     private getBuilding;
-    getFloorFinish(model: Model): Promise<Properties[]>;
+    getFloorFinish(configName: string, model: Model): Promise<Properties[]>;
     getRoomIdFromDbId(externalId: string): Promise<any>;
     getRoomIdFromFloorFinish(floorId: number): string;
-    getFloorFinishId(model: Model): Promise<number[]>;
+    getFloorFinishId(configName: string, model: Model): Promise<number[]>;
 }
 export {};
