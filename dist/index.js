@@ -25,8 +25,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const SpatialManager_1 = require("./SpatialManager");
 const Config_1 = require("./Config");
+const constants = require("./Constant");
 exports.default = {
     config: Config_1.config,
+    constants,
     SpatialManager: SpatialManager_1.SpatialManager
 };
 // import './test'

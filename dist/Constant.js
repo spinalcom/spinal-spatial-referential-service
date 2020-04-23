@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
  *
@@ -22,10 +23,16 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
 exports.ROOM_FINISH_VALUE = "Room_finish";
 exports.S_TYPE = "stype";
 exports.ROOM_ID_TEXT = "RoomID";
 exports.FLOOR_NEEDED_PROPS = [exports.S_TYPE, 'roomid'];
 exports.ROOM_WANTED_PROPS = ['area', 'volume', 'perimeter', 'local', 'etage', 'Local', 'stype', 'roomid'];
+exports.GEO_REFERENCE_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.REFERENCE_RELATION;
+exports.GEO_REFERENCE_ROOM_RELATION = `${exports.GEO_REFERENCE_RELATION}.ROOM`;
+exports.GEO_BUILDING_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.BUILDING_RELATION;
+exports.GEO_FLOOR_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.FLOOR_RELATION;
+exports.GEO_ROOM_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION;
+exports.GEO_ZONE_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.ZONE_RELATION;
 //# sourceMappingURL=Constant.js.map

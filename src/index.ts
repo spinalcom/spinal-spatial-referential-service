@@ -24,9 +24,11 @@
 
 import { SpatialManager } from "./SpatialManager";
 import { config } from "./Config";
+import * as constants from "./Constant";
 
 export default {
   config: config,
+  constants,
   SpatialManager
 }
 

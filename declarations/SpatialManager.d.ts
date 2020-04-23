@@ -69,7 +69,7 @@ export declare class SpatialManager {
      * @returns {Promise<any>} An empty promise
      */
     waitForFileSystem(promises: Promise<any>[]): Promise<any[]>;
-    addReferenceObject(dbId: number, name: string, model: Model, targetNode: SpinalNode<any>): Promise<SpinalNode<any>>;
+    addReferenceObject(dbId: number, name: string, model: Model, targetNode: SpinalNode<any>, relationName?: any): Promise<SpinalNode<any>>;
     private addRefStructureToFloor;
     createFloor(contextId: string, buildingId: string, name: string, level: Level, model: Model): any;
     updateContext(configName: string, model: Model): Promise<void>;

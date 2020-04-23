@@ -36,6 +36,7 @@ const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewe
 // import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service'
 const createFctGetArchi_1 = require("./createFctGetArchi");
 const Config_1 = require("./Config");
+const Constant_1 = require("./Constant");
 const spinal_env_viewer_graph_service_1 = require("spinal-env-viewer-graph-service");
 const SpatialConfig_1 = require("./models/SpatialConfig");
 const BuildingManager_1 = require("./managers/BuildingManager");
@@ -167,7 +168,7 @@ class SpatialManager {
                     ];
                     for (const child of room.children) {
                         const roomAttrName = this.getRoomName(room);
-                        prom.push(this.addReferenceObject(child.dbId, roomName, model, resolveBatch[i]).catch(e => e));
+                        prom.push(this.addReferenceObject(child.dbId, roomName, model, resolveBatch[i], Constant_1.GEO_REFERENCE_ROOM_RELATION).catch(e => e));
                         // prom.push(
                         //   // @ts-ignore
                         //   window.spinal.BimObjectService.addReferenceObject(
@@ -210,7 +211,7 @@ class SpatialManager {
             });
         });
     }
-    addReferenceObject(dbId, name, model, targetNode) {
+    addReferenceObject(dbId, name, model, targetNode, relationName = Constant_1.GEO_REFERENCE_RELATION) {
         return __awaiter(this, void 0, void 0, function* () {
             // @ts-ignore
             let bimObj = yield window.spinal.BimObjectService.getBIMObject(dbId, model);
@@ -227,7 +228,7 @@ class SpatialManager {
             const idx = childrenIds.indexOf(bimObj.info.id.get());
             if (idx !== -1)
                 return bimObj;
-            return targetNode.addChild(bimObj, 'hasReferenceObject', spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE);
+            return targetNode.addChild(bimObj, relationName, spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE);
         });
     }
     addRefStructureToFloor(floorId, structures, model) {
@@ -294,7 +295,7 @@ class SpatialManager {
                 if (!cmpObject.new.rooms.hasOwnProperty(levelId))
                     continue;
                 let level = yield this.floorManager.getByExternalId(levelId, spinal_env_viewer_graph_service_1.SpinalGraphService
-                    .getContext(spinal_env_viewer_context_geographic_service_1.default.constants.FLOOR_REFERENCE_CONTEXT).info.id.get(), spinal_env_viewer_context_geographic_service_1.default.constants.FLOOR_RELATION);
+                    .getContext(spinal_env_viewer_context_geographic_service_1.default.constants.FLOOR_REFERENCE_CONTEXT).info.id.get(), Constant_1.GEO_FLOOR_RELATION);
                 const proms = [];
                 for (let i = 0; i < cmpObject.new.rooms[levelId].length; i++) {
                     let room = cmpObject.new.rooms[levelId][i];
@@ -310,7 +311,7 @@ class SpatialManager {
                 if (cmpObject.deleted.rooms.hasOwnProperty(roomId)) {
                     const context = spinal_env_viewer_graph_service_1.SpinalGraphService
                         .getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT);
-                    const room = yield this.roomManager.getByExternalId(roomId, context.info.id.get(), spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION);
+                    const room = yield this.roomManager.getByExternalId(roomId, context.info.id.get(), Constant_1.GEO_ROOM_RELATION);
                     yield this.removeRoom(room);
                 }
             }
@@ -328,11 +329,10 @@ class SpatialManager {
             if (typeof floor !== "undefined") {
                 try {
                     // @ts-ignore
-                    yield floor.removeChild(node, spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION, spinal_env_viewer_graph_service_1.SPINAL_RELATION_TYPE); // remove the room from the floor
+                    yield floor.removeChild(node, Constant_1.GEO_ROOM_RELATION, spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE); // remove the room from the floor
                     const roomReferenceContext = spinal_env_viewer_graph_service_1.SpinalGraphService.getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT);
-                    //TODO check why PTR_LST insteadof LST_PTRhasOwnAttribute
                     yield spinal_env_viewer_graph_service_1.SpinalGraphService
-                        .removeChild(roomReferenceContext.info.id.get(), node.info.id.get(), spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION, spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE); //remove the room from .room context
+                        .removeChild(roomReferenceContext.info.id.get(), node.info.id.get(), Constant_1.GEO_ROOM_RELATION, spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE); //remove the room from .room context
                     this.addToInvalidContext(node.info.id.get());
                     resolve();
                 }
@@ -350,7 +350,7 @@ class SpatialManager {
             let context = spinal_env_viewer_graph_service_1.SpinalGraphService.getContext(".invalid");
             if (typeof context === "undefined")
                 context = yield spinal_env_viewer_graph_service_1.SpinalGraphService.addContext('.invalid', 'invalid');
-            return spinal_env_viewer_graph_service_1.SpinalGraphService.addChild(context.info.id.get(), id, 'Invalid', spinal_env_viewer_graph_service_1.SPINAL_RELATION_LST_PTR_TYPE);
+            return spinal_env_viewer_graph_service_1.SpinalGraphService.addChild(context.info.id.get(), id, 'Invalid', spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE);
         });
     }
     getFloorFromRoom(room) {
@@ -379,7 +379,7 @@ class SpatialManager {
     updateRoom(externalId, room) {
         return __awaiter(this, void 0, void 0, function* () {
             this.roomManager
-                .getByExternalId(externalId, spinal_env_viewer_graph_service_1.SpinalGraphService.getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT).info.id.get(), spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION)
+                .getByExternalId(externalId, spinal_env_viewer_graph_service_1.SpinalGraphService.getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT).info.id.get(), Constant_1.GEO_ROOM_RELATION)
                 .then(r => {
                 this.roomManager.addAttribute(spinal_env_viewer_graph_service_1.SpinalGraphService.getRealNode(r.id.get()), room.properties.properties);
                 // @ts-ignore
@@ -485,7 +485,7 @@ class SpatialManager {
                         type: 'SpatialConfig'
                     }, new SpatialConfig_1.SpatialConfig());
                     yield spinal_env_viewer_graph_service_1.SpinalGraphService
-                        .addChild(context.info.id.get(), config, 'hasConfig', spinal_env_viewer_graph_service_1.SPINAL_RELATION_LST_PTR_TYPE);
+                        .addChild(context.info.id.get(), config, 'hasConfig', spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE);
                     config = spinal_env_viewer_graph_service_1.SpinalGraphService.getNode(config);
                 }
                 return config.element.load();
@@ -517,179 +517,12 @@ class SpatialManager {
             console.log("modelArchi", modelArchi);
             this.modelArchiLib.set(model, modelArchi);
             return modelArchi;
-            // @ts-ignore
-            //     const modelArchi: ModelArchi = await model.getPropertyDb().executeUserFunction(
-            //       `
-            // function userFunction(pdb) {
-            //   function round(x, digits = 2) {
-            //     return parseFloat(x.toFixed(digits))
-            //   }
-            //   let props = [];
-            //   let objectProperties = [
-            //     'elevation', 'area', 'volume', 'perimeter', 'local', 'etage', 'stype', 'roomid', 'number',
-            //     "id_materiel", "nl", "np", "niv."]; // eiffage
-            //   let attrIdSCtype = -1;
-            //   let attrIdLevel = -1;
-            //   let attrICategory = -1;
-            //   function createArchitectureModel(object) {
-            //     const archiModel = {};
-            //     function getAttrValue(obj, attrName) {
-            //       const props = obj.properties;
-            //       for (let i = 0; i < props.length; i++) {
-            //         if (props[i].name === attrName)
-            //           return props[i].value
-            //       }
-            //     }
-            //     function setAttrValue(obj, attrName, value) {
-            //       const props = obj.properties;
-            //       for (let i = 0; i < props.length; i++) {
-            //         if (props[i].name === attrName) {
-            //           if (props[i].value === value) return;
-            //           props[i].oldValue = props[i].value
-            //           props[i].value = value
-            //           return;
-            //         }
-            //       }
-            //     }
-            //     function getLevelByDbId(dbId) {
-            //       for (const level of object.levels) {
-            //         if (level.dbId === dbId) {
-            //           return level
-            //         }
-            //       }
-            //     }
-            //     function findFloor(room, data) {
-            //       const leveldbId = getAttrValue(room, "Level");
-            //       // const levelName = getLevelNameByDbId(leveldbId)
-            //       const roomNumber = getAttrValue(room, "Number")
-            //       const res = [];
-            //       for (let i = 0; i < data.floors.length; i++) {
-            //         const levelItemdbId = getAttrValue(data.floors[i], "Level");
-            //         const floorRoomName = getAttrValue(data.floors[i], "NL")
-            //         const floorRoomNumber = getAttrValue(data.floors[i], "NP")
-            //         const floorName = getAttrValue(data.floors[i], "Niv.")
-            //         if (
-            //           floorRoomName !== "" && floorRoomNumber !== "" &&
-            //           // roomName.includes(floorRoomName) &&
-            //           leveldbId === levelItemdbId &&
-            //           roomNumber.includes(floorRoomNumber)
-            //         ) {
-            //           setAttrValue(getLevelByDbId(leveldbId), 'name', floorName)
-            //           setAttrValue(room, 'name', floorRoomName)
-            //           res.push(data.floors[i]);
-            //         }
-            //       }
-            //       return res;
-            //     }
-            //     for (let i = 0; i < object.levels.length; i++) {
-            //       const obj = object.levels[i];
-            //       archiModel[obj.dbId] = { properties: obj, children: {}, structures: {} }
-            //     }
-            //     for (let i = 0; i < object.rooms.length; i++) {
-            //       const obj = object.rooms[i];
-            //       const lvl = getAttrValue(obj, 'Level'); // check here;
-            //       if (lvl)  {
-            //           archiModel[lvl].children[obj.externalId] = {
-            //           properties: obj,
-            //           children: findFloor(obj, object)
-            //         }
-            //       }
-            //     }
-            //     for (let i = 0; i < object.structures.length; i++) {
-            //       const obj = object.structures[i];
-            //       const lvl = getAttrValue(obj, 'Level');
-            //       if (archiModel[lvl]) {
-            //         archiModel[lvl]
-            //           .structures[obj.externalId] = {
-            //           properties: obj,
-            //         }
-            //       }
-            //     }
-            //     return archiModel;
-            //   }
-            //   pdb.enumAttributes(function (i, attrDef, attrRaw) {
-            //     let name = attrDef.name;
-            //     let category = attrDef.category;
-            //     if (
-            //       name === 'name' ||
-            //       objectProperties.includes(name.toLowerCase()) ||
-            //       name === 'Comments' ||
-            //       (name === 'Level' && category === '__internalref__') ||
-            //       (name === 'Category' && category === '__category__') ||
-            //       (name === 'Elevation')
-            //     ) {
-            //       const res = { attrId: i, name };
-            //       if (attrDef.dataTypeContext)
-            //         Object.assign(res, { dataTypeContext: attrDef.dataTypeContext });
-            //       props.push(res)
-            //       if (name === 'Comments') {
-            //         attrIdSCtype = i;
-            //       } else if (name === 'Level' && category === '__internalref__') {
-            //         attrIdLevel = i;
-            //       } else if (name === 'Category' && category === '__category__') {
-            //         attrICategory = i;
-            //       }
-            //     }
-            //   });
-            //   if (attrIdSCtype === -1 && attrIdLevel === -1 && attrICategory === -1)
-            //     return null;
-            //   let dbIds = { floors: [], rooms: [], levels: [], structures: [] };
-            //   let externalIdMapping = pdb.getExternalIdMapping();
-            //   const idExternal = {};
-            //   for (let key in externalIdMapping) {
-            //     if (externalIdMapping.hasOwnProperty(key)) {
-            //       idExternal[externalIdMapping[key]] = key;
-            //     }
-            //   }
-            //   pdb.enumObjects(function (dbId) {
-            //     const properties = [];
-            //     let keepProperties = false;
-            //     let array = [];
-            //     // For each part, iterate over their properties.
-            //     pdb.enumObjectProperties(dbId, function (attrId, valId) {
-            //       let value = pdb.getAttrValue(attrId, valId);
-            //       if (typeof value === "number") value = round(value);
-            //       let prop = props.find(prop => prop.attrId === attrId)
-            //       if (prop) {
-            //         const res = { name: prop.name, value }
-            //         if (prop.dataTypeContext)
-            //           Object.assign(res, { dataTypeContext: prop.dataTypeContext });
-            //         properties.push(res);
-            //       }
-            //       // Only process 'Mass' property.
-            //       // The word "Property" and "Attribute" are used interchangeably.
-            //       if (attrId === attrIdSCtype || attrId === attrICategory || attrId === attrIdLevel) {
-            //         keepProperties = true;
-            //         if (value === 'Finition') {
-            //           array = dbIds.floors;
-            //         }
-            //         else if (value === 'Revit Level') {
-            //           array = dbIds.levels;
-            //         }
-            //         else if (value === 'Revit Pièces') {
-            //           array = dbIds.rooms;
-            //         }
-            //         else if (value === 'Revit Fenêtres'
-            //           || value === 'Revit Murs'
-            //           || value === 'Revit Sols') {
-            //           array = dbIds.structures;
-            //         }
-            //       }
-            //     });
-            //     if (keepProperties)
-            //       array.push({ dbId, properties, externalId: idExternal[dbId] })
-            //   });
-            //   console.log("dbIds => ", dbIds)
-            //   return createArchitectureModel(dbIds)
-            // }`);
-            // this.modelArchiLib.set(model, modelArchi)
-            // return modelArchi;
         });
     }
     findLevel(config, externalId) {
         return __awaiter(this, void 0, void 0, function* () {
             const building = yield this.getBuilding(config);
-            return this.floorManager.getByExternalId(externalId, building.id.get(), spinal_env_viewer_context_geographic_service_1.default.constants.FLOOR_RELATION);
+            return this.floorManager.getByExternalId(externalId, building.id.get(), Constant_1.GEO_FLOOR_RELATION);
         });
     }
     getContextFromConfig(config) {
@@ -709,7 +542,7 @@ class SpatialManager {
         return __awaiter(this, void 0, void 0, function* () {
             const context = yield this.getContextFromConfig(config);
             return spinal_env_viewer_graph_service_1.SpinalGraphService
-                .getChildren(context.info.id.get(), [spinal_env_viewer_context_geographic_service_1.default.constants.BUILDING_RELATION])
+                .getChildren(context.info.id.get(), [Constant_1.GEO_BUILDING_RELATION])
                 .then(children => {
                 if (typeof children === 'undefined')
                     return undefined;
@@ -745,7 +578,7 @@ class SpatialManager {
             const roomReferenceContext = spinal_env_viewer_graph_service_1.SpinalGraphService
                 .getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT);
             const rooms = yield spinal_env_viewer_graph_service_1.SpinalGraphService
-                .getChildren(roomReferenceContext.info.id.get(), [spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION]);
+                .getChildren(roomReferenceContext.info.id.get(), [Constant_1.GEO_ROOM_RELATION]);
             for (let i = 0; i < rooms.length; i++) {
                 if (rooms[i].externalId.get() === externalId) {
                     return rooms[i].id.get();

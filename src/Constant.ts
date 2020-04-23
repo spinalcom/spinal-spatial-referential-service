@@ -21,9 +21,18 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+import GeographicService from 'spinal-env-viewer-context-geographic-service'
 
 export const ROOM_FINISH_VALUE: string = "Room_finish";
 export const S_TYPE: string = "stype";
 export const ROOM_ID_TEXT: string = "RoomID"
 export const FLOOR_NEEDED_PROPS: string[] = [S_TYPE, 'roomid'];
 export const ROOM_WANTED_PROPS: string[] = ['area', 'volume', 'perimeter', 'local', 'etage', 'Local', 'stype', 'roomid'];
+
+export const GEO_REFERENCE_RELATION = GeographicService.constants.REFERENCE_RELATION;
+export const GEO_REFERENCE_ROOM_RELATION = `${GEO_REFERENCE_RELATION}.ROOM`;
+
+export const GEO_BUILDING_RELATION = GeographicService.constants.BUILDING_RELATION;
+export const GEO_FLOOR_RELATION = GeographicService.constants.FLOOR_RELATION;
+export const GEO_ROOM_RELATION = GeographicService.constants.ROOM_RELATION;
+export const GEO_ZONE_RELATION = GeographicService.constants.ZONE_RELATION;

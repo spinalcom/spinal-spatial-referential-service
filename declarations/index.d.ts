@@ -1,4 +1,5 @@
 import { SpatialManager } from "./SpatialManager";
+import * as constants from "./Constant";
 declare const _default: {
     config: {
         batchSize: number;
@@ -29,6 +30,7 @@ declare const _default: {
             floors: string[];
         };
     };
+    constants: typeof constants;
     SpatialManager: typeof SpatialManager;
 };
 export default _default;
