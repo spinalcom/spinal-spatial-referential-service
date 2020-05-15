@@ -4,18 +4,34 @@ import { SpinalContext, SpinalNode, SpinalNodeRef } from "spinal-env-viewer-grap
 import { SpatialConfig, IMConfigArchi } from "./models/SpatialConfig";
 interface ComparisionObject {
     deleted: {
-        levels: object;
-        rooms: object;
+        levels: {
+            [externalId: string]: Level;
+        };
+        rooms: {
+            [externalId: string]: CmpRoom;
+        };
     };
     updated: {
-        levels: object;
-        rooms: object;
+        levels: {
+            [externalId: string]: Level;
+        };
+        rooms: {
+            [externalId: string]: CmpRoom;
+        };
     };
     new: {
-        levels: object;
-        rooms: object;
+        levels: {
+            [externalId: string]: Level;
+        };
+        rooms: {
+            [externalId: string]: Room[];
+        };
     };
 }
+export declare type CmpRoom = {
+    levelId: string;
+    room: Room;
+};
 export interface ModelArchi {
     [dbId: string]: Level;
 }
@@ -32,7 +48,7 @@ export interface Level {
 }
 export interface Room {
     properties: Properties;
-    children: Properties[];
+    children: Structure[];
 }
 export interface Structure {
     properties: Properties;
@@ -70,19 +86,24 @@ export declare class SpatialManager {
      */
     waitForFileSystem(promises: Promise<any>[]): Promise<any[]>;
     addReferenceObject(dbId: number, name: string, model: Model, targetNode: SpinalNode<any>, relationName?: any): Promise<SpinalNode<any>>;
-    private addRefStructureToFloor;
-    createFloor(contextId: string, buildingId: string, name: string, level: Level, model: Model): any;
+    private addRefStructureToLevel;
+    private addRefStructureToRoom;
+    createFloor(contextId: string, buildingId: string, name: string, level: Level, model: Model): Promise<void>;
     updateContext(configName: string, model: Model): Promise<void>;
     /**
      * remove $room from the floor, the .room context and at it to the invalid
      * context
      * @param room
      */
-    removeRoom(room: SpinalNodeRef): Promise<unknown>;
+    removeRoom(levelRef: SpinalNodeRef, roomRef: SpinalNodeRef): Promise<void>;
     addToInvalidContext(id: string): Promise<boolean>;
     getFloorFromRoom(room: any): Promise<void>;
     private updateLevel;
     private updateRoom;
+    createRoomObj(levelId: string, room: Room): {
+        levelId: string;
+        room: Room;
+    };
     compareArchi(oldArchi: ModelArchi, newArchi: ModelArchi): ComparisionObject;
     private static getContext;
     getSpatialConfig(): Promise<SpatialConfig>;
@@ -95,9 +116,10 @@ export declare class SpatialManager {
      */
     private getArchiModel;
     private findLevel;
+    private findRoom;
     getContextFromConfig(config: IMConfigArchi): Promise<SpinalContext<any>>;
     private getBuilding;
-    getFloorFinish(configName: string, model: Model): Promise<Properties[]>;
+    getFloorFinish(configName: string, model: Model): Promise<Structure[]>;
     getRoomIdFromDbId(externalId: string): Promise<any>;
     getRoomIdFromFloorFinish(floorId: number): string;
     getFloorFinishId(configName: string, model: Model): Promise<number[]>;
