@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 // export interface ArchiSelectUser {
 //   key: RegExp;
@@ -59,11 +68,11 @@ function createFctGetArchi(config) {
         'stype', 'roomid', 'number'
     ];
     if (FLOOR_ROOM_NUMBER_ATTR_NAME)
-        propsToGet.push(FLOOR_ROOM_NUMBER_ATTR_NAME);
+        propsToGet.push(FLOOR_ROOM_NUMBER_ATTR_NAME.toLowerCase());
     if (FLOOR_ROOM_NAME_ATTR_NAME)
-        propsToGet.push(FLOOR_ROOM_NAME_ATTR_NAME);
+        propsToGet.push(FLOOR_ROOM_NAME_ATTR_NAME.toLowerCase());
     if (FLOOR_LEVEL_NAME_ATTR_NAME)
-        propsToGet.push(FLOOR_LEVEL_NAME_ATTR_NAME);
+        propsToGet.push(FLOOR_LEVEL_NAME_ATTR_NAME.toLowerCase());
     let useFloor = false;
     if (Array.isArray(config.floorSelect) && config.floorSelect.length > 0) {
         useFloor = true;
@@ -99,7 +108,8 @@ function createFctGetArchi(config) {
     function pushSelect(data, attrDef, idx, res) {
       for (const d of data) {
         if (
-          d.key.test(attrDef.displayName) ||
+          (attrDef.displayName && d.key.test(attrDef.displayName)) ||
+          (!attrDef.displayName && d.key.test(attrDef.name)) ||
           (d.isCat === true && attrDef.category === '__category__' && d.key.test(attrDef.name))
         ) {
           const item = res.find((item) => item.id === idx);
@@ -201,7 +211,6 @@ function createFctGetArchi(config) {
         array.push({ dbId, properties, externalId: idExternal[dbId] })
 
     });
-
     if (useFloor === false) dbIds.floors = dbIds.rooms
     function createArchitectureModel(object) {
       const archiModel = {};
@@ -301,6 +310,28 @@ function createFctGetArchi(config) {
     return fct;
 }
 exports.default = createFctGetArchi;
+window.testCreateFctGetArchi = function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        const cfg = {
+            "basic": { "addLevel": false, "buildingName": "GIENAH", "selectedModel": "ARC_GIENAH_R19 (1).rvt" },
+            "levelSelect": [{ "key": "/^Category$/", "value": "/^Revit Level$/", "isCat": true }],
+            "roomSelect": [{ "key": "/^Category$/", "value": "/^Revit Pièces$/", "isCat": true }],
+            "structureSelect": [
+                { "key": "/^Category$/", "value": "/^Revit Murs$/", "isCat": true },
+                { "key": "/^Category$/", "value": "/^Revit Sols$/", "isCat": true },
+                { "key": "/^Category$/", "value": "/^Revit Portes$/", "isCat": true },
+                { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }
+            ],
+            "floorSelect": [{ "key": "/^Commentaires$/", "value": "/^Finition$/" }],
+            "floorRoomNbr": "NP",
+            "floorRoomName": "NL",
+            "floorLevelName": "Niv."
+        };
+        const fct = createFctGetArchi(cfg);
+        const modelArchi = yield window.NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);
+        console.log(modelArchi);
+    });
+};
 // (<any>window).test = async function () {
 //   const cfg = {
 //     "configName": "default",

@@ -237,9 +237,10 @@ export class SpatialManager {
           this.roomManager.addAttribute(resolveBatch[i], room.properties.properties)
         ]
         for (const child of room.children) {
+          const objName = this.roomManager.getPropertyValueByName(child.properties, 'name');
           prom.push(
             this.addReferenceObject(
-              child.dbId, roomName, model,
+              child.dbId, objName, model,
               resolveBatch[i], GEO_REFERENCE_ROOM_RELATION).catch(e => e)
           );
         }

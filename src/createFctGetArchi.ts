@@ -109,9 +109,9 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
     'area', 'volume', 'perimeter',
     'stype', 'roomid', 'number']
 
-  if (FLOOR_ROOM_NUMBER_ATTR_NAME) propsToGet.push(FLOOR_ROOM_NUMBER_ATTR_NAME)
-  if (FLOOR_ROOM_NAME_ATTR_NAME) propsToGet.push(FLOOR_ROOM_NAME_ATTR_NAME)
-  if (FLOOR_LEVEL_NAME_ATTR_NAME) propsToGet.push(FLOOR_LEVEL_NAME_ATTR_NAME)
+  if (FLOOR_ROOM_NUMBER_ATTR_NAME) propsToGet.push(FLOOR_ROOM_NUMBER_ATTR_NAME.toLowerCase())
+  if (FLOOR_ROOM_NAME_ATTR_NAME) propsToGet.push(FLOOR_ROOM_NAME_ATTR_NAME.toLowerCase())
+  if (FLOOR_LEVEL_NAME_ATTR_NAME) propsToGet.push(FLOOR_LEVEL_NAME_ATTR_NAME.toLowerCase())
   let useFloor = false;
   if (Array.isArray(config.floorSelect) && config.floorSelect.length > 0) {
     useFloor = true;
@@ -149,7 +149,8 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
     function pushSelect(data, attrDef, idx, res) {
       for (const d of data) {
         if (
-          d.key.test(attrDef.displayName) ||
+          (attrDef.displayName && d.key.test(attrDef.displayName)) ||
+          (!attrDef.displayName && d.key.test(attrDef.name)) ||
           (d.isCat === true && attrDef.category === '__category__' && d.key.test(attrDef.name))
         ) {
           const item = res.find((item) => item.id === idx);
@@ -251,7 +252,6 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
         array.push({ dbId, properties, externalId: idExternal[dbId] })
 
     });
-
     if (useFloor === false) dbIds.floors = dbIds.rooms
     function createArchitectureModel(object) {
       const archiModel = {};
@@ -351,7 +351,26 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
   return fct;
 }
 
-
+(<any>window).testCreateFctGetArchi = async function () {
+  const cfg = {
+    "basic": { "addLevel": false, "buildingName": "GIENAH", "selectedModel": "ARC_GIENAH_R19 (1).rvt" },
+    "levelSelect": [{ "key": "/^Category$/", "value": "/^Revit Level$/", "isCat": true }],
+    "roomSelect": [{ "key": "/^Category$/", "value": "/^Revit Pièces$/", "isCat": true }],
+    "structureSelect": [
+      { "key": "/^Category$/", "value": "/^Revit Murs$/", "isCat": true },
+      { "key": "/^Category$/", "value": "/^Revit Sols$/", "isCat": true },
+      { "key": "/^Category$/", "value": "/^Revit Portes$/", "isCat": true },
+      { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }
+    ],
+    "floorSelect": [{ "key": "/^Commentaires$/", "value": "/^Finition$/" }],
+    "floorRoomNbr": "NP",
+    "floorRoomName": "NL",
+    "floorLevelName": "Niv."
+  }
+  const fct = createFctGetArchi(cfg)
+  const modelArchi = await (<any>window).NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);
+  console.log(modelArchi);
+}
 // (<any>window).test = async function () {
 //   const cfg = {
 //     "configName": "default",

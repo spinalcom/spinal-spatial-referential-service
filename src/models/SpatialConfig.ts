@@ -142,9 +142,10 @@ export class SpatialConfig extends Model {
       const item = this.data[i];
       if (item.configName.get() === config.configName) {
         const contextId = item.contextId;
+        const contextName = item.contextName;
         item.set(config);
-        if (contextId)
-          item.mod_addr('contextId', contextId);
+        if (contextId) item.mod_attr('contextId', contextId);
+        if (contextName) item.mod_attr('contextName', contextName);
       }
     }
   }
@@ -165,8 +166,6 @@ export class SpatialConfig extends Model {
       }
     }
   }
-
-
 }
 
 spinalCore.register_models(SpatialConfig)

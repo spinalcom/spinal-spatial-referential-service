@@ -168,7 +168,8 @@ class SpatialManager {
                         this.roomManager.addAttribute(resolveBatch[i], room.properties.properties)
                     ];
                     for (const child of room.children) {
-                        prom.push(this.addReferenceObject(child.dbId, roomName, model, resolveBatch[i], Constant_1.GEO_REFERENCE_ROOM_RELATION).catch(e => e));
+                        const objName = this.roomManager.getPropertyValueByName(child.properties, 'name');
+                        prom.push(this.addReferenceObject(child.dbId, objName, model, resolveBatch[i], Constant_1.GEO_REFERENCE_ROOM_RELATION).catch(e => e));
                     }
                     yield Promise.all(prom);
                     // add or set attribut to  dbId & externalId
