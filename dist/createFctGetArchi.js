@@ -254,13 +254,13 @@ function createFctGetArchi(config) {
         const res = [];
 
         for (const floor of data.floors) {
+          const floorRoomId = getAttrValue(floor, "roomid");
           const levelItemdbId = getAttrValue(floor, "level", '__internalref__');
           const floorRoomNumber = getAttrValue(floor, FLOOR_ROOM_NUMBER_ATTR_NAME)
-
-          if (
-            leveldbId === levelItemdbId &&
+          if (floorRoomId === room.externalId ||
+            (leveldbId === levelItemdbId &&
             floorRoomNumber !== undefined &&
-            roomNumber == floorRoomNumber.toString()
+            roomNumber == floorRoomNumber.toString())
           ) {
             if (FLOOR_ROOM_NAME_ATTR_NAME) {
               const floorRoomName = getAttrValue(floor, FLOOR_ROOM_NAME_ATTR_NAME)
@@ -313,7 +313,8 @@ exports.default = createFctGetArchi;
 window.testCreateFctGetArchi = function () {
     return __awaiter(this, void 0, void 0, function* () {
         const cfg = {
-            "basic": { "addLevel": false, "buildingName": "GIENAH", "selectedModel": "ARC_GIENAH_R19 (1).rvt" },
+            "configName": "default",
+            "basic": { "addLevel": false, "buildingName": "Parallèle", "selectedModel": "enedis.rvt" },
             "levelSelect": [{ "key": "/^Category$/", "value": "/^Revit Level$/", "isCat": true }],
             "roomSelect": [{ "key": "/^Category$/", "value": "/^Revit Pièces$/", "isCat": true }],
             "structureSelect": [
@@ -322,10 +323,8 @@ window.testCreateFctGetArchi = function () {
                 { "key": "/^Category$/", "value": "/^Revit Portes$/", "isCat": true },
                 { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }
             ],
-            "floorSelect": [{ "key": "/^Commentaires$/", "value": "/^Finition$/" }],
-            "floorRoomNbr": "NP",
-            "floorRoomName": "NL",
-            "floorLevelName": "Niv."
+            "floorSelect": [{ "key": "/^SCtype$/", "value": "/^Floor_finish$/" }],
+            "floorRoomNbr": "Number"
         };
         const fct = createFctGetArchi(cfg);
         const modelArchi = yield window.NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);

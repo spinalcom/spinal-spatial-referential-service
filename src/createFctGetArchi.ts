@@ -295,13 +295,13 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
         const res = [];
 
         for (const floor of data.floors) {
+          const floorRoomId = getAttrValue(floor, "roomid");
           const levelItemdbId = getAttrValue(floor, "level", '__internalref__');
           const floorRoomNumber = getAttrValue(floor, FLOOR_ROOM_NUMBER_ATTR_NAME)
-
-          if (
-            leveldbId === levelItemdbId &&
+          if (floorRoomId === room.externalId ||
+            (leveldbId === levelItemdbId &&
             floorRoomNumber !== undefined &&
-            roomNumber == floorRoomNumber.toString()
+            roomNumber == floorRoomNumber.toString())
           ) {
             if (FLOOR_ROOM_NAME_ATTR_NAME) {
               const floorRoomName = getAttrValue(floor, FLOOR_ROOM_NAME_ATTR_NAME)
@@ -353,19 +353,17 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
 
 (<any>window).testCreateFctGetArchi = async function () {
   const cfg = {
-    "basic": { "addLevel": false, "buildingName": "GIENAH", "selectedModel": "ARC_GIENAH_R19 (1).rvt" },
+    "configName": "default",
+    "basic": { "addLevel": false, "buildingName": "Parallèle", "selectedModel": "enedis.rvt" },
     "levelSelect": [{ "key": "/^Category$/", "value": "/^Revit Level$/", "isCat": true }],
     "roomSelect": [{ "key": "/^Category$/", "value": "/^Revit Pièces$/", "isCat": true }],
     "structureSelect": [
       { "key": "/^Category$/", "value": "/^Revit Murs$/", "isCat": true },
       { "key": "/^Category$/", "value": "/^Revit Sols$/", "isCat": true },
       { "key": "/^Category$/", "value": "/^Revit Portes$/", "isCat": true },
-      { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }
-    ],
-    "floorSelect": [{ "key": "/^Commentaires$/", "value": "/^Finition$/" }],
-    "floorRoomNbr": "NP",
-    "floorRoomName": "NL",
-    "floorLevelName": "Niv."
+      { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }],
+    "floorSelect": [{ "key": "/^SCtype$/", "value": "/^Floor_finish$/" }],
+    "floorRoomNbr": "Number"
   }
   const fct = createFctGetArchi(cfg)
   const modelArchi = await (<any>window).NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);
