@@ -214,7 +214,6 @@ class SpatialManager {
                 // @ts-ignore
                 bimObj = yield window.spinal.BimObjectService.createBIMObject(dbId, name, model);
             }
-            console.log("addReferenceObject", bimObj);
             if (typeof bimObj.id !== "undefined") {
                 // @ts-ignore
                 bimObj = window.spinal.spinalGraphService.nodes[bimObj.id.get()];
@@ -256,8 +255,19 @@ class SpatialManager {
             };
             try {
                 for (const structure of structures) {
-                    const objName = this.roomManager.getPropertyValueByName(structure.properties.properties, 'name');
-                    prom.push(fct.bind(this, structure.properties.dbId, objName, model, 
+                    let props;
+                    let strucdbId;
+                    if (typeof structure.properties.properties === "undefined") {
+                        props = structure.properties;
+                        // @ts-ignore
+                        strucdbId = structure.dbId;
+                    }
+                    else {
+                        props = structure.properties.properties;
+                        strucdbId = structure.properties.dbId;
+                    }
+                    const objName = this.roomManager.getPropertyValueByName(props, 'name');
+                    prom.push(fct.bind(this, strucdbId, objName, model, 
                     // @ts-ignore
                     spinal.spinalGraphService.nodes[levelId]));
                 }
@@ -293,7 +303,6 @@ class SpatialManager {
                 this.modelArchi = yield this.getArchiModel(model, configName);
                 const config = this.spatialConfig.getConfig(configName);
                 const oldArchi = config.archi.get();
-                config.mod_attr('archi', this.modelArchi);
                 let building = yield this.getBuilding(config);
                 if (typeof building !== "undefined" && building.hasOwnProperty('id'))
                     building = spinal_env_viewer_graph_service_1.SpinalGraphService.getRealNode(building.id.get());
@@ -302,13 +311,13 @@ class SpatialManager {
                 const contextId = context.getId().get();
                 for (let levelId in cmpObject.updated.levels) {
                     if (cmpObject.updated.levels.hasOwnProperty(levelId))
-                        this.updateLevel(building, cmpObject.updated.levels[levelId], model);
+                        yield this.updateLevel(building, cmpObject.updated.levels[levelId], model);
                 }
                 for (let roomId in cmpObject.updated.rooms) {
                     if (cmpObject.updated.rooms.hasOwnProperty(roomId)) {
                         const levelId = cmpObject.updated.rooms[roomId].levelId;
                         const room = cmpObject.updated.rooms[roomId].room;
-                        this.updateRoom(building, levelId, room, model);
+                        yield this.updateRoom(building, levelId, room, model);
                     }
                 }
                 for (let levelId in cmpObject.new.rooms) {
@@ -335,6 +344,7 @@ class SpatialManager {
                         yield this.removeRoom(levelRef, roomRef);
                     }
                 }
+                config.mod_attr('archi', this.modelArchi);
             }
             catch (e) {
                 console.error(e);
@@ -422,71 +432,71 @@ class SpatialManager {
     }
     compareArchi(oldArchi, newArchi) {
         const cmpObj = {
-            deleted: { levels: {}, rooms: {}, },
-            updated: { levels: {}, rooms: {}, },
-            new: { levels: {}, rooms: {}, }
+            deleted: { levels: {}, rooms: {} },
+            updated: { levels: {}, rooms: {} },
+            new: { levels: {}, rooms: {} }
         };
         for (const levelId in oldArchi) {
-            if (!oldArchi.hasOwnProperty(levelId))
-                continue;
-            const level = oldArchi[levelId];
-            if (newArchi.hasOwnProperty(levelId)) { //level update
+            const oldLevel = oldArchi[levelId];
+            if (newArchi.hasOwnProperty(levelId)) { // level exist in old and new => level update
                 const newArchiLvl = newArchi[levelId];
-                cmpObj.updated.levels[levelId] = newArchiLvl;
-                for (const roomExternId in level.children) {
-                    if (level.children.hasOwnProperty(roomExternId) &&
-                        typeof level.children[roomExternId].children !== 'undefined') {
-                        const newArchiLvlChild = newArchiLvl.children[roomExternId];
-                        if (newArchiLvlChild.hasOwnProperty(roomExternId)
-                            && typeof newArchiLvlChild[roomExternId].children !== "undefined") {
-                            cmpObj.updated.rooms[roomExternId] =
-                                this.createRoomObj(roomExternId, newArchiLvlChild[roomExternId]);
+                for (const roomExternId in oldLevel.children) {
+                    if (oldLevel.children.hasOwnProperty(roomExternId) &&
+                        typeof oldLevel.children[roomExternId].children !== 'undefined') { // exist in old and have children
+                        cmpObj.updated.levels[levelId] = newArchiLvl;
+                        const levelExternalId = newArchiLvl.properties.externalId;
+                        if (newArchiLvl.children[roomExternId] && newArchiLvl.children[roomExternId].children) {
+                            cmpObj.updated.rooms[roomExternId] = this.createRoomObj(levelExternalId, newArchiLvl.children[roomExternId]);
                         }
                         else {
-                            cmpObj.deleted.rooms[roomExternId] =
-                                this.createRoomObj(roomExternId, level.children[roomExternId]);
+                            cmpObj.deleted.rooms[roomExternId] = this.createRoomObj(levelExternalId, oldLevel.children[roomExternId]);
                         }
                     }
                 }
             }
             else { //delete floor
                 cmpObj.deleted.levels[levelId] = oldArchi[levelId];
-                for (const roomExternId in level.children) { //delete all rooms
-                    if (level.children.hasOwnProperty(roomExternId)) {
+                for (const roomExternId in oldLevel.children) { //delete all rooms
+                    if (oldLevel.children.hasOwnProperty(roomExternId)) {
+                        const levelExternalId = oldLevel.properties.externalId;
                         cmpObj.deleted.rooms[roomExternId] =
-                            this.createRoomObj(roomExternId, oldArchi[levelId].children[roomExternId]);
+                            this.createRoomObj(levelExternalId, oldArchi[levelId].children[roomExternId]);
                     }
                 }
             }
         }
         for (const levelId in newArchi) {
-            if (!newArchi.hasOwnProperty(levelId))
+            if (!newArchi.hasOwnProperty(levelId)) {
                 continue;
-            const level = newArchi[levelId];
+            }
+            const newLevel = newArchi[levelId];
             if (oldArchi.hasOwnProperty(levelId)) { //level already exist
-                for (let roomExternal in level.children) {
-                    if (level.children.hasOwnProperty(roomExternal) &&
-                        typeof level.children[roomExternal].children !== 'undefined' &&
+                for (let roomExternal in newLevel.children) {
+                    if (newLevel.children.hasOwnProperty(roomExternal) &&
+                        typeof newLevel.children[roomExternal].children !== 'undefined' &&
                         (!oldArchi[levelId].children.hasOwnProperty(roomExternal) ||
                             typeof oldArchi[levelId].children[roomExternal].children === "undefined")) {
-                        const lvlExternId = level.properties.externalId;
-                        if (typeof cmpObj.new.rooms[lvlExternId] === "undefined")
+                        const lvlExternId = newLevel.properties.externalId;
+                        if (typeof cmpObj.new.rooms[lvlExternId] === "undefined") {
                             cmpObj.new.rooms[lvlExternId] = [];
-                        cmpObj.new.rooms[lvlExternId].push(level.children[roomExternal]);
+                        }
+                        cmpObj.new.rooms[lvlExternId].push(newLevel.children[roomExternal]);
                     }
                 }
             }
             else { //add level and rooms to new
-                cmpObj.new.levels[levelId] = level;
-                for (let roomExternal in level.children)
-                    if (level.children.hasOwnProperty(roomExternal)
-                        && typeof level.children[levelId].children !== 'undefined') //add room if it has a floor
+                cmpObj.new.levels[levelId] = newLevel;
+                for (let roomExternal in newLevel.children) {
+                    if (newLevel.children.hasOwnProperty(roomExternal)
+                        && typeof newLevel.children[levelId].children !== 'undefined') //add room if it has a floor
                      {
-                        const lvlExternId = level.properties.externalId;
-                        if (typeof cmpObj.new.rooms[lvlExternId] === "undefined")
+                        const lvlExternId = newLevel.properties.externalId;
+                        if (typeof cmpObj.new.rooms[lvlExternId] === "undefined") {
                             cmpObj.new.rooms[lvlExternId] = [];
-                        cmpObj.new.rooms[lvlExternId].push(level.children[roomExternal]);
+                        }
+                        cmpObj.new.rooms[lvlExternId].push(newLevel.children[roomExternal]);
                     }
+                }
             }
         }
         return cmpObj;

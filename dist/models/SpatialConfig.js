@@ -64,11 +64,14 @@ class SpatialConfig extends spinal_core_connectorjs_type_1.Model {
             if (item.configName.get() === config.configName) {
                 const contextId = item.contextId;
                 const contextName = item.contextName;
+                const archi = item.archi;
                 item.set(config);
                 if (contextId)
                     item.mod_attr('contextId', contextId);
                 if (contextName)
                     item.mod_attr('contextName', contextName);
+                if (archi)
+                    item.mod_attr('archi', archi);
             }
         }
     }

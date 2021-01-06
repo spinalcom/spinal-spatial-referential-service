@@ -73,7 +73,7 @@ export declare class SpatialManager {
     private modelArchi;
     private modelArchiLib;
     constructor();
-    init(): Promise<any>;
+    init(): Promise<void>;
     generateContext(configName: string, model: Model): Promise<void>;
     addRoomValueParam(target: SpinalProps[], other: Room): void;
     addIfExist(array: Room[], room: Room): boolean;
