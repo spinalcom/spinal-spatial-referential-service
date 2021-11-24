@@ -90,6 +90,7 @@ export declare class SpatialManager {
     private addRefStructureToRoom;
     createFloor(contextId: string, buildingId: string, name: string, level: Level, model: Model): Promise<void>;
     updateContext(configName: string, model: Model): Promise<void>;
+    updateContextCreateRoom(contextId: string, room: Room, level: SpinalNodeRef, model: Model): Promise<void>;
     /**
      * remove $room from the floor, the .room context and at it to the invalid
      * context

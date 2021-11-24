@@ -328,7 +328,11 @@ class SpatialManager {
                     const proms = [];
                     for (let i = 0; i < cmpObject.new.rooms[levelId].length; i++) {
                         let room = cmpObject.new.rooms[levelId][i];
-                        proms.push(spinal_env_viewer_context_geographic_service_1.default.addRoom(contextId, level.id.get(), this.roomManager.getPropertyValueByName(room.properties.properties, 'name')));
+                        proms.push(this.updateContextCreateRoom(contextId, room, level, model)
+                        // GeographicService.addRoom(contextId, level.id.get(),
+                        //   this.roomManager.getPropertyValueByName(room.properties.properties, 'name')
+                        // )
+                        );
                     }
                     yield Promise.all(proms).then(console.log);
                 }
@@ -351,6 +355,30 @@ class SpatialManager {
                 console.error(e);
             }
             console.log("generateContext DONE");
+        });
+    }
+    updateContextCreateRoom(contextId, room, level, model) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const nodeAttrNames = ['dbId', 'externalId'];
+            const roomRealNode = yield spinal_env_viewer_context_geographic_service_1.default.addRoom(contextId, level.id.get(), this.roomManager.getPropertyValueByName(room.properties.properties, 'name'));
+            if (typeof room !== "undefined" && typeof room.children !== "undefined") {
+                const prom = [
+                    this.roomManager.addAttribute(roomRealNode, room.properties.properties)
+                ];
+                for (const child of room.children) {
+                    const objName = this.roomManager.getPropertyValueByName(child.properties, 'name');
+                    prom.push(this.addReferenceObject(child.dbId, objName, model, roomRealNode, Constant_1.GEO_REFERENCE_ROOM_RELATION).catch(e => e));
+                }
+                yield Promise.all(prom);
+                // add or set attribut to  dbId & externalId
+                for (const nodeAttrName of nodeAttrNames) {
+                    if (typeof roomRealNode.info[nodeAttrName] === "undefined")
+                        roomRealNode.info.add_attr(nodeAttrName, room.properties[nodeAttrName]);
+                    else if (roomRealNode.info[nodeAttrName].get() !== room.properties[nodeAttrName]) {
+                        roomRealNode.info[nodeAttrName].set(room.properties[nodeAttrName]);
+                    }
+                }
+            }
         });
     }
     /**

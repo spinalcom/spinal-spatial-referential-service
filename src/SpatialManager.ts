@@ -401,9 +401,12 @@ export class SpatialManager {
         for (let i = 0; i < cmpObject.new.rooms[levelId].length; i++) {
           let room = cmpObject.new.rooms[levelId][i];
           proms.push(
-            GeographicService.addRoom(contextId, level.id.get(),
-              this.roomManager.getPropertyValueByName(room.properties.properties, 'name')
-            ));
+            this.updateContextCreateRoom(contextId, room, level, model)
+
+            // GeographicService.addRoom(contextId, level.id.get(),
+            //   this.roomManager.getPropertyValueByName(room.properties.properties, 'name')
+            // )
+            );
         }
         await Promise.all(proms).then(console.log)
       }
@@ -427,6 +430,35 @@ export class SpatialManager {
       console.error(e);
     }
     console.log("generateContext DONE")
+  }
+
+  async updateContextCreateRoom(contextId: string, room: Room, level: SpinalNodeRef, model: Model) {
+    const nodeAttrNames = ['dbId', 'externalId']
+    const roomRealNode: SpinalNode<any> = await GeographicService.addRoom(contextId, level.id.get(),
+      this.roomManager.getPropertyValueByName(room.properties.properties, 'name'));
+    if (typeof room !== "undefined" && typeof room.children !== "undefined") {
+      const prom: any[] = [
+        this.roomManager.addAttribute(roomRealNode, room.properties.properties)
+      ]
+      for (const child of <any>room.children) {
+        const objName = this.roomManager.getPropertyValueByName(child.properties, 'name');
+        prom.push(
+          this.addReferenceObject(
+            child.dbId, objName, model,
+            roomRealNode, GEO_REFERENCE_ROOM_RELATION).catch(e => e)
+        );
+      }
+      await Promise.all(prom);
+      // add or set attribut to  dbId & externalId
+      for (const nodeAttrName of nodeAttrNames) {
+        if (typeof roomRealNode.info[nodeAttrName] === "undefined")
+          roomRealNode.info.add_attr(nodeAttrName, room.properties[nodeAttrName])
+        else if (roomRealNode.info[nodeAttrName].get() !== room.properties[nodeAttrName]) {
+          roomRealNode.info[nodeAttrName].set(room.properties[nodeAttrName])
+        }
+      }
+
+    }
   }
 
   /**
