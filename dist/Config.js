@@ -23,6 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.config = void 0;
 exports.config = {
     batchSize: 50,
     contextName: "spatial",

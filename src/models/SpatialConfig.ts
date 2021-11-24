@@ -132,7 +132,8 @@ export class SpatialConfig extends Model {
           { "key": '/^Category$/', "value": '/^Revit Garde-corps$/', "isCat": true },
           { "key": '/^Category$/', "value": '/^Revit Fenêtres$/', "isCat": true }
         ],
-        floorRoomNbr: 'Number'
+        floorRoomNbr: 'Number',
+        floorSelect: [{ key: "/^Nom du type$/", value: "/^Finition de sol$/" }]
       }]
     });
   }

@@ -23,7 +23,7 @@ declare const _default: {
         props: {
             room: string[];
             level: {
-                'components': {
+                components: {
                     type: string;
                 };
             };

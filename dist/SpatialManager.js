@@ -32,6 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SpatialManager = void 0;
 const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
 // import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service'
 const createFctGetArchi_1 = require("./createFctGetArchi");

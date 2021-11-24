@@ -32,6 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InvalidObjectManager = exports.SPATIAL_START_NODE_NAME = exports.SPATIAL_RELATION_NAME = exports.SPATIAL_START_NODE_RELATION_NAME = exports.CONTEXT_NAME = void 0;
 const spinal_env_viewer_graph_service_1 = require("spinal-env-viewer-graph-service");
 exports.CONTEXT_NAME = 'Invalid';
 exports.SPATIAL_START_NODE_RELATION_NAME = 'hasSpatialInvalidStartNode';

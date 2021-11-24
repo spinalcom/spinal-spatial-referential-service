@@ -20,7 +20,7 @@ export declare const config: {
     props: {
         room: string[];
         level: {
-            'components': {
+            components: {
                 type: string;
             };
         };
