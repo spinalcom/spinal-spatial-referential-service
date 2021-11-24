@@ -23,6 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Floor = void 0;
 const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
 class Floor extends spinal_core_connectorjs_type_1.Model {
     constructor(displayName, level, z_index) {

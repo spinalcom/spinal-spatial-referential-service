@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 // export interface ArchiSelectUser {
 //   key: RegExp;
@@ -310,27 +301,24 @@ function createFctGetArchi(config) {
     return fct;
 }
 exports.default = createFctGetArchi;
-window.testCreateFctGetArchi = function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        const cfg = {
-            "configName": "default",
-            "basic": { "addLevel": false, "buildingName": "Parallèle", "selectedModel": "enedis.rvt" },
-            "levelSelect": [{ "key": "/^Category$/", "value": "/^Revit Level$/", "isCat": true }],
-            "roomSelect": [{ "key": "/^Category$/", "value": "/^Revit Pièces$/", "isCat": true }],
-            "structureSelect": [
-                { "key": "/^Category$/", "value": "/^Revit Murs$/", "isCat": true },
-                { "key": "/^Category$/", "value": "/^Revit Sols$/", "isCat": true },
-                { "key": "/^Category$/", "value": "/^Revit Portes$/", "isCat": true },
-                { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }
-            ],
-            "floorSelect": [{ "key": "/^SCtype$/", "value": "/^Floor_finish$/" }],
-            "floorRoomNbr": "Number"
-        };
-        const fct = createFctGetArchi(cfg);
-        const modelArchi = yield window.NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);
-        console.log(modelArchi);
-    });
-};
+// (<any>window).testCreateFctGetArchi = async function () {
+//   const cfg = {
+//     "configName": "default",
+//     "basic": { "addLevel": false, "buildingName": "Parallèle", "selectedModel": "enedis.rvt" },
+//     "levelSelect": [{ "key": "/^Category$/", "value": "/^Revit Level$/", "isCat": true }],
+//     "roomSelect": [{ "key": "/^Category$/", "value": "/^Revit Pièces$/", "isCat": true }],
+//     "structureSelect": [
+//       { "key": "/^Category$/", "value": "/^Revit Murs$/", "isCat": true },
+//       { "key": "/^Category$/", "value": "/^Revit Sols$/", "isCat": true },
+//       { "key": "/^Category$/", "value": "/^Revit Portes$/", "isCat": true },
+//       { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }],
+//     "floorSelect": [{ "key": "/^SCtype$/", "value": "/^Floor_finish$/" }],
+//     "floorRoomNbr": "Number"
+//   }
+//   const fct = createFctGetArchi(cfg)
+//   const modelArchi = await (<any>window).NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);
+//   console.log(modelArchi);
+// }
 // (<any>window).test = async function () {
 //   const cfg = {
 //     "configName": "default",

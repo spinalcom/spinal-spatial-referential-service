@@ -351,24 +351,32 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
   return fct;
 }
 
-(<any>window).testCreateFctGetArchi = async function () {
-  const cfg = {
-    "configName": "default",
-    "basic": { "addLevel": false, "buildingName": "Parallèle", "selectedModel": "enedis.rvt" },
-    "levelSelect": [{ "key": "/^Category$/", "value": "/^Revit Level$/", "isCat": true }],
-    "roomSelect": [{ "key": "/^Category$/", "value": "/^Revit Pièces$/", "isCat": true }],
-    "structureSelect": [
-      { "key": "/^Category$/", "value": "/^Revit Murs$/", "isCat": true },
-      { "key": "/^Category$/", "value": "/^Revit Sols$/", "isCat": true },
-      { "key": "/^Category$/", "value": "/^Revit Portes$/", "isCat": true },
-      { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }],
-    "floorSelect": [{ "key": "/^SCtype$/", "value": "/^Floor_finish$/" }],
-    "floorRoomNbr": "Number"
-  }
-  const fct = createFctGetArchi(cfg)
-  const modelArchi = await (<any>window).NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);
-  console.log(modelArchi);
-}
+// (<any>window).testCreateFctGetArchi = async function () {
+//   const cfg = {
+//     "configName": "default",
+//     "basic": { "addLevel": false, "buildingName": "Parallèle", "selectedModel": "enedis.rvt" },
+//     "levelSelect": [{ "key": "/^Category$/", "value": "/^Revit Level$/", "isCat": true }],
+//     "roomSelect": [{ "key": "/^Category$/", "value": "/^Revit Pièces$/", "isCat": true }],
+//     "structureSelect": [
+//       { "key": "/^Category$/", "value": "/^Revit Murs$/", "isCat": true },
+//       { "key": "/^Category$/", "value": "/^Revit Sols$/", "isCat": true },
+//       { "key": "/^Category$/", "value": "/^Revit Portes$/", "isCat": true },
+//       { "key": "/^Category$/", "value": "/^Revit Fenêtres$/", "isCat": true }],
+//     "floorSelect": [{ "key": "/^SCtype$/", "value": "/^Floor_finish$/" }],
+//     "floorRoomNbr": "Number"
+//   }
+//   const fct = createFctGetArchi(cfg)
+//   const modelArchi = await (<any>window).NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);
+//   console.log(modelArchi);
+// }
+
+
+
+
+
+
+
+
 // (<any>window).test = async function () {
 //   const cfg = {
 //     "configName": "default",
