@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GEO_ZONE_RELATION = exports.GEO_ROOM_RELATION = exports.GEO_FLOOR_RELATION = exports.GEO_BUILDING_RELATION = exports.GEO_REFERENCE_ROOM_RELATION = exports.GEO_REFERENCE_RELATION = exports.ROOM_WANTED_PROPS = exports.FLOOR_NEEDED_PROPS = exports.ROOM_ID_TEXT = exports.S_TYPE = exports.ROOM_FINISH_VALUE = void 0;
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
  *

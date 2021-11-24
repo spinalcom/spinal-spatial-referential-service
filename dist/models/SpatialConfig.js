@@ -23,6 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SpatialConfig = void 0;
 const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
 const ROOM_ATTRIBUTE_NAME = 'category';
 const ROOM_ATTRIBUTE_VALUE = 'Revit Pièces';
@@ -54,7 +55,8 @@ class SpatialConfig extends spinal_core_connectorjs_type_1.Model {
                         { "key": '/^Category$/', "value": '/^Revit Garde-corps$/', "isCat": true },
                         { "key": '/^Category$/', "value": '/^Revit Fenêtres$/', "isCat": true }
                     ],
-                    floorRoomNbr: 'Number'
+                    floorRoomNbr: 'Number',
+                    floorSelect: [{ key: "/^Nom du type$/", value: "/^Finition de sol$/" }]
                 }]
         });
     }
