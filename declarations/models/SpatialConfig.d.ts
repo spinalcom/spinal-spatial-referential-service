@@ -1,4 +1,4 @@
-import { Model } from "spinal-core-connectorjs_type";
+import { Model } from 'spinal-core-connectorjs_type';
 export interface IMBasic extends spinal.Model {
     addLevel: spinal.Bool;
     buildingName: spinal.Str;

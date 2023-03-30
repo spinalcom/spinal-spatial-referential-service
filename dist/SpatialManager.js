@@ -22,6 +22,20 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -44,6 +58,7 @@ const BuildingManager_1 = require("./managers/BuildingManager");
 const FloorManager_1 = require("./managers/FloorManager");
 const RoomManager_1 = require("./managers/RoomManager");
 const consumeBatch_1 = require("./utils/consumeBatch");
+__exportStar(require("./interfaces"), exports);
 class SpatialManager {
     constructor() {
         this.modelArchiLib = new Map();
@@ -55,7 +70,7 @@ class SpatialManager {
         this.initialized = new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             yield spinal_env_viewer_graph_service_1.SpinalGraphService.waitForInitialization();
             this.spatialConfig = yield this.getSpatialConfig();
-            if (typeof this.spatialConfig === "undefined")
+            if (typeof this.spatialConfig === 'undefined')
                 reject('SpatialConfiguration undefined');
             // let contextName = "spatial";
             // if (typeof this.spatialConfig.contextName !== "undefined") {
@@ -80,15 +95,15 @@ class SpatialManager {
                 const config = this.spatialConfig.getConfig(configName);
                 config.mod_attr('archi', this.modelArchi);
                 let building = yield this.getBuilding(config);
-                if (typeof building !== "undefined" && building.hasOwnProperty('id'))
+                if (typeof building !== 'undefined' && building.hasOwnProperty('id'))
                     building = spinal_env_viewer_graph_service_1.SpinalGraphService.getRealNode(building.id.get());
                 const context = yield this.getContextFromConfig(config);
                 const contextId = context.getId().get();
-                if (typeof building === "undefined") {
-                    building = yield spinal_env_viewer_context_geographic_service_1.default.addBuilding(contextId, contextId, config.basic.buildingName);
+                if (typeof building === 'undefined') {
+                    building = yield spinal_env_viewer_context_geographic_service_1.default.addBuilding(contextId, contextId, config.basic.buildingName.get());
                 }
                 const prom = [];
-                for (let key in this.modelArchi) {
+                for (const key in this.modelArchi) {
                     if (this.modelArchi.hasOwnProperty(key) &&
                         Object.entries(this.modelArchi[key].children).length !== 0 &&
                         this.modelArchi[key].constructor === Object) {
@@ -104,7 +119,7 @@ class SpatialManager {
             catch (e) {
                 console.error(e);
             }
-            console.log("generateContext DONE");
+            console.log('generateContext DONE');
         });
     }
     addRoomValueParam(target, other) {
@@ -112,18 +127,18 @@ class SpatialManager {
         const perimeter = this.roomManager.getPropertyValueByName(other.properties.properties, 'Perimeter');
         const volume = this.roomManager.getPropertyValueByName(other.properties.properties, 'Volume');
         for (const targetParam of target) {
-            if (targetParam.name === "Area")
+            if (targetParam.name === 'Area')
                 targetParam.value = round(targetParam.value + area);
-            if (targetParam.name === "Perimeter")
+            if (targetParam.name === 'Perimeter')
                 targetParam.value = round(targetParam.value + perimeter);
-            if (targetParam.name === "Volume")
+            if (targetParam.name === 'Volume')
                 targetParam.value = round(targetParam.value + volume);
         }
     }
     addIfExist(array, room) {
         const roomNuber = this.roomManager.getPropertyValueByName(room.properties.properties, 'Number');
         const target = array.find((e) => {
-            return this.roomManager.getPropertyValueByName(e.properties.properties, 'Number') === roomNuber;
+            return (this.roomManager.getPropertyValueByName(e.properties.properties, 'Number') === roomNuber);
         });
         if (target) {
             this.addRoomValueParam(target.properties.properties, room);
@@ -140,18 +155,18 @@ class SpatialManager {
         return __awaiter(this, void 0, void 0, function* () {
             const nodeAttrNames = ['dbId', 'externalId'];
             const tmpRoom = [];
-            for (let key in rooms) {
+            for (const key in rooms) {
                 if (rooms.hasOwnProperty(key))
                     if (this.addIfExist(tmpRoom, rooms[key])) {
                         tmpRoom.push(rooms[key]);
                     }
             }
-            let proms = [];
+            const proms = [];
             const resolveBatch = [];
             let turn = 0;
             let j = 0;
             while (j < tmpRoom.length) {
-                for (j = turn * Config_1.config.batchSize; j < ((turn + 1) * Config_1.config.batchSize) && j < tmpRoom.length; j++) {
+                for (j = turn * Config_1.config.batchSize; j < (turn + 1) * Config_1.config.batchSize && j < tmpRoom.length; j++) {
                     const room = tmpRoom[j];
                     proms.push(spinal_env_viewer_context_geographic_service_1.default.addRoom(contextId, floorId, this.getRoomName(room)));
                 }
@@ -160,24 +175,25 @@ class SpatialManager {
                 turn++;
             }
             for (let i = 0; i < resolveBatch.length; i++) {
-                let roomName = resolveBatch[i].info.name.get();
-                let room = tmpRoom.find(r => {
+                const roomName = resolveBatch[i].info.name.get();
+                const room = tmpRoom.find((r) => {
                     return this.getRoomName(r) === roomName;
                 });
-                if (typeof room !== "undefined" && typeof room.children !== "undefined") {
+                if (typeof room !== 'undefined' && typeof room.children !== 'undefined') {
                     const prom = [
-                        this.roomManager.addAttribute(resolveBatch[i], room.properties.properties)
+                        this.roomManager.addAttribute(resolveBatch[i], room.properties.properties),
                     ];
                     for (const child of room.children) {
                         const objName = this.roomManager.getPropertyValueByName(child.properties, 'name');
-                        prom.push(this.addReferenceObject(child.dbId, objName, model, resolveBatch[i], Constant_1.GEO_REFERENCE_ROOM_RELATION).catch(e => e));
+                        prom.push(this.addReferenceObject(child.dbId, objName, model, resolveBatch[i], Constant_1.GEO_REFERENCE_ROOM_RELATION).catch((e) => e));
                     }
                     yield Promise.all(prom);
                     // add or set attribut to  dbId & externalId
                     for (const nodeAttrName of nodeAttrNames) {
-                        if (typeof resolveBatch[i].info[nodeAttrName] === "undefined")
+                        if (typeof resolveBatch[i].info[nodeAttrName] === 'undefined')
                             resolveBatch[i].info.add_attr(nodeAttrName, room.properties[nodeAttrName]);
-                        else if (resolveBatch[i].info[nodeAttrName].get() !== room.properties[nodeAttrName]) {
+                        else if (resolveBatch[i].info[nodeAttrName].get() !==
+                            room.properties[nodeAttrName]) {
                             resolveBatch[i].info[nodeAttrName].set(room.properties[nodeAttrName]);
                         }
                     }
@@ -192,12 +208,12 @@ class SpatialManager {
      */
     waitForFileSystem(promises) {
         return __awaiter(this, void 0, void 0, function* () {
-            let nodes = yield Promise.all(promises);
+            const nodes = yield Promise.all(promises);
             let unResolvedNode = [];
-            return new Promise(resolve => {
-                let inter = setInterval(() => {
-                    unResolvedNode = nodes.filter(node => {
-                        return window.FileSystem._objects[node._server_id] === undefined;
+            return new Promise((resolve) => {
+                const inter = setInterval(() => {
+                    unResolvedNode = nodes.filter((node) => {
+                        return (window.FileSystem._objects[node._server_id] === undefined);
                     });
                     if (unResolvedNode.length === 0) {
                         clearInterval(inter);
@@ -211,11 +227,11 @@ class SpatialManager {
         return __awaiter(this, void 0, void 0, function* () {
             // @ts-ignore
             let bimObj = yield window.spinal.BimObjectService.getBIMObject(dbId, model);
-            if (typeof bimObj === "undefined") {
+            if (typeof bimObj === 'undefined') {
                 // @ts-ignore
                 bimObj = yield window.spinal.BimObjectService.createBIMObject(dbId, name, model);
             }
-            if (typeof bimObj.id !== "undefined") {
+            if (typeof bimObj.id !== 'undefined') {
                 // @ts-ignore
                 bimObj = window.spinal.spinalGraphService.nodes[bimObj.id.get()];
             }
@@ -230,7 +246,7 @@ class SpatialManager {
         return __awaiter(this, void 0, void 0, function* () {
             const prom = [];
             const fct = (dbId, name, model, targetNode) => {
-                return this.addReferenceObject(dbId, name, model, targetNode).catch(e => e);
+                return this.addReferenceObject(dbId, name, model, targetNode).catch((e) => e);
             };
             try {
                 for (const key in structures) {
@@ -241,7 +257,7 @@ class SpatialManager {
                         spinal.spinalGraphService.nodes[levelId]));
                     }
                 }
-                yield consumeBatch_1.consumeBatch(prom, 10);
+                yield (0, consumeBatch_1.consumeBatch)(prom, 10);
             }
             catch (e) {
                 console.error(e);
@@ -252,13 +268,13 @@ class SpatialManager {
         return __awaiter(this, void 0, void 0, function* () {
             const prom = [];
             const fct = (dbId, name, model, targetNode) => {
-                return this.addReferenceObject(dbId, name, model, targetNode, Constant_1.GEO_REFERENCE_ROOM_RELATION).catch(e => e);
+                return this.addReferenceObject(dbId, name, model, targetNode, Constant_1.GEO_REFERENCE_ROOM_RELATION).catch((e) => e);
             };
             try {
                 for (const structure of structures) {
                     let props;
                     let strucdbId;
-                    if (typeof structure.properties.properties === "undefined") {
+                    if (typeof structure.properties.properties === 'undefined') {
                         props = structure.properties;
                         // @ts-ignore
                         strucdbId = structure.dbId;
@@ -272,7 +288,7 @@ class SpatialManager {
                     // @ts-ignore
                     spinal.spinalGraphService.nodes[levelId]));
                 }
-                yield consumeBatch_1.consumeBatch(prom, 10);
+                yield (0, consumeBatch_1.consumeBatch)(prom, 10);
             }
             catch (e) {
                 console.error(e);
@@ -286,7 +302,7 @@ class SpatialManager {
             const structures = level.structures;
             try {
                 const floor = yield spinal_env_viewer_context_geographic_service_1.default.addFloor(contextId, buildingId, name);
-                floor.info.add_attr({ 'externalId': floorProps.externalId });
+                floor.info.add_attr({ externalId: floorProps.externalId });
                 yield this.floorManager.addAttribute(floor, floorProps.properties);
                 yield this.createRooms(rooms, contextId, floor.info.id.get(), model);
                 yield this.addRefStructureToLevel(floor.info.id.get(), structures, model);
@@ -305,29 +321,29 @@ class SpatialManager {
                 const config = this.spatialConfig.getConfig(configName);
                 const oldArchi = config.archi.get();
                 let building = yield this.getBuilding(config);
-                if (typeof building !== "undefined" && building.hasOwnProperty('id'))
+                if (typeof building !== 'undefined' && building.hasOwnProperty('id'))
                     building = spinal_env_viewer_graph_service_1.SpinalGraphService.getRealNode(building.id.get());
                 const cmpObject = this.compareArchi(oldArchi, this.modelArchi);
                 const context = yield this.getContextFromConfig(config);
                 const contextId = context.getId().get();
-                for (let levelId in cmpObject.updated.levels) {
+                for (const levelId in cmpObject.updated.levels) {
                     if (cmpObject.updated.levels.hasOwnProperty(levelId))
                         yield this.updateLevel(building, cmpObject.updated.levels[levelId], model);
                 }
-                for (let roomId in cmpObject.updated.rooms) {
+                for (const roomId in cmpObject.updated.rooms) {
                     if (cmpObject.updated.rooms.hasOwnProperty(roomId)) {
                         const levelId = cmpObject.updated.rooms[roomId].levelId;
                         const room = cmpObject.updated.rooms[roomId].room;
                         yield this.updateRoom(building, levelId, room, model);
                     }
                 }
-                for (let levelId in cmpObject.new.rooms) {
+                for (const levelId in cmpObject.new.rooms) {
                     if (!cmpObject.new.rooms.hasOwnProperty(levelId))
                         continue;
                     const level = yield this.findLevel(building, levelId);
                     const proms = [];
                     for (let i = 0; i < cmpObject.new.rooms[levelId].length; i++) {
-                        let room = cmpObject.new.rooms[levelId][i];
+                        const room = cmpObject.new.rooms[levelId][i];
                         proms.push(this.updateContextCreateRoom(contextId, room, level, model)
                         // GeographicService.addRoom(contextId, level.id.get(),
                         //   this.roomManager.getPropertyValueByName(room.properties.properties, 'name')
@@ -340,7 +356,7 @@ class SpatialManager {
                 //   if (cmpObject.deleted.levels.hasOwnProperty(levelId)) {
                 //   }
                 // }
-                for (let roomId in cmpObject.deleted.rooms) {
+                for (const roomId in cmpObject.deleted.rooms) {
                     if (cmpObject.deleted.rooms.hasOwnProperty(roomId)) {
                         const levelId = cmpObject.deleted.rooms[roomId].levelId;
                         const room = cmpObject.deleted.rooms[roomId].room;
@@ -354,27 +370,28 @@ class SpatialManager {
             catch (e) {
                 console.error(e);
             }
-            console.log("generateContext DONE");
+            console.log('generateContext DONE');
         });
     }
     updateContextCreateRoom(contextId, room, level, model) {
         return __awaiter(this, void 0, void 0, function* () {
             const nodeAttrNames = ['dbId', 'externalId'];
             const roomRealNode = yield spinal_env_viewer_context_geographic_service_1.default.addRoom(contextId, level.id.get(), this.roomManager.getPropertyValueByName(room.properties.properties, 'name'));
-            if (typeof room !== "undefined" && typeof room.children !== "undefined") {
+            if (typeof room !== 'undefined' && typeof room.children !== 'undefined') {
                 const prom = [
-                    this.roomManager.addAttribute(roomRealNode, room.properties.properties)
+                    this.roomManager.addAttribute(roomRealNode, room.properties.properties),
                 ];
                 for (const child of room.children) {
                     const objName = this.roomManager.getPropertyValueByName(child.properties, 'name');
-                    prom.push(this.addReferenceObject(child.dbId, objName, model, roomRealNode, Constant_1.GEO_REFERENCE_ROOM_RELATION).catch(e => e));
+                    prom.push(this.addReferenceObject(child.dbId, objName, model, roomRealNode, Constant_1.GEO_REFERENCE_ROOM_RELATION).catch((e) => e));
                 }
                 yield Promise.all(prom);
                 // add or set attribut to  dbId & externalId
                 for (const nodeAttrName of nodeAttrNames) {
-                    if (typeof roomRealNode.info[nodeAttrName] === "undefined")
+                    if (typeof roomRealNode.info[nodeAttrName] === 'undefined')
                         roomRealNode.info.add_attr(nodeAttrName, room.properties[nodeAttrName]);
-                    else if (roomRealNode.info[nodeAttrName].get() !== room.properties[nodeAttrName]) {
+                    else if (roomRealNode.info[nodeAttrName].get() !==
+                        room.properties[nodeAttrName]) {
                         roomRealNode.info[nodeAttrName].set(room.properties[nodeAttrName]);
                     }
                 }
@@ -398,8 +415,8 @@ class SpatialManager {
     }
     addToInvalidContext(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let context = spinal_env_viewer_graph_service_1.SpinalGraphService.getContext(".invalid");
-            if (typeof context === "undefined")
+            let context = spinal_env_viewer_graph_service_1.SpinalGraphService.getContext('.invalid');
+            if (typeof context === 'undefined')
                 context = yield spinal_env_viewer_graph_service_1.SpinalGraphService.addContext('.invalid', 'invalid');
             return spinal_env_viewer_graph_service_1.SpinalGraphService.addChild(context.info.id.get(), id, 'Invalid', spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE);
         });
@@ -434,11 +451,11 @@ class SpatialManager {
             const roomId = roomNodeRef.id.get();
             const roomRealNode = spinal_env_viewer_graph_service_1.SpinalGraphService.getRealNode(roomId);
             yield this.roomManager.addAttribute(roomRealNode, room.properties.properties);
-            if (typeof roomRealNode.info.dbId !== "undefined") {
+            if (typeof roomRealNode.info.dbId !== 'undefined') {
                 roomRealNode.info.dbId.set(room.properties.dbId);
             }
             else {
-                roomRealNode.info.add_attr("dbId", room.properties.dbId);
+                roomRealNode.info.add_attr('dbId', room.properties.dbId);
             }
             // missing check refObject
             yield this.addRefStructureToRoom(roomId, room.children, model);
@@ -463,18 +480,21 @@ class SpatialManager {
         const cmpObj = {
             deleted: { levels: {}, rooms: {} },
             updated: { levels: {}, rooms: {} },
-            new: { levels: {}, rooms: {} }
+            new: { levels: {}, rooms: {} },
         };
         for (const levelId in oldArchi) {
             const oldLevel = oldArchi[levelId];
-            if (newArchi.hasOwnProperty(levelId)) { // level exist in old and new => level update
+            if (newArchi.hasOwnProperty(levelId)) {
+                // level exist in old and new => level update
                 const newArchiLvl = newArchi[levelId];
                 for (const roomExternId in oldLevel.children) {
                     if (oldLevel.children.hasOwnProperty(roomExternId) &&
-                        typeof oldLevel.children[roomExternId].children !== 'undefined') { // exist in old and have children
+                        typeof oldLevel.children[roomExternId].children !== 'undefined') {
+                        // exist in old and have children
                         cmpObj.updated.levels[levelId] = newArchiLvl;
                         const levelExternalId = newArchiLvl.properties.externalId;
-                        if (newArchiLvl.children[roomExternId] && newArchiLvl.children[roomExternId].children) {
+                        if (newArchiLvl.children[roomExternId] &&
+                            newArchiLvl.children[roomExternId].children) {
                             cmpObj.updated.rooms[roomExternId] = this.createRoomObj(levelExternalId, newArchiLvl.children[roomExternId]);
                         }
                         else {
@@ -483,13 +503,14 @@ class SpatialManager {
                     }
                 }
             }
-            else { //delete floor
+            else {
+                //delete floor
                 cmpObj.deleted.levels[levelId] = oldArchi[levelId];
-                for (const roomExternId in oldLevel.children) { //delete all rooms
+                for (const roomExternId in oldLevel.children) {
+                    //delete all rooms
                     if (oldLevel.children.hasOwnProperty(roomExternId)) {
                         const levelExternalId = oldLevel.properties.externalId;
-                        cmpObj.deleted.rooms[roomExternId] =
-                            this.createRoomObj(levelExternalId, oldArchi[levelId].children[roomExternId]);
+                        cmpObj.deleted.rooms[roomExternId] = this.createRoomObj(levelExternalId, oldArchi[levelId].children[roomExternId]);
                     }
                 }
             }
@@ -499,28 +520,31 @@ class SpatialManager {
                 continue;
             }
             const newLevel = newArchi[levelId];
-            if (oldArchi.hasOwnProperty(levelId)) { //level already exist
-                for (let roomExternal in newLevel.children) {
+            if (oldArchi.hasOwnProperty(levelId)) {
+                //level already exist
+                for (const roomExternal in newLevel.children) {
                     if (newLevel.children.hasOwnProperty(roomExternal) &&
                         typeof newLevel.children[roomExternal].children !== 'undefined' &&
                         (!oldArchi[levelId].children.hasOwnProperty(roomExternal) ||
-                            typeof oldArchi[levelId].children[roomExternal].children === "undefined")) {
+                            typeof oldArchi[levelId].children[roomExternal].children ===
+                                'undefined')) {
                         const lvlExternId = newLevel.properties.externalId;
-                        if (typeof cmpObj.new.rooms[lvlExternId] === "undefined") {
+                        if (typeof cmpObj.new.rooms[lvlExternId] === 'undefined') {
                             cmpObj.new.rooms[lvlExternId] = [];
                         }
                         cmpObj.new.rooms[lvlExternId].push(newLevel.children[roomExternal]);
                     }
                 }
             }
-            else { //add level and rooms to new
+            else {
+                //add level and rooms to new
                 cmpObj.new.levels[levelId] = newLevel;
-                for (let roomExternal in newLevel.children) {
-                    if (newLevel.children.hasOwnProperty(roomExternal)
-                        && typeof newLevel.children[levelId].children !== 'undefined') //add room if it has a floor
-                     {
+                for (const roomExternal in newLevel.children) {
+                    if (newLevel.children.hasOwnProperty(roomExternal) &&
+                        typeof newLevel.children[levelId].children !== 'undefined') {
+                        //add room if it has a floor
                         const lvlExternId = newLevel.properties.externalId;
-                        if (typeof cmpObj.new.rooms[lvlExternId] === "undefined") {
+                        if (typeof cmpObj.new.rooms[lvlExternId] === 'undefined') {
                             cmpObj.new.rooms[lvlExternId] = [];
                         }
                         cmpObj.new.rooms[lvlExternId].push(newLevel.children[roomExternal]);
@@ -533,7 +557,7 @@ class SpatialManager {
     static getContext(contextName) {
         return __awaiter(this, void 0, void 0, function* () {
             let context = spinal_env_viewer_graph_service_1.SpinalGraphService.getContext(contextName);
-            if (typeof context === "undefined" || context === null) {
+            if (typeof context === 'undefined' || context === null) {
                 context = yield spinal_env_viewer_context_geographic_service_1.default.createContext(contextName);
             }
             return context;
@@ -542,23 +566,24 @@ class SpatialManager {
     getSpatialConfig() {
         return __awaiter(this, void 0, void 0, function* () {
             let context = spinal_env_viewer_graph_service_1.SpinalGraphService.getContext('.config');
-            if (typeof context === "undefined")
+            if (typeof context === 'undefined')
                 context = yield spinal_env_viewer_graph_service_1.SpinalGraphService.addContext('.config', 'system configuration', undefined);
-            return spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(context.info.id.get(), ['hasConfig'])
-                .then((children) => __awaiter(this, void 0, void 0, function* () {
+            return spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(context.info.id.get(), [
+                'hasConfig',
+            ]).then((children) => __awaiter(this, void 0, void 0, function* () {
                 let config;
-                if (typeof children !== "undefined")
+                if (typeof children !== 'undefined')
                     for (let i = 0; i < children.length; i++) {
                         if (children[i].type.get() === 'SpatialConfig')
                             config = children[i];
                     }
-                if (typeof config === "undefined") { // create default config
+                if (typeof config === 'undefined') {
+                    // create default config
                     config = spinal_env_viewer_graph_service_1.SpinalGraphService.createNode({
                         name: 'spatial config',
-                        type: 'SpatialConfig'
+                        type: 'SpatialConfig',
                     }, new SpatialConfig_1.SpatialConfig());
-                    yield spinal_env_viewer_graph_service_1.SpinalGraphService
-                        .addChild(context.info.id.get(), config, 'hasConfig', spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE);
+                    yield spinal_env_viewer_graph_service_1.SpinalGraphService.addChild(context.info.id.get(), config, 'hasConfig', spinal_env_viewer_graph_service_1.SPINAL_RELATION_PTR_LST_TYPE);
                     config = spinal_env_viewer_graph_service_1.SpinalGraphService.getNode(config);
                 }
                 return config.element.load();
@@ -584,10 +609,12 @@ class SpatialManager {
             const config = this.spatialConfig.getConfig(configName);
             if (!config)
                 throw new Error('No Config Name found');
-            const fct = createFctGetArchi_1.default(config.get());
-            // @ts-ignore
-            const modelArchi = yield model.getPropertyDb().executeUserFunction(fct);
-            console.log("modelArchi", modelArchi);
+            const fct = (0, createFctGetArchi_1.default)(config.get());
+            const modelArchi = yield model
+                .getPropertyDb()
+                // @ts-ignore
+                .executeUserFunction(fct);
+            console.log('modelArchi', modelArchi);
             this.modelArchiLib.set(model, modelArchi);
             return modelArchi;
         });
@@ -604,10 +631,10 @@ class SpatialManager {
     getContextFromConfig(config) {
         return __awaiter(this, void 0, void 0, function* () {
             let context = spinal_env_viewer_graph_service_1.SpinalGraphService.getRealNode(config.contextId.get());
-            if (typeof context === "undefined" || context === null) {
+            if (typeof context === 'undefined' || context === null) {
                 context = spinal_env_viewer_graph_service_1.SpinalGraphService.getContext(config.contextName.get());
             }
-            if (typeof context === "undefined" || context === null) {
+            if (typeof context === 'undefined' || context === null) {
                 context = yield spinal_env_viewer_context_geographic_service_1.default.createContext(config.contextName.get());
             }
             config.contextId.set(context.info.id.get());
@@ -617,9 +644,9 @@ class SpatialManager {
     getBuilding(config) {
         return __awaiter(this, void 0, void 0, function* () {
             const context = yield this.getContextFromConfig(config);
-            return spinal_env_viewer_graph_service_1.SpinalGraphService
-                .getChildren(context.info.id.get(), [Constant_1.GEO_BUILDING_RELATION])
-                .then(children => {
+            return spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(context.info.id.get(), [
+                Constant_1.GEO_BUILDING_RELATION,
+            ]).then((children) => {
                 if (typeof children === 'undefined')
                     return undefined;
                 for (let i = 0; i < children.length; i++) {
@@ -635,12 +662,12 @@ class SpatialManager {
         return __awaiter(this, void 0, void 0, function* () {
             this.modelArchi = yield this.getArchiModel(model, configName);
             const floorFinish = [];
-            for (let key in this.modelArchi) {
+            for (const key in this.modelArchi) {
                 if (this.modelArchi.hasOwnProperty(key)) {
-                    for (let roomId in this.modelArchi[key].children) {
+                    for (const roomId in this.modelArchi[key].children) {
                         if (this.modelArchi[key].children.hasOwnProperty(roomId)) {
                             const room = this.modelArchi[key].children[roomId];
-                            if (typeof room.children !== "undefined")
+                            if (typeof room.children !== 'undefined')
                                 floorFinish.push(...room.children);
                         }
                     }
@@ -651,10 +678,8 @@ class SpatialManager {
     }
     getRoomIdFromDbId(externalId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const roomReferenceContext = spinal_env_viewer_graph_service_1.SpinalGraphService
-                .getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT);
-            const rooms = yield spinal_env_viewer_graph_service_1.SpinalGraphService
-                .getChildren(roomReferenceContext.info.id.get(), [Constant_1.GEO_ROOM_RELATION]);
+            const roomReferenceContext = spinal_env_viewer_graph_service_1.SpinalGraphService.getContext(spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_REFERENCE_CONTEXT);
+            const rooms = yield spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(roomReferenceContext.info.id.get(), [Constant_1.GEO_ROOM_RELATION]);
             for (let i = 0; i < rooms.length; i++) {
                 if (rooms[i].externalId.get() === externalId) {
                     return rooms[i].id.get();
@@ -663,12 +688,12 @@ class SpatialManager {
         });
     }
     getRoomIdFromFloorFinish(floorId) {
-        for (let key in this.modelArchi) {
+        for (const key in this.modelArchi) {
             if (this.modelArchi.hasOwnProperty(key)) {
-                for (let roomId in this.modelArchi[key].children) {
+                for (const roomId in this.modelArchi[key].children) {
                     if (this.modelArchi[key].children.hasOwnProperty(roomId)) {
                         const room = this.modelArchi[key].children[roomId];
-                        if (typeof room.children !== "undefined")
+                        if (typeof room.children !== 'undefined')
                             for (const roomChild of room.children) {
                                 if (roomChild.properties.dbId === floorId)
                                     return room.properties.externalId;
@@ -681,7 +706,7 @@ class SpatialManager {
     getFloorFinishId(configName, model) {
         return __awaiter(this, void 0, void 0, function* () {
             const floors = yield this.getFloorFinish(configName, model);
-            return floors.map(floor => floor.properties.dbId);
+            return floors.map((floor) => floor.properties.dbId);
         });
     }
 }

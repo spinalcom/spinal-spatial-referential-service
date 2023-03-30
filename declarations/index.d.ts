@@ -1,5 +1,6 @@
-import { SpatialManager } from "./SpatialManager";
-import * as constants from "./Constant";
+import { SpatialManager } from './SpatialManager';
+import * as constants from './Constant';
+export * from './v2/index';
 declare const _default: {
     config: {
         batchSize: number;

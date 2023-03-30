@@ -74,7 +74,7 @@ export interface ConfigGetArchi {
 // interface AttrItem { id: number, attrDef: any, d: ArchiSelectUser }
 
 function getArchiSelectStr(archiSelect: ArchiSelect[]) {
-  if (!archiSelect) return '[]'
+  if (!archiSelect) return '[]';
   const data = ['['];
   for (const d of archiSelect) {
     let isCatStr = '';
@@ -83,42 +83,44 @@ function getArchiSelectStr(archiSelect: ArchiSelect[]) {
     data.push(str);
   }
   data.push(']');
-  return data.join("");
+  return data.join('');
 }
 
-
 export default function createFctGetArchi(config: ConfigGetArchi) {
-
-  const levelStr = getArchiSelectStr(config.levelSelect)
-  const roomStr = getArchiSelectStr(config.roomSelect)
-  const structureStr = getArchiSelectStr(config.structureSelect)
-  const floorStr = getArchiSelectStr(config.floorSelect)
-  let FLOOR_ROOM_NUMBER_ATTR_NAME = 'Number'
-  let FLOOR_ROOM_NAME_ATTR_NAME = ''
-  let FLOOR_LEVEL_NAME_ATTR_NAME = ''
-  if (config.floorRoomNbr)
-    FLOOR_ROOM_NUMBER_ATTR_NAME = config.floorRoomNbr; // 'Number
-  if (config.floorRoomName)
-    FLOOR_ROOM_NAME_ATTR_NAME = config.floorRoomName; // 'Local'
-  if (config.floorLevelName)
-    FLOOR_LEVEL_NAME_ATTR_NAME = config.floorLevelName; // 'Etage'
-
+  const levelStr = getArchiSelectStr(config.levelSelect);
+  const roomStr = getArchiSelectStr(config.roomSelect);
+  const structureStr = getArchiSelectStr(config.structureSelect);
+  const floorStr = getArchiSelectStr(config.floorSelect);
+  let FLOOR_ROOM_NUMBER_ATTR_NAME = 'Number';
+  let FLOOR_ROOM_NAME_ATTR_NAME = '';
+  let FLOOR_LEVEL_NAME_ATTR_NAME = '';
+  if (config.floorRoomNbr) FLOOR_ROOM_NUMBER_ATTR_NAME = config.floorRoomNbr; // 'Number
+  if (config.floorRoomName) FLOOR_ROOM_NAME_ATTR_NAME = config.floorRoomName; // 'Local'
+  if (config.floorLevelName) FLOOR_LEVEL_NAME_ATTR_NAME = config.floorLevelName; // 'Etage'
 
   const propsToGet = [
-    'name', 'elevation',
-    'area', 'volume', 'perimeter',
-    'stype', 'roomid', 'number']
+    'name',
+    'elevation',
+    'area',
+    'volume',
+    'perimeter',
+    'stype',
+    'roomid',
+    'number',
+  ];
 
-  if (FLOOR_ROOM_NUMBER_ATTR_NAME) propsToGet.push(FLOOR_ROOM_NUMBER_ATTR_NAME.toLowerCase())
-  if (FLOOR_ROOM_NAME_ATTR_NAME) propsToGet.push(FLOOR_ROOM_NAME_ATTR_NAME.toLowerCase())
-  if (FLOOR_LEVEL_NAME_ATTR_NAME) propsToGet.push(FLOOR_LEVEL_NAME_ATTR_NAME.toLowerCase())
+  if (FLOOR_ROOM_NUMBER_ATTR_NAME)
+    propsToGet.push(FLOOR_ROOM_NUMBER_ATTR_NAME.toLowerCase());
+  if (FLOOR_ROOM_NAME_ATTR_NAME)
+    propsToGet.push(FLOOR_ROOM_NAME_ATTR_NAME.toLowerCase());
+  if (FLOOR_LEVEL_NAME_ATTR_NAME)
+    propsToGet.push(FLOOR_LEVEL_NAME_ATTR_NAME.toLowerCase());
   let useFloor = false;
   if (Array.isArray(config.floorSelect) && config.floorSelect.length > 0) {
     useFloor = true;
   }
 
-
-  let fct = `function userFunction(pdb) {
+  const fct = `function userFunction(pdb) {
     // TEST
     // let useFloor = false;
     // const levelSelect = testCfg.levelSelect;
@@ -347,7 +349,7 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
     }
     console.log("dbIds =>", dbIds);
     return createArchitectureModel(dbIds)
-  }`
+  }`;
   return fct;
 }
 
@@ -370,13 +372,6 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
 //   console.log(modelArchi);
 // }
 
-
-
-
-
-
-
-
 // (<any>window).test = async function () {
 //   const cfg = {
 //     "configName": "default",
@@ -394,8 +389,6 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
 //   }
 
 //   const fct = createFctGetArchi(cfg)
-
-
 
 //   function userFunction(pdb) {
 //     // TEST
@@ -525,7 +518,6 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
 //           }
 //         }
 
-
 //       });
 //       if (Array.isArray(array))
 //         array.push({ dbId, properties, externalId: idExternal[dbId] })
@@ -599,7 +591,6 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
 //         return res;
 //       }
 
-
 //       for (let i = 0; i < object.levels.length; i++) {
 //         const obj = object.levels[i];
 //         archiModel[obj.dbId] = { properties: obj, children: {}, structures: {} }
@@ -629,7 +620,6 @@ export default function createFctGetArchi(config: ConfigGetArchi) {
 //     return dbIds
 //     // return createArchitectureModel(dbIds)
 //   }
-
 
 //   const modelArchi = await (<any>window).NOP_VIEWER.model.getPropertyDb().executeUserFunction(fct);
 //   console.log(modelArchi);

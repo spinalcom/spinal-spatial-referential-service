@@ -25,39 +25,48 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpatialConfig = void 0;
 const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
-const ROOM_ATTRIBUTE_NAME = 'category';
-const ROOM_ATTRIBUTE_VALUE = 'Revit Pièces';
-const LEVEL_ATTRIBUTE_NAME = 'category';
-const LEVEL_ATTRIBUTE_VALUE = 'Revit Level';
-const FLOOR_ATTRIBUTE_NAME = 'SCtype';
-const FLOOR_ATTRIBUTE_VALUE = 'Floor_finish';
-const ROOM_PROPERTIES = ['area', 'volume', 'perimeter', 'local', 'etage', 'stype', 'roomid', 'number'];
-const FLOOR_PROPERTIES = [];
-const LEVEL_PROPERTIES = ['roomid'];
-const DEFAULT_BUILDINGS_NAME = ['Default building name'];
 const CONTEXT_NAME = 'spatial';
 const DEFAULT_CONFIG_NAME = 'default';
 class SpatialConfig extends spinal_core_connectorjs_type_1.Model {
     constructor() {
         super();
         this.add_attr({
-            data: [{
+            data: [
+                {
                     configName: DEFAULT_CONFIG_NAME,
                     contextName: CONTEXT_NAME,
                     contextId: '',
-                    basic: { "addLevel": false, "buildingName": "Building", "selectedModel": "" },
-                    levelSelect: [{ "key": '/^Category$/', "value": '/^Revit Level$/', "isCat": true }],
-                    roomSelect: [{ "key": '/^Category$/', "value": '/^Revit Pièces$/', "isCat": true }],
+                    basic: {
+                        addLevel: false,
+                        buildingName: 'Building',
+                        selectedModel: '',
+                    },
+                    levelSelect: [
+                        { key: '/^Category$/', value: '/^Revit Level$/', isCat: true },
+                    ],
+                    roomSelect: [
+                        { key: '/^Category$/', value: '/^Revit Pièces$/', isCat: true },
+                    ],
                     structureSelect: [
-                        { "key": '/^Category$/', "value": '/^Revit Murs$/', "isCat": true },
-                        { "key": '/^Category$/', "value": '/^Revit Portes$/', "isCat": true },
-                        { "key": '/^Category$/', "value": '/^Revit Sols$/', "isCat": true },
-                        { "key": '/^Category$/', "value": '/^Revit Garde-corps$/', "isCat": true },
-                        { "key": '/^Category$/', "value": '/^Revit Fenêtres$/', "isCat": true }
+                        { key: '/^Category$/', value: '/^Revit Murs$/', isCat: true },
+                        { key: '/^Category$/', value: '/^Revit Portes$/', isCat: true },
+                        {
+                            key: '/^Category$/',
+                            value: '/^Revit Garde-corps$/',
+                            isCat: true,
+                        },
+                        { key: '/^Category$/', value: '/^Revit Fenêtres$/', isCat: true },
+                        { key: '/^Category$/', value: '/^Revit Walls$/', isCat: true },
+                        { key: '/^Category$/', value: '/^Revit Doors$/', isCat: true },
+                        { key: '/^Category$/', value: '/^Revit Railings$/', isCat: true },
+                        { key: '/^Category$/', value: '/^Revit Windows$/', isCat: true },
                     ],
                     floorRoomNbr: 'Number',
-                    floorSelect: [{ key: "/^Nom du type$/", value: "/^Finition de sol$/" }]
-                }]
+                    floorSelect: [
+                        { key: '/^Nom du type$/', value: '/^Finition de sol$/' },
+                    ],
+                },
+            ],
         });
     }
     saveConfig(config) {

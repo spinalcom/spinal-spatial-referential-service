@@ -26,31 +26,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 exports.config = {
     batchSize: 50,
-    contextName: "spatial",
-    buildingName: "SEML",
+    contextName: 'spatial',
+    buildingName: 'building',
     attrs: {
+        // Attributs recherché dans les props du batiment
         room: {
+            // Piece du batiment
             attrName: 'category',
             attrVal: 'Revit Pièces',
         },
         level: {
+            // Etage du batiment
             attrName: 'category',
-            attrVal: 'Revit Level'
+            attrVal: 'Revit Level',
         },
         floors: {
+            // sol des rooms
             attrName: 'Stype',
-            attrVal: 'Floor_finish'
-        }
+            attrVal: 'Floor_finish',
+        },
     },
     roomNiveau: 'Etage',
     props: {
-        room: ['area', 'volume', 'perimeter', 'local', 'etage', 'stype', 'roomid', 'number'],
+        // Proprieté a recuperer pour chaque type d'objet
+        room: [
+            'area',
+            'volume',
+            'perimeter',
+            'local',
+            'etage',
+            'stype',
+            'roomid',
+            'number',
+        ],
         level: {
-            'components': {
+            components: {
                 type: 'Array',
-            }
+            },
         },
-        floors: ['roomid']
-    }
+        floors: ['roomid'],
+    },
 };
 //# sourceMappingURL=Config.js.map

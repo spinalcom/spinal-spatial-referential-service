@@ -1,19 +1,19 @@
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -27,20 +27,20 @@ import {
   SPINAL_RELATION_LST_PTR_TYPE,
   SpinalGraphService,
   SpinalNodeRef,
-  SpinalNode, SPINAL_RELATION_TYPE,
-} from "spinal-env-viewer-graph-service";
-import { InvalidObjectManager } from "./InvalidObjectManager";
+  SpinalNode,
+  SPINAL_RELATION_TYPE,
+} from 'spinal-env-viewer-graph-service';
+import { InvalidObjectManager } from './InvalidObjectManager';
 
-import { serviceDocumentation }
-  from 'spinal-env-viewer-plugin-documentation-service'
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
 
 export interface EntityProp {
-  propName: string,
-  propVal: any
+  propName: string;
+  propVal: any;
 }
 
-import GeographicService from 'spinal-env-viewer-context-geographic-service'
-import { SpinalProps } from "../SpatialManager";
+import GeographicService from 'spinal-env-viewer-context-geographic-service';
+import { SpinalProps } from '../SpatialManager';
 
 const InvalidManager = new InvalidObjectManager();
 
@@ -51,7 +51,6 @@ export abstract class AbstractEntityManager {
     this.invalidObjectManager = new InvalidObjectManager();
   }
 
-
   /**
    * Create a new entity with the info as SpinalAttribute
    * @param name {string} node of the entity
@@ -60,9 +59,13 @@ export abstract class AbstractEntityManager {
    * return the entity newly created
 
    */
-  abstract async create(name: string, info: SpinalProps[], attributes: SpinalProps[]): Promise<SpinalNodeRef>;
+  abstract create(
+    name: string,
+    info: SpinalProps[],
+    attributes: SpinalProps[]
+  ): Promise<SpinalNodeRef>;
 
-  abstract async getParents(node): Promise<SpinalNode<any>>;
+  abstract getParents(node): Promise<SpinalNode<any>>;
 
   /**
    * Update the entity with all the props of info
@@ -80,19 +83,29 @@ export abstract class AbstractEntityManager {
    * @param relationName {string}
    * @param relationType {string}
    */
-  async addChild(contextId: string, parentId: string, childId: string,
-    relationName: string, relationType: string): Promise<SpinalNodeRef> {
-
-    const parentChild: SpinalNodeRef[] = await SpinalGraphService.getChildren(parentId, [relationName]);
-    if (typeof parentChild !== "undefined")
+  async addChild(
+    contextId: string,
+    parentId: string,
+    childId: string,
+    relationName: string,
+    relationType: string
+  ): Promise<SpinalNodeRef> {
+    const parentChild: SpinalNodeRef[] = await SpinalGraphService.getChildren(
+      parentId,
+      [relationName]
+    );
+    if (typeof parentChild !== 'undefined')
       for (let i = 0; i < parentChild.length; i++) {
         const brother = parentChild[i];
-        if (brother.id.get() === childId)
-          return brother;
+        if (brother.id.get() === childId) return brother;
       }
-    return SpinalGraphService
-      .addChildInContext(parentId, childId, contextId, relationName, relationType)
-      .then(node => SpinalGraphService.getNode(node.info.id.get()))
+    return SpinalGraphService.addChildInContext(
+      parentId,
+      childId,
+      contextId,
+      relationName,
+      relationType
+    ).then((node) => SpinalGraphService.getNode(node.info.id.get()));
   }
 
   /**
@@ -103,25 +116,48 @@ export abstract class AbstractEntityManager {
   async delete(entityId: string): Promise<boolean> {
     const roomNode = await SpinalGraphService.getNodeAsync(entityId);
     const parent = await this.getParents(roomNode);
-    if (typeof parent === "undefined")
-      return false;
+    if (typeof parent === 'undefined') return false;
 
-    const removed = await SpinalGraphService.removeChild(parent.info.id.get(), entityId,
-      GeographicService.constants.ROOM_RELATION, SPINAL_RELATION_TYPE);
+    const removed = await SpinalGraphService.removeChild(
+      parent.info.id.get(),
+      entityId,
+      GeographicService.constants.ROOM_RELATION,
+      SPINAL_RELATION_TYPE
+    );
     await this.invalidObjectManager.addObject(entityId);
     return removed;
   }
 
-  addBimObject(contextId: string, parentId: string, dbId: number, objectName: string, model) {
+  addBimObject(
+    contextId: string,
+    parentId: string,
+    dbId: number,
+    objectName: string,
+    model
+  ) {
     // @ts-ignore
-    window.spinal.BimObjectService
-      .addBIMObject(contextId, parentId, dbId, objectName, model);
+    window.spinal.BimObjectService.addBIMObject(
+      contextId,
+      parentId,
+      dbId,
+      objectName,
+      model
+    );
   }
 
-  addReferenceObject(parentId: string, dbId: number, name: string, model: Model) {
+  addReferenceObject(
+    parentId: string,
+    dbId: number,
+    name: string,
+    model: Model
+  ) {
     // @ts-ignore
-    window.spinal.BimObjectService
-      .addReferenceObject(parentId, dbId, name, model);
+    window.spinal.BimObjectService.addReferenceObject(
+      parentId,
+      dbId,
+      name,
+      model
+    );
   }
 
   /**
@@ -132,14 +168,27 @@ export abstract class AbstractEntityManager {
    */
   async addAttribute(node: SpinalNode<any>, attributes: SpinalProps[]) {
     let proms = [];
-    let category = await serviceDocumentation.getCategoryByName(node, 'Spatial');
-    if (typeof category === "undefined") {
-      category = await serviceDocumentation.addCategoryAttribute(node, 'Spatial')
+    let category = await serviceDocumentation.getCategoryByName(
+      node,
+      'Spatial'
+    );
+    if (typeof category === 'undefined') {
+      category = await serviceDocumentation.addCategoryAttribute(
+        node,
+        'Spatial'
+      );
     }
     for (let i = 0; i < attributes.length; i++) {
       const prop = attributes[i];
 
-      proms.push(serviceDocumentation.addAttributeByCategory(node, category, prop.name, prop.value));
+      proms.push(
+        serviceDocumentation.addAttributeByCategory(
+          node,
+          category,
+          prop.name,
+          prop.value
+        )
+      );
     }
     return Promise.all(proms);
   }
@@ -162,16 +211,19 @@ export abstract class AbstractEntityManager {
   }
 
   getByExternalId(externalId: string, parentId, relationName) {
-    return SpinalGraphService.getChildren(parentId, [relationName])
-      .then(children => {
-        if (typeof children === "undefined")
-          return undefined;
+    return SpinalGraphService.getChildren(parentId, [relationName]).then(
+      (children) => {
+        if (typeof children === 'undefined') return undefined;
 
         for (let i = 0; i < children.length; i++) {
-          if (children[i].hasOwnProperty('externalId') && children[i].externalId.get() === externalId)
+          if (
+            children[i].hasOwnProperty('externalId') &&
+            children[i].externalId.get() === externalId
+          )
             return children[i];
         }
         return undefined;
-      })
+      }
+    );
   }
 }

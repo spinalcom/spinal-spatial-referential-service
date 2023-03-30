@@ -53,15 +53,13 @@ class AbstractEntityManager {
     addChild(contextId, parentId, childId, relationName, relationType) {
         return __awaiter(this, void 0, void 0, function* () {
             const parentChild = yield spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(parentId, [relationName]);
-            if (typeof parentChild !== "undefined")
+            if (typeof parentChild !== 'undefined')
                 for (let i = 0; i < parentChild.length; i++) {
                     const brother = parentChild[i];
                     if (brother.id.get() === childId)
                         return brother;
                 }
-            return spinal_env_viewer_graph_service_1.SpinalGraphService
-                .addChildInContext(parentId, childId, contextId, relationName, relationType)
-                .then(node => spinal_env_viewer_graph_service_1.SpinalGraphService.getNode(node.info.id.get()));
+            return spinal_env_viewer_graph_service_1.SpinalGraphService.addChildInContext(parentId, childId, contextId, relationName, relationType).then((node) => spinal_env_viewer_graph_service_1.SpinalGraphService.getNode(node.info.id.get()));
         });
     }
     /**
@@ -73,7 +71,7 @@ class AbstractEntityManager {
         return __awaiter(this, void 0, void 0, function* () {
             const roomNode = yield spinal_env_viewer_graph_service_1.SpinalGraphService.getNodeAsync(entityId);
             const parent = yield this.getParents(roomNode);
-            if (typeof parent === "undefined")
+            if (typeof parent === 'undefined')
                 return false;
             const removed = yield spinal_env_viewer_graph_service_1.SpinalGraphService.removeChild(parent.info.id.get(), entityId, spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION, spinal_env_viewer_graph_service_1.SPINAL_RELATION_TYPE);
             yield this.invalidObjectManager.addObject(entityId);
@@ -82,13 +80,11 @@ class AbstractEntityManager {
     }
     addBimObject(contextId, parentId, dbId, objectName, model) {
         // @ts-ignore
-        window.spinal.BimObjectService
-            .addBIMObject(contextId, parentId, dbId, objectName, model);
+        window.spinal.BimObjectService.addBIMObject(contextId, parentId, dbId, objectName, model);
     }
     addReferenceObject(parentId, dbId, name, model) {
         // @ts-ignore
-        window.spinal.BimObjectService
-            .addReferenceObject(parentId, dbId, name, model);
+        window.spinal.BimObjectService.addReferenceObject(parentId, dbId, name, model);
     }
     /**
      * Add all the attribute of $attribute to the node
@@ -100,7 +96,7 @@ class AbstractEntityManager {
         return __awaiter(this, void 0, void 0, function* () {
             let proms = [];
             let category = yield spinal_env_viewer_plugin_documentation_service_1.serviceDocumentation.getCategoryByName(node, 'Spatial');
-            if (typeof category === "undefined") {
+            if (typeof category === 'undefined') {
                 category = yield spinal_env_viewer_plugin_documentation_service_1.serviceDocumentation.addCategoryAttribute(node, 'Spatial');
             }
             for (let i = 0; i < attributes.length; i++) {
@@ -126,12 +122,12 @@ class AbstractEntityManager {
         return undefined;
     }
     getByExternalId(externalId, parentId, relationName) {
-        return spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(parentId, [relationName])
-            .then(children => {
-            if (typeof children === "undefined")
+        return spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(parentId, [relationName]).then((children) => {
+            if (typeof children === 'undefined')
                 return undefined;
             for (let i = 0; i < children.length; i++) {
-                if (children[i].hasOwnProperty('externalId') && children[i].externalId.get() === externalId)
+                if (children[i].hasOwnProperty('externalId') &&
+                    children[i].externalId.get() === externalId)
                     return children[i];
             }
             return undefined;
