@@ -38,7 +38,7 @@ const IGetArchi_1 = require("../interfaces/IGetArchi");
 const checkDiffObj_1 = require("./checkDiffObj");
 const getNodeInfoArchiAttr_1 = require("../utils/getNodeInfoArchiAttr");
 function diffInfoAttr(nodeInfo, spinalNode) {
-    var _a;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         nodeInfo.spinalnodeServerId = spinalNode._server_id;
         nodeInfo.modificationType = 0;
@@ -46,7 +46,7 @@ function diffInfoAttr(nodeInfo, spinalNode) {
         // check dbId
         (0, checkDiffObj_1.checkDiffObj)(diffInfo, 'dbid', (_a = spinalNode.info.dbid) === null || _a === void 0 ? void 0 : _a.get(), nodeInfo.dbId);
         // check externalId
-        (0, checkDiffObj_1.checkDiffObj)(diffInfo, 'externalId', spinalNode.info.externalId.get(), nodeInfo.externalId);
+        (0, checkDiffObj_1.checkDiffObj)(diffInfo, 'externalId', (_b = spinalNode.info.externalId) === null || _b === void 0 ? void 0 : _b.get(), nodeInfo.externalId);
         // check name node
         const name = (0, getNodeInfoArchiAttr_1.getNodeInfoArchiAttr)(nodeInfo, 'name');
         const number = (0, getNodeInfoArchiAttr_1.getNodeInfoArchiAttr)(nodeInfo, 'number');

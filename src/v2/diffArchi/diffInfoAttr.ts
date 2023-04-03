@@ -46,7 +46,7 @@ export async function diffInfoAttr(
   checkDiffObj(
     diffInfo,
     'externalId',
-    spinalNode.info.externalId.get(),
+    spinalNode.info.externalId?.get(),
     nodeInfo.externalId
   );
   // check name node
