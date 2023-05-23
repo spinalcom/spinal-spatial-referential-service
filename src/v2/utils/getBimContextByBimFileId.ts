@@ -24,23 +24,39 @@
 
 import { SpinalNode } from 'spinal-model-graph';
 import { SPINAL_RELATION_PTR_LST_TYPE } from 'spinal-model-graph';
-import { getBimFileByBimFileId } from '../cmd/handleCmd/handleCmd';
+import { getBimFileByBimFileId } from './getBimFileByBimFileId';
+import { BIMCONTEXT_RELATION_NAME } from '../constant';
 
+let createBimContextIt: Map<string, ReturnType<typeof _createBimContext>>;
 export async function getBimContextByBimFileId(
   bimFileId: string,
   doCreate = false
 ): Promise<SpinalNode> {
   const bimFile = await getBimFileByBimFileId(bimFileId);
-  const bimContexts = await bimFile.getChildren('hasBimContext');
+  const bimContexts = await bimFile.getChildren(BIMCONTEXT_RELATION_NAME);
   if (bimContexts.length > 0) {
     return bimContexts[0];
   }
   if (doCreate === true) {
-    const bimContext = new SpinalNode('BIMContext', 'SpinalNode');
-    return bimFile.addChild(
-      bimContext,
-      'hasBimContext',
-      SPINAL_RELATION_PTR_LST_TYPE
-    );
+    let it = createBimContextIt.get(bimFileId);
+    if (!it) {
+      it = _createBimContext(bimFile);
+      createBimContextIt.set(bimFileId, it);
+    }
+    return (await it.next()).value;
+  }
+}
+
+async function* _createBimContext(
+  bimFile: SpinalNode
+): AsyncGenerator<SpinalNode, never, void> {
+  const bimContext = new SpinalNode('BIMContext', 'SpinalNode');
+  await bimFile.addChild(
+    bimContext,
+    BIMCONTEXT_RELATION_NAME,
+    SPINAL_RELATION_PTR_LST_TYPE
+  );
+  while (true) {
+    yield bimContext;
   }
 }

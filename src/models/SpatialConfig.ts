@@ -24,7 +24,7 @@
 
 import spinalCore, { Model } from 'spinal-core-connectorjs_type';
 
-const CONTEXT_NAME: string = 'spatial';
+const CONTEXT_NAME = 'spatial';
 const DEFAULT_CONFIG_NAME = 'default';
 
 // interface RevitAttributesObj extends spinal.Model {
@@ -143,7 +143,7 @@ export class SpatialConfig extends Model {
   }
 
   saveConfig(config: ConfigArchi) {
-    for (var i = 0; i < this.data.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       const item = this.data[i];
       if (item.configName.get() === config.configName) {
         const contextId = item.contextId;
@@ -157,7 +157,7 @@ export class SpatialConfig extends Model {
     }
   }
   getConfig(configName: string): IMConfigArchi {
-    for (var i = 0; i < this.data.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       const item = this.data[i];
       if (item.configName.get() === configName) {
         return item;
@@ -166,7 +166,7 @@ export class SpatialConfig extends Model {
   }
 
   getConfigFromContextId(contextId: string): IMConfigArchi {
-    for (var i = 0; i < this.data.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       const item = this.data[i];
       if (item.contextId.get() === contextId) {
         return item;

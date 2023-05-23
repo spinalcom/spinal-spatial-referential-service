@@ -22,15 +22,13 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { SpinalGraph, SpinalContext } from 'spinal-model-graph';
+import { type SpinalGraph, SpinalContext } from 'spinal-model-graph';
 
 export async function getContextSpatial(
   graph: SpinalGraph
 ): Promise<SpinalContext> {
   let context = await graph.getContext('spatial');
-  if (context) {
-    return context;
-  }
+  if (context) return context;
   context = new SpinalContext('spatial', 'geographicContext');
   await graph.addContext(context);
   return context;

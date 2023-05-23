@@ -31,12 +31,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractEntityManager = void 0;
 const spinal_env_viewer_graph_service_1 = require("spinal-env-viewer-graph-service");
 const InvalidObjectManager_1 = require("./InvalidObjectManager");
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
-const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
+const spinal_env_viewer_context_geographic_service_1 = __importDefault(require("spinal-env-viewer-context-geographic-service"));
 const InvalidManager = new InvalidObjectManager_1.InvalidObjectManager();
 class AbstractEntityManager {
     constructor() {

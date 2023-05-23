@@ -23,8 +23,8 @@
  */
 
 import {
+  type SpinalGraph,
   SpinalNode,
-  SpinalGraph,
   SpinalContext,
   SPINAL_RELATION_PTR_LST_TYPE,
 } from 'spinal-model-graph';

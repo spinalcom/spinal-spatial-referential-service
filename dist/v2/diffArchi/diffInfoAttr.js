@@ -36,7 +36,7 @@ exports.diffInfoAttr = void 0;
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
 const IGetArchi_1 = require("../interfaces/IGetArchi");
 const checkDiffObj_1 = require("./checkDiffObj");
-const getNodeInfoArchiAttr_1 = require("../utils/getNodeInfoArchiAttr");
+const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
 function diffInfoAttr(nodeInfo, spinalNode) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {

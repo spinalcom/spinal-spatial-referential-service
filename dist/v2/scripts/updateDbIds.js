@@ -32,25 +32,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateDbIds = exports.getExternalIdMapping = void 0;
+exports.updateDbIds = void 0;
+const Constant_1 = require("../../Constant");
 const getBimContextByBimFileId_1 = require("../utils/getBimContextByBimFileId");
-function getExternalIdMapping(model) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => {
-            model.getExternalIdMapping((mapping) => {
-                resolve(mapping);
-            }, reject);
-        });
-    });
-}
-exports.getExternalIdMapping = getExternalIdMapping;
+const getExternalIdMapping_1 = require("../utils/getExternalIdMapping");
 function updateDbIds(bimFileId, model) {
     return __awaiter(this, void 0, void 0, function* () {
         const bimContext = yield (0, getBimContextByBimFileId_1.getBimContextByBimFileId)(bimFileId);
         if (typeof bimContext === 'undefined')
             throw new Error('No BimOject found with this bimFileId');
-        const map = yield getExternalIdMapping(model);
-        const bimobjs = yield bimContext.getChildren('hasBimObject');
+        const map = yield (0, getExternalIdMapping_1.getExternalIdMapping)(model);
+        const bimobjs = yield bimContext.getChildren(Constant_1.GEO_EQUIPMENT_RELATION);
         for (const bimobj of bimobjs) {
             if (bimobj.info.bimFileId.get() === bimFileId) {
                 const dbid = map[bimobj.info.externalId.get()];

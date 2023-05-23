@@ -1,3 +1,3 @@
 import type { SpinalNode } from 'spinal-model-graph';
-import { IDiffBimObj, INodeInfo, TManualAssingment } from '../interfaces/IGetArchi';
+import { type IDiffBimObj, type INodeInfo, type TManualAssingment } from '../interfaces/IGetArchi';
 export declare function diffBimObjs(bimObjInfos: INodeInfo[], bimObjNodes: SpinalNode[], manualAssingment: TManualAssingment): IDiffBimObj;

@@ -22,12 +22,12 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { getBimFileByBimFileId } from '../cmd/handleCmd/handleCmd';
+import { getBimFileByBimFileId } from './getBimFileByBimFileId';
 import { loadBimFile } from '../scripts/loadBimFile';
+import { getViewer } from './getViewer';
 
 export async function loadModelByBimFileId(bimFileId: string) {
-  const viewer: Autodesk.Viewing.Viewer3D =
-    spinal.SpinalForgeViewer.viewerManager.viewer;
+  const viewer = getViewer();
   const bimFile = await getBimFileByBimFileId(bimFileId);
   return loadBimFile(bimFile, viewer);
 }

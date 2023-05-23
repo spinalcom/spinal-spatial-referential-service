@@ -23,7 +23,7 @@
  */
 import {
   SpinalGraphService,
-  SpinalNodeRef,
+  type SpinalNodeRef,
 } from 'spinal-env-viewer-graph-service';
 import { SpinalGraph, SpinalNode } from 'spinal-model-graph';
 

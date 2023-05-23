@@ -22,17 +22,9 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
+import { GEO_EQUIPMENT_RELATION } from '../../Constant';
 import { getBimContextByBimFileId } from '../utils/getBimContextByBimFileId';
-
-export async function getExternalIdMapping(
-  model: Autodesk.Viewing.Model
-): Promise<Record<string, number>> {
-  return new Promise((resolve, reject) => {
-    model.getExternalIdMapping((mapping: Record<string, number>) => {
-      resolve(mapping);
-    }, reject);
-  });
-}
+import { getExternalIdMapping } from '../utils/getExternalIdMapping';
 
 export async function updateDbIds(
   bimFileId: string,
@@ -42,7 +34,7 @@ export async function updateDbIds(
   if (typeof bimContext === 'undefined')
     throw new Error('No BimOject found with this bimFileId');
   const map = await getExternalIdMapping(model);
-  const bimobjs = await bimContext.getChildren('hasBimObject');
+  const bimobjs = await bimContext.getChildren(GEO_EQUIPMENT_RELATION);
   for (const bimobj of bimobjs) {
     if (bimobj.info.bimFileId.get() === bimFileId) {
       const dbid = map[bimobj.info.externalId.get()];

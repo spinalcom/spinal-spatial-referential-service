@@ -37,7 +37,7 @@ export async function consumeBatch<T>(
     const resProm = await Promise.all(
       slice.map((e: Consumedfunction<T>): Promise<T> => e())
     );
-    callBackProgress(endIndex, promises.length);
+    if (callBackProgress) callBackProgress(endIndex, promises.length);
     result.push(...resProm);
     index = endIndex;
   }

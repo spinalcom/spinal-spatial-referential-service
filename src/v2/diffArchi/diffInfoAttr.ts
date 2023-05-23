@@ -26,12 +26,12 @@ import type { SpinalNode } from 'spinal-model-graph';
 import { attributeService } from 'spinal-env-viewer-plugin-documentation-service';
 import {
   EModificationType,
-  IDiffNodeInfoAttr,
-  IDiffObj,
-  INodeInfo,
+  type IDiffNodeInfoAttr,
+  type IDiffObj,
+  type INodeInfo,
 } from '../interfaces/IGetArchi';
 import { checkDiffObj } from './checkDiffObj';
-import { getNodeInfoArchiAttr } from '../utils/getNodeInfoArchiAttr';
+import { getNodeInfoArchiAttr } from '../utils/archi/getNodeInfoArchiAttr';
 
 export async function diffInfoAttr(
   nodeInfo: INodeInfo,

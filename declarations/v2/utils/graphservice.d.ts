@@ -1,4 +1,4 @@
-import { SpinalNodeRef } from 'spinal-env-viewer-graph-service';
+import { type SpinalNodeRef } from 'spinal-env-viewer-graph-service';
 import { SpinalGraph, SpinalNode } from 'spinal-model-graph';
 export declare function addNodeGraphService(node: SpinalNode): void;
 export declare function getGraph(): SpinalGraph;

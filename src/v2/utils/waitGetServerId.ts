@@ -22,7 +22,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { Model, FileSystem } from 'spinal-core-connectorjs';
+import { type Model, FileSystem } from 'spinal-core-connectorjs';
 
 export function waitGetServerId(model: Model): Promise<void> {
   if (typeof FileSystem._objects[model._server_id] !== 'undefined')

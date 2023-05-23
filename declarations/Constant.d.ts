@@ -1,14 +1,1 @@
-export declare const GEO_REFERENCE_RELATION = "hasReferenceObject";
-export declare const GEO_REFERENCE_ROOM_RELATION = "hasReferenceObject.ROOM";
-export declare const GEO_SITE_RELATION = "hasGeographicSite";
-export declare const GEO_BUILDING_RELATION = "hasGeographicBuilding";
-export declare const GEO_FLOOR_RELATION = "hasGeographicFloor";
-export declare const GEO_ROOM_RELATION = "hasGeographicRoom";
-export declare const GEO_ZONE_RELATION = "hasGeographicZone";
-export declare const GEO_ROOM_TYPE = "geographicRoom";
-export declare const ARCHIVE_RELATION_NAME = "hasGenerationArchive";
-export declare const ARCHIVE_GROUPE_TYPE = "SpinalGenerationArchive";
-export declare const ARCHIVE_GROUPE_REL = "hasGenerationArchiveGroupe";
-export declare const ARCHIVE_CONTEXT_NAME = "Generation Archive";
-export declare const ARCHIVE_CONTEXT_TYPE = "SpinalGenerationArchiveType";
-export declare const BIMOBJECT_TYPE = "BIMObject";
+export { EQUIPMENT_TYPE as GEO_EQUIPMENT_TYPE, EQUIPMENT_RELATION as GEO_EQUIPMENT_RELATION, FLOOR_TYPE as GEO_FLOOR_TYPE, REFERENCE_RELATION as GEO_REFERENCE_RELATION, REFERENCE_ROOM_RELATION as GEO_REFERENCE_ROOM_RELATION, SITE_RELATION as GEO_SITE_RELATION, BUILDING_RELATION as GEO_BUILDING_RELATION, FLOOR_RELATION as GEO_FLOOR_RELATION, ROOM_RELATION as GEO_ROOM_RELATION, ZONE_RELATION as GEO_ZONE_RELATION, ROOM_TYPE as GEO_ROOM_TYPE, EQUIPMENT_TYPE as BIMOBJECT_TYPE, } from 'spinal-env-viewer-context-geographic-service';

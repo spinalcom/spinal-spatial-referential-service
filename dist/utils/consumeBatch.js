@@ -43,7 +43,8 @@ function consumeBatch(promises, batchSize = 10, callBackProgress) {
                 endIndex = promises.length;
             const slice = promises.slice(index, endIndex);
             const resProm = yield Promise.all(slice.map((e) => e()));
-            callBackProgress(endIndex, promises.length);
+            if (callBackProgress)
+                callBackProgress(endIndex, promises.length);
             result.push(...resProm);
             index = endIndex;
         }

@@ -1,4 +1,7 @@
 export interface ICmdNew {
+    /**
+     * nodeIdParent
+     */
     pNId: string;
     id?: string;
     name?: string;

@@ -1,3 +1,3 @@
-import { SpinalGraph } from 'spinal-model-graph';
+import { type SpinalGraph } from 'spinal-model-graph';
 import { SpatialConfig } from '../../models/SpatialConfig';
 export declare function loadConfig(graph: SpinalGraph): Promise<SpatialConfig>;

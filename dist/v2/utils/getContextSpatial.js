@@ -37,9 +37,8 @@ const spinal_model_graph_1 = require("spinal-model-graph");
 function getContextSpatial(graph) {
     return __awaiter(this, void 0, void 0, function* () {
         let context = yield graph.getContext('spatial');
-        if (context) {
+        if (context)
             return context;
-        }
         context = new spinal_model_graph_1.SpinalContext('spatial', 'geographicContext');
         yield graph.addContext(context);
         return context;

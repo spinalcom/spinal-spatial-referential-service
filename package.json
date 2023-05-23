@@ -13,8 +13,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/forge-viewer": "^7.0.1",
+    "@types/lodash.throttle": "^4.1.7",
     "@types/node": "^18.11.18",
     "@types/pako": "^2.0.0",
+    "@types/q": "^1.5.5",
     "@types/three": "^0.103.2",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
@@ -26,7 +28,9 @@
     "pako": "^2.1.0",
     "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git",
     "spinal-env-viewer-context-geographic-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-geographic-service.git",
+    "spinal-model-graph": "git+https://github.com/spinalcom/spinal-model-graph.git",
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
-    "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git"
+    "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git",
+    "webworkify": "^1.5.0"
   }
 }

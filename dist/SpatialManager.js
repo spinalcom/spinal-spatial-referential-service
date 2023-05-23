@@ -45,11 +45,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpatialManager = void 0;
-const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
+const spinal_env_viewer_context_geographic_service_1 = __importDefault(require("spinal-env-viewer-context-geographic-service"));
 // import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service'
-const createFctGetArchi_1 = require("./createFctGetArchi");
+const createFctGetArchi_1 = __importDefault(require("./createFctGetArchi"));
 const Config_1 = require("./Config");
 const Constant_1 = require("./Constant");
 const spinal_env_viewer_graph_service_1 = require("spinal-env-viewer-graph-service");

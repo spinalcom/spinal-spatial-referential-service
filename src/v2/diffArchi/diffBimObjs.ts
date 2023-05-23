@@ -25,9 +25,9 @@
 import type { SpinalNode } from 'spinal-model-graph';
 import {
   EModificationType,
-  IDiffBimObj,
-  INodeInfo,
-  TManualAssingment,
+  type IDiffBimObj,
+  type INodeInfo,
+  type TManualAssingment,
 } from '../interfaces/IGetArchi';
 import { getNodeFromGeo } from './getNodeFromGeo';
 import { findNodeArchiWithSpinalNode } from './findNodeArchiWithSpinalNode';

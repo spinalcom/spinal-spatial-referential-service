@@ -33,14 +33,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFloorFromContext = void 0;
-const getNodeInfoArchiAttr_1 = require("../utils/getNodeInfoArchiAttr");
-const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
+const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
+const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 function getFloorFromContext(contextGeo, buildingServId, floorArchi, manualAssingment) {
     return __awaiter(this, void 0, void 0, function* () {
         // check ManualAssingment retrun it if found;
         const serverId = manualAssingment.get(floorArchi.properties.externalId);
         if (serverId)
-            return spinal_core_connectorjs_type_1.FileSystem._objects[serverId];
+            return spinal_core_connectorjs_1.FileSystem._objects[serverId];
         // not in manualAssing; get building floors
         const buildings = yield contextGeo.getChildrenInContext(contextGeo);
         const buildingsFloors = yield Promise.all(buildings.map((building) => {

@@ -25,9 +25,9 @@
 import type { SpinalContext } from 'spinal-model-graph';
 import {
   EModificationType,
-  IDiffFloor,
-  IFloorArchi,
-  TManualAssingment,
+  type IDiffFloor,
+  type IFloorArchi,
+  type TManualAssingment,
 } from '../interfaces/IGetArchi';
 import { getFloorFromContext } from './getFloorFromContext';
 import { getDiffRefFloor } from './getDiffRefFloor';

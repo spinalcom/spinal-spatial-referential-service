@@ -24,13 +24,13 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findNodeArchiWithSpinalNode = void 0;
-const getNodeInfoArchiAttr_1 = require("../utils/getNodeInfoArchiAttr");
-const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
+const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
+const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 function findNodeArchiWithSpinalNode(node, nodeInfosArchi, manualAssingment) {
     var _a, _b;
     // check ManualAssingment retrun it if found;
     for (const [extId, serverId] of manualAssingment) {
-        if (spinal_core_connectorjs_type_1.FileSystem._objects[serverId] === node) {
+        if (spinal_core_connectorjs_1.FileSystem._objects[serverId] === node) {
             for (const nodeArchi of nodeInfosArchi) {
                 if (nodeArchi.externalId === extId) {
                     return nodeArchi;

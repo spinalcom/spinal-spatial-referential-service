@@ -25,13 +25,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFragIds = void 0;
 function getFragIds(dbId, model) {
-    const promise = (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const it = model.getInstanceTree();
         const ids = [];
         it.enumNodeFragments(dbId, (res) => {
             ids.push(res);
         }, false);
-        // wait 500ms or 1500ms if not yet done
+        // wait 1s or 2 if not yet done
         setTimeout(() => {
             if (ids.length === 0) {
                 setTimeout(() => {
@@ -44,8 +44,7 @@ function getFragIds(dbId, model) {
             }
             resolve(ids);
         }, 500);
-    };
-    return new Promise(promise);
+    });
 }
 exports.getFragIds = getFragIds;
 //# sourceMappingURL=getFragIds.js.map

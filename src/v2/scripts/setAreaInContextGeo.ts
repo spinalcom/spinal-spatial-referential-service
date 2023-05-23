@@ -30,11 +30,11 @@ import type {
 import { getContextSpatial } from '../utils/getContextSpatial';
 import { GEO_REFERENCE_ROOM_RELATION } from '../../Constant';
 import { attributeService } from 'spinal-env-viewer-plugin-documentation-service';
-import { Val } from 'spinal-core-connectorjs_type';
-import { updateLoadedModel } from '../utils/updateLoadedModel';
+import { Val } from 'spinal-core-connectorjs';
+import { updateLoadedModel } from '../utils/archi/updateLoadedModel';
 import { getModelByBimFileId } from '../utils/getModelByBimFileId';
-import { getADModelProps } from '../utils/getADModelProps';
-import { getADPropBylabel } from '../utils/getADPropBylabel';
+import { getADModelProps } from '../utils/archi/getADModelProps';
+import { getADPropBylabel } from '../utils/archi/getADPropBylabel';
 
 async function getAreaAttr(node: SpinalNode) {
   const categoryName = 'Spatial';

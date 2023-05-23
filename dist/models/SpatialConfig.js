@@ -22,9 +22,32 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpatialConfig = void 0;
-const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
+const spinal_core_connectorjs_type_1 = __importStar(require("spinal-core-connectorjs_type"));
 const CONTEXT_NAME = 'spatial';
 const DEFAULT_CONFIG_NAME = 'default';
 class SpatialConfig extends spinal_core_connectorjs_type_1.Model {
@@ -70,7 +93,7 @@ class SpatialConfig extends spinal_core_connectorjs_type_1.Model {
         });
     }
     saveConfig(config) {
-        for (var i = 0; i < this.data.length; i++) {
+        for (let i = 0; i < this.data.length; i++) {
             const item = this.data[i];
             if (item.configName.get() === config.configName) {
                 const contextId = item.contextId;
@@ -87,7 +110,7 @@ class SpatialConfig extends spinal_core_connectorjs_type_1.Model {
         }
     }
     getConfig(configName) {
-        for (var i = 0; i < this.data.length; i++) {
+        for (let i = 0; i < this.data.length; i++) {
             const item = this.data[i];
             if (item.configName.get() === configName) {
                 return item;
@@ -95,7 +118,7 @@ class SpatialConfig extends spinal_core_connectorjs_type_1.Model {
         }
     }
     getConfigFromContextId(contextId) {
-        for (var i = 0; i < this.data.length; i++) {
+        for (let i = 0; i < this.data.length; i++) {
             const item = this.data[i];
             if (item.contextId.get() === contextId) {
                 return item;

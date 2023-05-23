@@ -26,7 +26,7 @@ export function getFragIds(
   dbId: number,
   model: Autodesk.Viewing.Model
 ): Promise<number[]> {
-  const promise = (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const it = model.getInstanceTree();
     const ids: number[] = [];
     it.enumNodeFragments(
@@ -36,7 +36,7 @@ export function getFragIds(
       },
       false
     );
-    // wait 500ms or 1500ms if not yet done
+    // wait 1s or 2 if not yet done
     setTimeout(() => {
       if (ids.length === 0) {
         setTimeout(() => {
@@ -49,6 +49,5 @@ export function getFragIds(
       }
       resolve(ids);
     }, 500);
-  };
-  return new Promise(promise);
+  });
 }

@@ -1,0 +1,17 @@
+export declare const PROJECTION_CONFIG_TYPE = "ProjectionConfig";
+export declare const PROJECTION_CONFIG_RELATION = "hasProjectionConfig";
+export { SPINAL_RELATION_PTR_LST_TYPE as PROJECTION_CONFIG_RELATION_TYPE } from 'spinal-model-graph';
+export declare const CONTEXT_NOT_FOUND_NAME = "Projection Error";
+export declare const CONTEXT_NOT_FOUND_TYPE = "ProjectionError";
+export declare const CONTEXT_NOT_FOUND_RELATION = "ProjectionErrorHasDate";
+export declare const NOT_FOUND_DATE_TYPE = "ProjectionErrorDate";
+export declare const OVERLAY_LINES_PREVIEW_POSITION_NAME = "spinal-overlay-preview-position-line";
+export declare const OVERLAY_SPHERES_PREVIEW_POSITION_NAME = "spinal-overlay-preview-position-sphere";
+export declare const GENERATION_CONTEXT_NAME = "Generation Context";
+export declare const GENERATION_CONTEXT_TYPE = "GenerationContext";
+export declare const GENERATION_TYPE = "GenerationType";
+export declare const GENERATION_RELATION = "hasGeneration";
+export declare const GENERATION_GEO_TYPE = "ContextSpatial";
+export declare const GENERATION_PROJECTION_TYPE = "ProjectionSpatial";
+export declare const ARCHIVE_RELATION_NAME = "hasGenerationArchive";
+export declare const BIMCONTEXT_RELATION_NAME = "hasBimContext";

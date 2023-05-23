@@ -24,8 +24,8 @@
 
 import type { SpinalContext, SpinalNode } from 'spinal-model-graph';
 import type { IFloorArchi, TManualAssingment } from '../interfaces/IGetArchi';
-import { getNodeInfoArchiAttr } from '../utils/getNodeInfoArchiAttr';
-import { FileSystem } from 'spinal-core-connectorjs_type';
+import { getNodeInfoArchiAttr } from '../utils/archi/getNodeInfoArchiAttr';
+import { FileSystem } from 'spinal-core-connectorjs';
 
 export async function getFloorFromContext(
   contextGeo: SpinalContext,

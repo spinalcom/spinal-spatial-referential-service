@@ -40,7 +40,7 @@ const getContextSpatial_1 = require("../utils/getContextSpatial");
 //   GEO_REFERENCE_ROOM_RELATION,
 // } from '../../Constant';
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
-const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
+const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 function setLevelAttr(node, value) {
     return __awaiter(this, void 0, void 0, function* () {
         const categoryName = 'Spatial';
@@ -52,7 +52,7 @@ function setLevelAttr(node, value) {
         const attrs = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.getAttributesByCategory(node, category);
         for (const attr of attrs) {
             if (attr.label.get() === label) {
-                if (attr.value instanceof spinal_core_connectorjs_type_1.Val) {
+                if (attr.value instanceof spinal_core_connectorjs_1.Val) {
                     attr.mod_attr('value', value);
                 }
                 else

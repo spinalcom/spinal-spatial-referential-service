@@ -25,11 +25,11 @@
 import type { SpinalContext, SpinalNode } from 'spinal-model-graph';
 import {
   EModificationType,
-  IDiffRoomChildren,
-  IFloorArchi,
-  IRoomArchi,
-  IUpdateRoomDiff,
-  TManualAssingment,
+  type IDiffRoomChildren,
+  type IFloorArchi,
+  type IRoomArchi,
+  type IUpdateRoomDiff,
+  type TManualAssingment,
 } from '../interfaces/IGetArchi';
 import { getNodeFromGeo } from './getNodeFromGeo';
 import { findNodeArchiWithSpinalNode } from './findNodeArchiWithSpinalNode';

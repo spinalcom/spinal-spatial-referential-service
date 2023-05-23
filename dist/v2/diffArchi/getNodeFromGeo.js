@@ -24,14 +24,14 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNodeFromGeo = void 0;
-const getNodeInfoArchiAttr_1 = require("../utils/getNodeInfoArchiAttr");
-const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
+const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
+const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 function getNodeFromGeo(geoNodes, nodeInfo, manualAssingment) {
     var _a, _b;
     // check ManualAssingment retrun it if found;
     const serverId = manualAssingment.get(nodeInfo.externalId);
     if (serverId)
-        return spinal_core_connectorjs_type_1.FileSystem._objects[serverId];
+        return spinal_core_connectorjs_1.FileSystem._objects[serverId];
     // not in manualAssing
     // search via externalId
     for (const geoRoomNode of geoNodes) {

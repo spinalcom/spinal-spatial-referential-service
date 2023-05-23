@@ -30,7 +30,7 @@ import { getContextSpatial } from '../utils/getContextSpatial';
 //   GEO_REFERENCE_ROOM_RELATION,
 // } from '../../Constant';
 import { attributeService } from 'spinal-env-viewer-plugin-documentation-service';
-import { Val } from 'spinal-core-connectorjs_type';
+import { Val } from 'spinal-core-connectorjs';
 
 async function setLevelAttr(node: SpinalNode, value: string) {
   const categoryName = 'Spatial';

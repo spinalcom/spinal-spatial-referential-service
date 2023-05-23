@@ -24,8 +24,8 @@
 
 import type { SpinalNode } from 'spinal-model-graph';
 import type { INodeInfo, TManualAssingment } from '../interfaces/IGetArchi';
-import { getNodeInfoArchiAttr } from '../utils/getNodeInfoArchiAttr';
-import { FileSystem } from 'spinal-core-connectorjs_type';
+import { getNodeInfoArchiAttr } from '../utils/archi/getNodeInfoArchiAttr';
+import { FileSystem } from 'spinal-core-connectorjs';
 
 export function getNodeFromGeo(
   geoNodes: SpinalNode[],
