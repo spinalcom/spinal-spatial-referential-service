@@ -78,6 +78,7 @@ class ProjectionGroupModel extends spinal_core_connectorjs_1.Model {
                 }
             }
             yield Promise.all(promises);
+            return this;
         });
     }
     update(projectionGroup) {

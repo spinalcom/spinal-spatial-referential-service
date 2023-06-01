@@ -59,4 +59,10 @@ __exportStar(require("./rayUtils/enumMeshTriangles"), exports);
 __exportStar(require("./projection/getIntersects"), exports);
 __exportStar(require("./projection/raycastItemToMesh"), exports);
 __exportStar(require("./projection/mergeIntersectRes"), exports);
+__exportStar(require("./projection/mergeRoomRef"), exports);
+__exportStar(require("./assignFloor/getRefFloorZMinMax"), exports);
+__exportStar(require("./assignFloor/getFloorChildrenDbIdOfModel"), exports);
+__exportStar(require("./assignFloor/getFloorPropForModel"), exports);
+__exportStar(require("./assignFloor/getFloorsDbIdOfModel"), exports);
+__exportStar(require("./assignFloor/getRoomRefByFloor"), exports);
 //# sourceMappingURL=index.js.map

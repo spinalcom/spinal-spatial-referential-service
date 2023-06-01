@@ -1,3 +1,4 @@
 import type { ICmdProjection } from '../../interfaces/ICmdProjection';
 import type { IRaycastIntersectRes } from '../../interfaces/IRaycastIntersectRes';
-export declare function createCmdProjection(intersects: IRaycastIntersectRes[], contextGeoId: string): Promise<ICmdProjection[]>;
+import type { IFloorZData } from '../../interfaces/IFloorZData';
+export declare function createCmdProjection(intersects: IRaycastIntersectRes[], contextGeoId: string, floorsData: Record<string, IFloorZData>): Promise<ICmdProjection[]>;

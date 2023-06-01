@@ -67,37 +67,37 @@ class ProjectionGroupConfig {
             if (!projectLst)
                 projectLst = yield (0, createConfigNode_1.createConfigNode)(context, this);
             const promises = [];
-            const toDel = [];
-            for (const projectItem of projectLst) {
-                const item = this.data.find((itm) => projectItem.uid.get() === itm.uid);
-                if (item) {
-                    promises.push(projectItem.update(item));
-                }
-                else {
-                    toDel.push(projectItem);
-                }
-            }
-            for (const itm of toDel) {
-                projectLst.remove_ref(itm);
-            }
             for (const data of this.data) {
-                const item = projectLst.detect((itm) => {
-                    return itm.uid.get() === data.uid;
-                });
-                if (!item) {
+                const itmInModel = projectLst.detect((itm) => itm.uid.get() === data.uid);
+                if (itmInModel)
+                    promises.push(itmInModel.update(data));
+                else {
                     if ((0, isProjectionGroup_1.isProjectionGroup)(data)) {
                         const mod = new ProjectionGroupModel_1.ProjectionGroupModel(data);
                         promises.push(mod.update(data));
-                        projectLst.push(mod);
                     }
                     else {
                         const mod = new ProjectionItemModel_1.ProjectionItemModel(data);
                         promises.push(mod.update(data));
-                        projectLst.push(mod);
                     }
                 }
             }
-            yield Promise.all(promises);
+            const res = yield Promise.all(promises);
+            let change = false;
+            for (let idx = 0; idx < res.length; idx++) {
+                if (res[idx] !== projectLst[idx])
+                    change = true;
+            }
+            if (change) {
+                while (projectLst.length > 0)
+                    projectLst.pop();
+                for (let idx = 0; idx < res.length; idx++) {
+                    projectLst.push(res[idx]);
+                }
+            }
+            else {
+                projectLst.trim(res.length);
+            }
         });
     }
 }

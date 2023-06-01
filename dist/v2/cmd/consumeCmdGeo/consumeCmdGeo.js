@@ -105,6 +105,7 @@ function getBimContext(dico, bimFileId) {
                 .then((bimContext) => resolve(bimContext))
                 .catch(reject);
         });
+        return dico[bimFileId];
     });
 }
 function consumeRefNode(dico, cmd, contextGeo) {

@@ -41,14 +41,11 @@ class ProjectionGroupItemModel extends spinal_core_connectorjs_1.Model {
         super();
         if (spinal_core_connectorjs_1.FileSystem._sig_server === false)
             return;
-        // this.add_attr('name', item.name);
         this.add_attr('bimFileId', (0, utils_1.getBimFileIdByModelId)(item.modelId));
         this.add_attr('uid', item.uid);
-        // this.add_attr('externalId', item.externalId);
     }
     update(item) {
         return __awaiter(this, void 0, void 0, function* () {
-            // this.name.set(item.name);
             this.bimFileId.set((0, utils_1.getBimFileIdByModelId)(item.modelId));
             this.uid.set(item.uid);
             const model = (0, utils_1.getModelByModelId)(item.modelId);
@@ -71,6 +68,7 @@ class ProjectionGroupItemModel extends spinal_core_connectorjs_1.Model {
                     this.externalId.set(item.externalId);
                 }
             }
+            return this;
         });
     }
     toUxModel() {

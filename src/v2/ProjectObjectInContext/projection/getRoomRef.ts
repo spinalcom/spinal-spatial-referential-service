@@ -23,6 +23,7 @@
  */
 
 import type { IAggregateDbidSetByModelItem } from '../../interfaces/IAggregateDbidSetByModelItem';
+import type { SpinalContext } from 'spinal-model-graph';
 import {
   GEO_SITE_RELATION,
   GEO_BUILDING_RELATION,
@@ -32,53 +33,8 @@ import {
   GEO_ROOM_TYPE,
   GEO_REFERENCE_ROOM_RELATION,
   GEO_EQUIPMENT_TYPE,
-  GEO_FLOOR_TYPE,
 } from '../../../Constant';
-import { SpinalContext } from 'spinal-model-graph';
 import { getModelByBimFileIdLoaded } from '../../utils/projection/getModelByBimFileIdLoaded';
-
-export async function getRoomRefByFloor(
-  context: SpinalContext
-): Promise<Record<string, IAggregateDbidSetByModelItem[]>> {
-  const result: Record<string, IAggregateDbidSetByModelItem[]> = {};
-  const floorRelNames = [
-    GEO_SITE_RELATION,
-    GEO_BUILDING_RELATION,
-    GEO_FLOOR_RELATION,
-    GEO_ZONE_RELATION,
-  ];
-  const roomRelNames = [GEO_ROOM_RELATION, GEO_ZONE_RELATION];
-  // get floor
-  const floors = await context.find(floorRelNames, (node) => {
-    return node.getType().get() === GEO_FLOOR_TYPE;
-  });
-  for (const floor of floors) {
-    const resFloor: IAggregateDbidSetByModelItem[] = [];
-    // get rooms nodes
-    const rooms = await floor.find(roomRelNames, (node) => {
-      return node.getType().get() === GEO_ROOM_TYPE;
-    });
-    const refObjsProm = rooms.map((room) => {
-      return room.getChildren([GEO_REFERENCE_ROOM_RELATION]);
-    });
-    const refObjs = await Promise.all(refObjsProm);
-    // merge result by model
-    for (const refs of refObjs) {
-      for (const ref of refs) {
-        if (ref.getType().get() === GEO_EQUIPMENT_TYPE) {
-          const bimFileId: string = ref.info.bimFileId.get();
-          const model = getModelByBimFileIdLoaded(bimFileId);
-          if (model) {
-            const dbId: number = ref.info.dbid.get();
-            pushToAggregateSetDbidByModel(resFloor, dbId, model);
-          }
-        }
-      }
-    }
-    if (resFloor.length > 0) result[floor.info.name.get()] = resFloor;
-  }
-  return result;
-}
 
 export async function getRoomRef(
   context: SpinalContext
@@ -119,7 +75,7 @@ export async function getRoomRef(
   return result;
 }
 
-function pushToAggregateSetDbidByModel(
+export function pushToAggregateSetDbidByModel(
   targetArray: IAggregateDbidSetByModelItem[],
   id: number,
   model: Autodesk.Viewing.Model

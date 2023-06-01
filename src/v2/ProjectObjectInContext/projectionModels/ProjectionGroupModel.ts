@@ -46,8 +46,8 @@ export class ProjectionGroupModel extends Model {
     this.add_attr('offset', new ProjectionOffsetModel(projectionGroup.offset));
     this.add_attr('data', []);
   }
-  private async updateData(projectionGroup: ProjectionGroup): Promise<void> {
-    const promises: Promise<void>[] = [];
+  private async updateData(projectionGroup: ProjectionGroup): Promise<this> {
+    const promises: Promise<ProjectionGroupItemModel>[] = [];
     const toDel: ProjectionGroupItemModel[] = [];
     for (let idx = 0; idx < this.data.length; idx++) {
       const projItemModel: ProjectionGroupItemModel = this.data[idx];
@@ -76,8 +76,9 @@ export class ProjectionGroupModel extends Model {
       }
     }
     await Promise.all(promises);
+    return this;
   }
-  update(projectionGroup: ProjectionGroup): Promise<void> {
+  update(projectionGroup: ProjectionGroup): Promise<this> {
     this.name.set(projectionGroup.name);
     this.uid.set(projectionGroup.uid);
     this.offset.update(projectionGroup.offset);

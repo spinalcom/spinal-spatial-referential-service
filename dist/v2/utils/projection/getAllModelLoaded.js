@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2023 SpinalCom - www.spinalcom.com
  *
@@ -21,31 +22,19 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-
-export function getModelFloors(
-  model: Autodesk.Viewing.Model
-): Promise<number[]> {
-  return model.getPropertyDb().executeUserFunction(function userFunction(pdb) {
-    const result = new Set();
-    let idCat = -1;
-    pdb.enumAttributes(function (i, attrDef) {
-      if (
-        attrDef.name.toLowerCase() === 'level' &&
-        attrDef.category === '__internalref__'
-      ) {
-        idCat = i;
-      }
-    });
-    if (idCat === -1) return [];
-    pdb.enumObjects(function (dbId) {
-      pdb.enumObjectProperties(dbId, function (attrId, valId) {
-        if (idCat !== attrId) return false;
-        const value = pdb.getAttrValue(attrId, valId);
-        result.add(value);
-        return true;
-      });
-    });
-
-    return Array.from(result);
-  });
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAllModelLoaded = void 0;
+function getAllModelLoaded() {
+    const mappingBimFileIdModelId = window.spinal.BimObjectService.mappingBimFileIdModelId;
+    const models = new Set();
+    for (const bimFileId in mappingBimFileIdModelId) {
+        if (Object.prototype.hasOwnProperty.call(mappingBimFileIdModelId, bimFileId)) {
+            for (const { model } of mappingBimFileIdModelId[bimFileId].modelScene) {
+                models.add(model);
+            }
+        }
+    }
+    return Array.from(models);
 }
+exports.getAllModelLoaded = getAllModelLoaded;
+//# sourceMappingURL=getAllModelLoaded.js.map

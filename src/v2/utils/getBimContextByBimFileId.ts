@@ -27,7 +27,10 @@ import { SPINAL_RELATION_PTR_LST_TYPE } from 'spinal-model-graph';
 import { getBimFileByBimFileId } from './getBimFileByBimFileId';
 import { BIMCONTEXT_RELATION_NAME } from '../constant';
 
-let createBimContextIt: Map<string, ReturnType<typeof _createBimContext>>;
+const createBimContextIt = new Map<
+  string,
+  ReturnType<typeof _createBimContext>
+>();
 export async function getBimContextByBimFileId(
   bimFileId: string,
   doCreate = false

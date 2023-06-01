@@ -182,7 +182,7 @@ function getLineMat(
       color: 0x00ff00,
       depthWrite: true,
       depthTest: true,
-      linewidth: 10,
+      linewidth: 3,
       opacity: 1.0,
     });
     const { scene } = viewer.impl.createOverlayScene(

@@ -41,7 +41,6 @@ import {
 import { getExternalIdMapping } from '../../utils/getExternalIdMapping';
 
 export class ProjectionGroupItemModel extends Model {
-  // name: Str;
   bimFileId: Str;
   uid: Str;
   externalId?: Str;
@@ -52,14 +51,11 @@ export class ProjectionGroupItemModel extends Model {
   constructor(item?: IProjectionGroupItem) {
     super();
     if (FileSystem._sig_server === false) return;
-    // this.add_attr('name', item.name);
     this.add_attr('bimFileId', getBimFileIdByModelId(item.modelId));
     this.add_attr('uid', item.uid);
-    // this.add_attr('externalId', item.externalId);
   }
 
-  async update(item: IProjectionGroupItem) {
-    // this.name.set(item.name);
+  async update(item: IProjectionGroupItem): Promise<this> {
     this.bimFileId.set(getBimFileIdByModelId(item.modelId));
     this.uid.set(item.uid);
     const model = getModelByModelId(item.modelId);
@@ -79,6 +75,7 @@ export class ProjectionGroupItemModel extends Model {
         this.externalId.set(item.externalId);
       }
     }
+    return this;
   }
   async toUxModel(): Promise<{ modelId: number; dbid: number }> {
     const model = getModelByBimFileIdLoaded(this.bimFileId.get());

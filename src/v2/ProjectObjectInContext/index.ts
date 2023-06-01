@@ -49,3 +49,10 @@ export * from './rayUtils/enumMeshTriangles';
 export * from './projection/getIntersects';
 export * from './projection/raycastItemToMesh';
 export * from './projection/mergeIntersectRes';
+export * from './projection/mergeRoomRef';
+
+export * from './assignFloor/getRefFloorZMinMax';
+export * from './assignFloor/getFloorChildrenDbIdOfModel';
+export * from './assignFloor/getFloorPropForModel';
+export * from './assignFloor/getFloorsDbIdOfModel';
+export * from './assignFloor/getRoomRefByFloor';

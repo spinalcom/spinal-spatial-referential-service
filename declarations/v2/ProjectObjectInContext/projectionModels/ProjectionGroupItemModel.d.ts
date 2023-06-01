@@ -7,7 +7,7 @@ export declare class ProjectionGroupItemModel extends Model {
     path?: Lst<Str>;
     constructor(item: IProjectionGroupItem);
     constructor();
-    update(item: IProjectionGroupItem): Promise<void>;
+    update(item: IProjectionGroupItem): Promise<this>;
     toUxModel(): Promise<{
         modelId: number;
         dbid: number;

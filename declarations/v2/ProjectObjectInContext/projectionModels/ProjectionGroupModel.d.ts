@@ -9,6 +9,6 @@ export declare class ProjectionGroupModel extends Model {
     data: Lst<ProjectionGroupItemModel>;
     constructor(projectionGroup?: ProjectionGroup);
     private updateData;
-    update(projectionGroup: ProjectionGroup): Promise<void>;
+    update(projectionGroup: ProjectionGroup): Promise<this>;
     toUxModel(): Promise<ProjectionGroup>;
 }

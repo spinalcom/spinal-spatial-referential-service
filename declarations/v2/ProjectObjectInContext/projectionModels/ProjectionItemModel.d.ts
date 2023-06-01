@@ -9,6 +9,6 @@ export declare class ProjectionItemModel extends Model {
     path?: Lst<Str>;
     constructor(projectionItem: ProjectionItem);
     constructor();
-    update(projectionItem: ProjectionItem): Promise<void>;
+    update(projectionItem: ProjectionItem): Promise<this>;
     toUxModel(): Promise<ProjectionItem>;
 }

@@ -49,7 +49,7 @@ const spinal_model_graph_1 = require("spinal-model-graph");
 const spinal_model_graph_2 = require("spinal-model-graph");
 const getBimFileByBimFileId_1 = require("./getBimFileByBimFileId");
 const constant_1 = require("../constant");
-let createBimContextIt;
+const createBimContextIt = new Map();
 function getBimContextByBimFileId(bimFileId, doCreate = false) {
     return __awaiter(this, void 0, void 0, function* () {
         const bimFile = yield (0, getBimFileByBimFileId_1.getBimFileByBimFileId)(bimFileId);

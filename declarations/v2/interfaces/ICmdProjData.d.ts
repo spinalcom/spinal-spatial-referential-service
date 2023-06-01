@@ -3,4 +3,5 @@ export interface ICmdProjData {
     externalId: string;
     name: string;
     revitCat: string;
+    flagWarining: boolean;
 }

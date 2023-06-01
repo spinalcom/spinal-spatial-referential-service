@@ -67,36 +67,32 @@ export class ProjectionGroupConfig {
   async saveToContext(context: SpinalContext): Promise<void> {
     let projectLst = await getConfigFromContext(context, this, true);
     if (!projectLst) projectLst = await createConfigNode(context, this);
-    const promises: Promise<void>[] = [];
-    const toDel: (ProjectionGroupModel | ProjectionItemModel)[] = [];
-    for (const projectItem of projectLst) {
-      const item = this.data.find((itm) => projectItem.uid.get() === itm.uid);
-      if (item) {
-        promises.push(projectItem.update(<any>item));
-      } else {
-        toDel.push(projectItem);
-      }
-    }
-    for (const itm of toDel) {
-      projectLst.remove_ref(itm);
-    }
-
+    const promises: Promise<ProjectionGroupModel | ProjectionItemModel>[] = [];
     for (const data of this.data) {
-      const item = projectLst.detect((itm) => {
-        return itm.uid.get() === data.uid;
-      });
-      if (!item) {
+      const itmInModel = projectLst.detect((itm) => itm.uid.get() === data.uid);
+      if (itmInModel) promises.push(itmInModel.update(<any>data));
+      else {
         if (isProjectionGroup(data)) {
           const mod = new ProjectionGroupModel(data);
           promises.push(mod.update(data));
-          projectLst.push(mod);
         } else {
           const mod = new ProjectionItemModel(data);
           promises.push(mod.update(data));
-          projectLst.push(mod);
         }
       }
     }
-    await Promise.all(promises);
+    const res = await Promise.all(promises);
+    let change = false;
+    for (let idx = 0; idx < res.length; idx++) {
+      if (res[idx] !== projectLst[idx]) change = true;
+    }
+    if (change) {
+      while (projectLst.length > 0) projectLst.pop();
+      for (let idx = 0; idx < res.length; idx++) {
+        projectLst.push(res[idx]);
+      }
+    } else {
+      projectLst.trim(res.length);
+    }
   }
 }

@@ -113,7 +113,7 @@ export async function consumeCmdGeo(
 async function getBimContext(
   dico: Record<string, Promise<SpinalNode>>,
   bimFileId: string
-) {
+): Promise<SpinalNode> {
   const bimContext = dico[bimFileId];
   if (bimContext) return bimContext;
   dico[bimFileId] = new Promise((resolve, reject) => {
@@ -121,6 +121,7 @@ async function getBimContext(
       .then((bimContext) => resolve(bimContext))
       .catch(reject);
   });
+  return dico[bimFileId];
 }
 
 async function consumeRefNode(

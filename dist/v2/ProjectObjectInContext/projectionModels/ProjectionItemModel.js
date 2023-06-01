@@ -43,14 +43,12 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
         super();
         if (spinal_core_connectorjs_1.FileSystem._sig_server === false)
             return;
-        // this.add_attr('name', projectionItem.name);
         this.add_attr('uid', projectionItem.uid);
         this.add_attr('bimFileId', (0, utils_1.getBimFileIdByModelId)(projectionItem.modelId));
         this.add_attr('offset', new ProjectionOffsetModel_1.ProjectionOffsetModel(projectionItem.offset));
     }
     update(projectionItem) {
         return __awaiter(this, void 0, void 0, function* () {
-            // this.name.set(projectionItem.name);
             this.uid.set(projectionItem.uid);
             this.bimFileId.set((0, utils_1.getBimFileIdByModelId)(projectionItem.modelId));
             this.offset.update(projectionItem.offset);
@@ -74,6 +72,7 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
                     this.externalId.set(projectionItem.externalId);
                 }
             }
+            return this;
         });
     }
     toUxModel() {

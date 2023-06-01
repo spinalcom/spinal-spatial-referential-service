@@ -38,9 +38,8 @@ const getLeafDbIdsByModel_1 = require("../../utils/projection/getLeafDbIdsByMode
 const transformRtzToXyz_1 = require("../../utils/projection/transformRtzToXyz");
 const isProjectionGroup_1 = require("../../utils/projection/isProjectionGroup");
 const getModelByModelId_1 = require("../../utils/projection/getModelByModelId");
-const getRoomRef_1 = require("./getRoomRef");
-const utils_1 = require("../../utils");
-function getIntersects(projectionGroupConfig, context) {
+const getViewer_1 = require("../../utils/getViewer");
+function getIntersects(projectionGroupConfig, mergedRoomRef) {
     return __awaiter(this, void 0, void 0, function* () {
         const selection = [];
         projectionGroupConfig.progress = 0;
@@ -63,11 +62,9 @@ function getIntersects(projectionGroupConfig, context) {
                     pushToAggregateDbidByModel(selection, ids, model, _offset, itemToProj.dbId);
                 }
                 projectionGroupConfig.progress =
-                    (projectionGroupConfig.data.length / (idx + 1)) * 33;
+                    (projectionGroupConfig.data.length / (idx + 1)) * 66;
             }
-            const to = yield (0, getRoomRef_1.getRoomRef)(context);
-            projectionGroupConfig.progress = 66;
-            const intersects = yield (0, raycastItemToMesh_1.raycastItemToMesh)(selection, to, (0, utils_1.getViewer)());
+            const intersects = yield (0, raycastItemToMesh_1.raycastItemToMesh)(selection, mergedRoomRef, (0, getViewer_1.getViewer)());
             projectionGroupConfig.progress = 100;
             return { selection, intersects };
         }

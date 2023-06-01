@@ -43,7 +43,6 @@ import { ProjectionOffsetModel } from './ProjectionOffsetModel';
 import { getExternalIdMapping } from '../../utils/getExternalIdMapping';
 
 export class ProjectionItemModel extends Model {
-  // name: Str;
   offset: ProjectionOffsetModel;
   uid: Str;
   bimFileId: Str;
@@ -55,14 +54,12 @@ export class ProjectionItemModel extends Model {
   constructor(projectionItem?: ProjectionItem) {
     super();
     if (FileSystem._sig_server === false) return;
-    // this.add_attr('name', projectionItem.name);
     this.add_attr('uid', projectionItem.uid);
     this.add_attr('bimFileId', getBimFileIdByModelId(projectionItem.modelId));
     this.add_attr('offset', new ProjectionOffsetModel(projectionItem.offset));
   }
 
-  async update(projectionItem: ProjectionItem): Promise<void> {
-    // this.name.set(projectionItem.name);
+  async update(projectionItem: ProjectionItem): Promise<this> {
     this.uid.set(projectionItem.uid);
     this.bimFileId.set(getBimFileIdByModelId(projectionItem.modelId));
     this.offset.update(projectionItem.offset);
@@ -83,6 +80,7 @@ export class ProjectionItemModel extends Model {
         this.externalId.set(projectionItem.externalId);
       }
     }
+    return this;
   }
 
   async toUxModel(): Promise<ProjectionItem> {

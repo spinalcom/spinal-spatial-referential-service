@@ -1,0 +1,1 @@
+{"version":3,"file":"getCategory.js","sourceRoot":"","sources":["../../../../src/v2/cmd/generateCmdProjection/getCategory.ts"],"names":[],"mappings":";;;AAEA,SAAgB,WAAW,CAAC,KAAc;IACxC,KAAK,MAAM,IAAI,IAAI,KAAK,CAAC,UAAU,EAAE;QACnC,IACE,IAAI,CAAC,aAAa,KAAK,UAAU;YACjC,IAAI,CAAC,eAAe,KAAK,cAAc,EACvC;YACA,OAAO,IAAI,CAAC;SACb;KACF;AACH,CAAC;AATD,kCASC"}

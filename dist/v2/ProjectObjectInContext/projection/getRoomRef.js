@@ -32,53 +32,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoomRef = exports.getRoomRefByFloor = void 0;
+exports.pushToAggregateSetDbidByModel = exports.getRoomRef = void 0;
 const Constant_1 = require("../../../Constant");
 const getModelByBimFileIdLoaded_1 = require("../../utils/projection/getModelByBimFileIdLoaded");
-function getRoomRefByFloor(context) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const result = {};
-        const floorRelNames = [
-            Constant_1.GEO_SITE_RELATION,
-            Constant_1.GEO_BUILDING_RELATION,
-            Constant_1.GEO_FLOOR_RELATION,
-            Constant_1.GEO_ZONE_RELATION,
-        ];
-        const roomRelNames = [Constant_1.GEO_ROOM_RELATION, Constant_1.GEO_ZONE_RELATION];
-        // get floor
-        const floors = yield context.find(floorRelNames, (node) => {
-            return node.getType().get() === Constant_1.GEO_FLOOR_TYPE;
-        });
-        for (const floor of floors) {
-            const resFloor = [];
-            // get rooms nodes
-            const rooms = yield floor.find(roomRelNames, (node) => {
-                return node.getType().get() === Constant_1.GEO_ROOM_TYPE;
-            });
-            const refObjsProm = rooms.map((room) => {
-                return room.getChildren([Constant_1.GEO_REFERENCE_ROOM_RELATION]);
-            });
-            const refObjs = yield Promise.all(refObjsProm);
-            // merge result by model
-            for (const refs of refObjs) {
-                for (const ref of refs) {
-                    if (ref.getType().get() === Constant_1.GEO_EQUIPMENT_TYPE) {
-                        const bimFileId = ref.info.bimFileId.get();
-                        const model = (0, getModelByBimFileIdLoaded_1.getModelByBimFileIdLoaded)(bimFileId);
-                        if (model) {
-                            const dbId = ref.info.dbid.get();
-                            pushToAggregateSetDbidByModel(resFloor, dbId, model);
-                        }
-                    }
-                }
-            }
-            if (resFloor.length > 0)
-                result[floor.info.name.get()] = resFloor;
-        }
-        return result;
-    });
-}
-exports.getRoomRefByFloor = getRoomRefByFloor;
 function getRoomRef(context) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = [];
@@ -129,4 +85,5 @@ function pushToAggregateSetDbidByModel(targetArray, id, model) {
         dbId: idSet,
     });
 }
+exports.pushToAggregateSetDbidByModel = pushToAggregateSetDbidByModel;
 //# sourceMappingURL=getRoomRef.js.map

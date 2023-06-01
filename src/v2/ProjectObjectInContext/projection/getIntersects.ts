@@ -22,46 +22,21 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-/*
- * Copyright 2023 SpinalCom - www.spinalcom.com
- *
- * This file is part of SpinalCore.
- *
- * Please read all of the following terms and conditions
- * of the Free Software license Agreement ("Agreement")
- * carefully.
- *
- * This Agreement is a legally binding contract between
- * the Licensee (as defined below) and SpinalCom that
- * sets forth the terms and conditions that govern your
- * use of the Program. By installing and/or using the
- * Program, you agree to abide by all the terms and
- * conditions stated or referenced herein.
- *
- * If you do not agree to abide by these terms and
- * conditions, do not demonstrate your acceptance and do
- * not install or use the Program.
- * You should have received a copy of the license along
- * with this file. If not, see
- * <http://resources.spinalcom.com/licenses.pdf>.
- */
-
 import type { SpinalVec3 } from '../../interfaces';
 import type { IAggregateDbidByModelItem } from '../../interfaces/IAggregateDbidByModelItem';
-import type { SpinalContext } from 'spinal-model-graph';
 import type { ProjectionGroupConfig } from '../ProjectionItem/ProjectionGroupConfig';
 import type { IIntersectRes } from '../../interfaces/IIntersectRes';
+import type { IAggregateDbidSetByModelItem } from '../../interfaces/IAggregateDbidSetByModelItem';
 import { raycastItemToMesh } from './raycastItemToMesh';
 import { getLeafDbIdsByModel } from '../../utils/projection/getLeafDbIdsByModel';
 import { transformRtzToXyz } from '../../utils/projection/transformRtzToXyz';
 import { isProjectionGroup } from '../../utils/projection/isProjectionGroup';
 import { getModelByModelId } from '../../utils/projection/getModelByModelId';
-import { getRoomRef } from './getRoomRef';
-import { getViewer } from '../../utils';
+import { getViewer } from '../../utils/getViewer';
 
 export async function getIntersects(
   projectionGroupConfig: ProjectionGroupConfig,
-  context: SpinalContext
+  mergedRoomRef: IAggregateDbidSetByModelItem[]
 ): Promise<IIntersectRes> {
   const selection: IAggregateDbidByModelItem[] = [];
   projectionGroupConfig.progress = 0;
@@ -88,11 +63,13 @@ export async function getIntersects(
         );
       }
       projectionGroupConfig.progress =
-        (projectionGroupConfig.data.length / (idx + 1)) * 33;
+        (projectionGroupConfig.data.length / (idx + 1)) * 66;
     }
-    const to = await getRoomRef(context);
-    projectionGroupConfig.progress = 66;
-    const intersects = await raycastItemToMesh(selection, to, getViewer());
+    const intersects = await raycastItemToMesh(
+      selection,
+      mergedRoomRef,
+      getViewer()
+    );
     projectionGroupConfig.progress = 100;
     return { selection, intersects };
   } catch (error) {
