@@ -69,12 +69,10 @@ function getRefFloorZMinMax(data) {
                 tmp[idx].distance = itm.max - itm.min;
             }
         }
-        console.log('getRefFloorZMinMax 2 ', tmp);
         const result = {};
         for (const itm of tmp) {
             result[itm.floorId] = itm;
         }
-        console.log('getRefFloorZMinMax 3 ', result);
         return result;
     });
 }

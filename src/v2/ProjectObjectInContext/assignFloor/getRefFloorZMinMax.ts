@@ -60,12 +60,10 @@ export async function getRefFloorZMinMax(
       tmp[idx].distance = itm.max - itm.min;
     }
   }
-  console.log('getRefFloorZMinMax 2 ', tmp);
   const result: Record<string, IFloorZData> = {};
   for (const itm of tmp) {
     result[itm.floorId] = itm;
   }
-  console.log('getRefFloorZMinMax 3 ', result);
   return result;
 }
 
