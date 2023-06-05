@@ -80,6 +80,7 @@ export function pushToAggregateSetDbidByModel(
   id: number,
   model: Autodesk.Viewing.Model
 ): void {
+  if (id === -1) return;
   for (const obj of targetArray) {
     if (obj.model === model) {
       obj.dbId.add(id);

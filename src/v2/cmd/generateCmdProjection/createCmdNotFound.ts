@@ -29,6 +29,7 @@ import type { ICmdMissing } from '../../interfaces/ICmdMissing';
 import { getBulkProperties } from '../../utils/projection/getBulkProperties';
 import { getDiffSelection } from './getDiffSelection';
 import { getBimFileIdByModelId } from '../../utils/projection/getBimFileIdByModelId';
+import { getCategory } from './getCategory';
 
 export async function createCmdNotFound(
   intersectRes: IIntersectRes
@@ -46,6 +47,7 @@ export function createCmdNotFoundItm(
   target: ICmdMissing[],
   auProp: AuProps
 ): void {
+  const revitCat = getCategory(auProp);
   const bimFileId = getBimFileIdByModelId(auProp.modelId);
   const itm = target.find((it) => it.bimFileId === bimFileId);
   if (itm) {
@@ -55,6 +57,7 @@ export function createCmdNotFoundItm(
         dbid: auProp.dbId,
         externalId: auProp.externalId,
         name: auProp.name,
+        revitCat: revitCat.displayValue,
       });
     }
   } else {
@@ -66,6 +69,7 @@ export function createCmdNotFoundItm(
           dbid: auProp.dbId,
           externalId: auProp.externalId,
           name: auProp.name,
+          revitCat: revitCat.displayValue,
         },
       ],
     });
@@ -75,7 +79,11 @@ export function createCmdNotFoundItm(
 async function getItemNames(data: IIntersectNotFound[]) {
   const res: Promise<AuProps[]>[] = [];
   for (const { model, dbIds } of data) {
-    res.push(getBulkProperties(model, dbIds));
+    res.push(
+      getBulkProperties(model, dbIds, {
+        propFilter: ['name', 'externalId', 'Category'],
+      })
+    );
   }
 
   return Promise.all(res).then((arr) => {

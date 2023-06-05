@@ -29,6 +29,7 @@ import {
   SPINAL_RELATION_PTR_LST_TYPE,
   type SpinalContext,
   SpinalNode,
+  SPINAL_RELATION_LST_PTR_TYPE,
 } from 'spinal-model-graph';
 import {
   getBimContextByBimFileId,
@@ -52,6 +53,14 @@ import { attributeService } from 'spinal-env-viewer-plugin-documentation-service
 import { consumeBatch } from '../../../utils/consumeBatch';
 import throttle from 'lodash.throttle';
 type RecordSpinalNode = Record<string, Promise<SpinalNode>>;
+type TAsyncGenNodeGeneration = AsyncGenerator<
+  {
+    node: SpinalNode;
+    children: SpinalNode[];
+  },
+  never,
+  never
+>;
 
 export async function consumeCmdProjection(
   cmds: (ICmdMissing | ICmdProjection)[],
@@ -59,11 +68,21 @@ export async function consumeCmdProjection(
   contextId: string,
   callbackProg?: (index: number) => void
 ): Promise<void> {
+  const contextGeneration = getRealNode(contextId);
+  const nodeGeneration = getRealNode(nodeId);
+  const warnNodeGen = getOrCreateGenOutNode(
+    contextGeneration,
+    nodeGeneration,
+    'warn'
+  );
+  const errorNodeGen = getOrCreateGenOutNode(
+    contextGeneration,
+    nodeGeneration,
+    'error'
+  );
   const dico: RecordSpinalNode = {};
   const graph = getGraph();
   const contextGeo = await getContextSpatial(graph);
-  const contextGeneration = getRealNode(contextId);
-  const nodeGeneration = getRealNode(nodeId);
   const cb = throttle(callbackProg, 100);
   recordDico(dico, contextGeo);
   await contextGeo.find(
@@ -83,7 +102,6 @@ export async function consumeCmdProjection(
     }
   );
   if (callbackProg) callbackProg(10);
-
   const totalIteration = cmds.reduce((acc, cmd) => {
     return acc + cmd.data.length;
   }, 0);
@@ -104,14 +122,16 @@ export async function consumeCmdProjection(
             cb((++totalIt / totalIteration) * 90 + 10);
           },
           bimContext,
-          bimobjs
+          bimobjs,
+          warnNodeGen,
+          contextGeneration
         )
       );
     } else {
       proms.push(
         consumeCmdMissingProj.bind(
           this,
-          nodeGeneration,
+          errorNodeGen,
           contextGeo,
           cmd,
           bimContext,
@@ -127,18 +147,47 @@ export async function consumeCmdProjection(
   await consumeBatch(proms, 1);
 }
 
-async function consumeCmdMissingProj(
+async function* getOrCreateGenOutNode(
+  contextGeneration: SpinalContext,
   nodeGeneration: SpinalNode,
+  type: 'warn' | 'error'
+): TAsyncGenNodeGeneration {
+  let resNode: SpinalNode;
+  const nodes = await nodeGeneration.getChildrenInContext(contextGeneration);
+  for (const node of nodes) {
+    if (type === 'warn' && node.info.name.get() === 'warn') {
+      resNode = node;
+    } else if (type === 'error' && node.info.name.get() === 'error') {
+      resNode = node;
+    }
+  }
+  if (!resNode) {
+    resNode = new SpinalNode(type, `GenerationContextType`);
+    nodeGeneration.addChildInContext(
+      resNode,
+      'hasGenerationContextType',
+      SPINAL_RELATION_PTR_LST_TYPE,
+      contextGeneration
+    );
+  }
+  const children = await resNode.getChildrenInContext(contextGeneration);
+  while (true) yield { node: resNode, children };
+}
+
+async function consumeCmdMissingProj(
+  errorGen: TAsyncGenNodeGeneration,
   contextGeo: SpinalContext,
   cmd: ICmdMissing,
   bimContext: SpinalNode,
   bimobjs: SpinalNode[],
-  contextGeneration: SpinalNode,
+  contextGeneration: SpinalContext,
   callbackProg: () => void
 ) {
-  const children = await nodeGeneration.getChildrenInContext(contextGeneration);
+  if (spinal.SHOW_LOG_GENERATION) console.log('consumeCmdMissingProj', cmd);
+  const nodeGeneration = (await errorGen.next()).value;
   for (const obj of cmd.data) {
-    let child = children.find(
+    if (spinal.SHOW_LOG_GENERATION) console.log(' => ', obj);
+    let child = nodeGeneration.children.find(
       (node) => node.info.externalId.get() === obj.externalId
     );
     if (child) {
@@ -158,14 +207,20 @@ async function consumeCmdMissingProj(
         obj.dbid,
         obj.externalId
       );
-      await nodeGeneration.addChildInContext(
+      await nodeGeneration.node.addChildInContext(
         child,
         GEO_EQUIPMENT_RELATION,
         SPINAL_RELATION_PTR_LST_TYPE,
         contextGeneration
       );
+      await updateRevitCategory(child, obj.revitCat);
     }
     await removeOtherParents(child, contextGeo, '');
+    await removeOtherParents(
+      child,
+      contextGeneration,
+      nodeGeneration.node.info.id.get()
+    );
     await waitGetServerId(child);
     if (callbackProg) callbackProg();
   }
@@ -177,12 +232,17 @@ async function consumeCmdProj(
   contextGeo: SpinalContext,
   callbackProg: () => void,
   bimContext: SpinalNode,
-  bimobjs: SpinalNode[]
+  bimobjs: SpinalNode[],
+  warnGen: TAsyncGenNodeGeneration,
+  contextGeneration: SpinalContext
 ) {
+  if (spinal.SHOW_LOG_GENERATION) console.log('consumeCmdProj', cmd);
+
   const parentNode = await getFromDico(dico, cmd.pNId);
   if (!parentNode) throw new Error(`ParentId for ${cmd.type} not found.`);
   const children = await parentNode.getChildrenInContext(contextGeo);
   for (const obj of cmd.data) {
+    if (spinal.SHOW_LOG_GENERATION) console.log(' => ', obj);
     let child = children.find(
       (node) => node.info.externalId.get() === obj.externalId
     );
@@ -211,13 +271,41 @@ async function consumeCmdProj(
       );
     }
     await removeOtherParents(child, contextGeo, parentNode.info.id.get());
-    await updateRevitCategory(child, obj);
+    await updateRevitCategory(child, obj.revitCat);
+    if (obj.flagWarining) {
+      const nodeGeneration = (await warnGen.next()).value;
+      let childGen = nodeGeneration.children.find(
+        (node) => node.info.externalId.get() === obj.externalId
+      );
+      if (!childGen) {
+        childGen = await createOrUpdateBimObj(
+          bimContext,
+          bimobjs,
+          cmd.bimFileId,
+          obj.name,
+          obj.dbid,
+          obj.externalId
+        );
+        await nodeGeneration.node.addChildInContext(
+          childGen,
+          GEO_EQUIPMENT_RELATION,
+          SPINAL_RELATION_PTR_LST_TYPE,
+          contextGeneration
+        );
+      }
+      await removeOtherParents(
+        child,
+        contextGeneration,
+        nodeGeneration.node.info.id.get()
+      );
+    }
     await waitGetServerId(child);
     if (callbackProg) callbackProg();
   }
 }
 
-async function updateRevitCategory(child: SpinalNode, obj: ICmdProjData) {
+async function updateRevitCategory(child: SpinalNode, revitCat: string) {
+  if (!revitCat) return;
   let cat = await attributeService.getCategoryByName(child, 'default');
   if (!cat) {
     cat = await attributeService.addCategoryAttribute(child, 'default');
@@ -230,13 +318,13 @@ async function updateRevitCategory(child: SpinalNode, obj: ICmdProjData) {
     (itm) => itm.label.get() === 'revit_category'
   );
   if (attrFromNode) {
-    attrFromNode.value.set(obj.revitCat);
+    attrFromNode.value.set(revitCat);
   } else {
     attributeService.addAttributeByCategory(
       child,
       cat,
       'revit_category',
-      obj.revitCat,
+      revitCat,
       '',
       ''
     );
@@ -256,11 +344,19 @@ async function removeOtherParents(
     }
   }
   for (const obj of toRm) {
-    await obj.removeChild(
-      child,
-      GEO_EQUIPMENT_RELATION,
-      SPINAL_RELATION_PTR_LST_TYPE
-    );
+    if (obj.children.LstPtr?.[GEO_EQUIPMENT_RELATION]) {
+      await obj.removeChild(
+        child,
+        GEO_EQUIPMENT_RELATION,
+        SPINAL_RELATION_LST_PTR_TYPE
+      );
+    } else {
+      await obj.removeChild(
+        child,
+        GEO_EQUIPMENT_RELATION,
+        SPINAL_RELATION_PTR_LST_TYPE
+      );
+    }
   }
 }
 

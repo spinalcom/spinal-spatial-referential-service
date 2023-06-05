@@ -36,6 +36,7 @@ exports.createCmdNotFoundItm = exports.createCmdNotFound = void 0;
 const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
 const getDiffSelection_1 = require("./getDiffSelection");
 const getBimFileIdByModelId_1 = require("../../utils/projection/getBimFileIdByModelId");
+const getCategory_1 = require("./getCategory");
 function createCmdNotFound(intersectRes) {
     return __awaiter(this, void 0, void 0, function* () {
         const notFound = (0, getDiffSelection_1.getDiffSelection)(intersectRes);
@@ -49,6 +50,7 @@ function createCmdNotFound(intersectRes) {
 }
 exports.createCmdNotFound = createCmdNotFound;
 function createCmdNotFoundItm(target, auProp) {
+    const revitCat = (0, getCategory_1.getCategory)(auProp);
     const bimFileId = (0, getBimFileIdByModelId_1.getBimFileIdByModelId)(auProp.modelId);
     const itm = target.find((it) => it.bimFileId === bimFileId);
     if (itm) {
@@ -58,6 +60,7 @@ function createCmdNotFoundItm(target, auProp) {
                 dbid: auProp.dbId,
                 externalId: auProp.externalId,
                 name: auProp.name,
+                revitCat: revitCat.displayValue,
             });
         }
     }
@@ -70,6 +73,7 @@ function createCmdNotFoundItm(target, auProp) {
                     dbid: auProp.dbId,
                     externalId: auProp.externalId,
                     name: auProp.name,
+                    revitCat: revitCat.displayValue,
                 },
             ],
         });
@@ -80,7 +84,9 @@ function getItemNames(data) {
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];
         for (const { model, dbIds } of data) {
-            res.push((0, getBulkProperties_1.getBulkProperties)(model, dbIds));
+            res.push((0, getBulkProperties_1.getBulkProperties)(model, dbIds, {
+                propFilter: ['name', 'externalId', 'Category'],
+            }));
         }
         return Promise.all(res).then((arr) => {
             const result = [];

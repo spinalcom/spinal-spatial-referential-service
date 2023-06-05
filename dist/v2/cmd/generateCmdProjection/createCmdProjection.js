@@ -53,6 +53,7 @@ function createCmdProjection(intersects, contextGeoId, floorsData) {
             if (floor) {
                 const floorData = floorsData[floor.info.id.get()];
                 if (floorData &&
+                    floorData.distance &&
                     spinalIntersection.intersections.distance > floorData.distance) {
                     flagWarining = true;
                 }

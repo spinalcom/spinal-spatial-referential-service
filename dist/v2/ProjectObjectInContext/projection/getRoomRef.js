@@ -72,6 +72,8 @@ function getRoomRef(context) {
 }
 exports.getRoomRef = getRoomRef;
 function pushToAggregateSetDbidByModel(targetArray, id, model) {
+    if (id === -1)
+        return;
     for (const obj of targetArray) {
         if (obj.model === model) {
             obj.dbId.add(id);

@@ -155,15 +155,9 @@ async function consumeDeleteCmd(
     if (refChild) nodesToDel.push(refChild);
   }
   if (nodesToDel.length > 0) {
-    await parentNode.removeChildren(
-      nodesToDel,
-      relationName,
-      SPINAL_RELATION_PTR_LST_TYPE
-    );
-
     if (nodeGenerationId) {
-      const contextGeneration = getRealNode(nodeGenerationId);
-      const nodeGeneration = getRealNode(contextGenerationId);
+      const contextGeneration = getRealNode(contextGenerationId);
+      const nodeGeneration = getRealNode(nodeGenerationId);
       const prom = nodesToDel.map((itm) => {
         return nodeGeneration.addChildInContext(
           itm,
@@ -174,6 +168,11 @@ async function consumeDeleteCmd(
       });
       await Promise.all(prom);
     }
+    await parentNode.removeChildren(
+      nodesToDel,
+      relationName,
+      SPINAL_RELATION_PTR_LST_TYPE
+    );
   }
 }
 

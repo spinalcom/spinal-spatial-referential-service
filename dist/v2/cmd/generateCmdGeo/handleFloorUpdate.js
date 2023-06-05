@@ -45,7 +45,8 @@ function handleFloorUpdate(floorData, buildingNode, dataToDo, skipList, bimFileI
     return __awaiter(this, void 0, void 0, function* () {
         const floorNode = (spinal_core_connectorjs_1.FileSystem._objects[floorData.floorArchi.properties.spinalnodeServerId]);
         const floorCmd = getFloorCmdUp(floorData, buildingNode, floorNode);
-        const floorCmds = [floorCmd];
+        dataToDo.push([floorCmd]);
+        const floorCmds = [];
         if (floorData.diff.diffRef.delBimObj.length > 0) {
             const delBimObj = {
                 pNId: floorNode.info.id.get(),
@@ -63,7 +64,8 @@ function handleFloorUpdate(floorData, buildingNode, dataToDo, skipList, bimFileI
             };
             floorCmds.push(floorRoomDel);
         }
-        dataToDo.push(floorCmds);
+        if (floorCmds.length > 0)
+            dataToDo.push(floorCmds);
         const floorRefCmd = getFloorRefCmd(floorData, floorNode, bimFileId);
         const roomCmds = [], roomRefCmds = [];
         floorData.diff.diffRoom.newRooms.forEach((roomArchi) => {

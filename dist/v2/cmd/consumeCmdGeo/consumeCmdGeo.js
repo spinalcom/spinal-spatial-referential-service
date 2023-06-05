@@ -136,15 +136,15 @@ function consumeDeleteCmd(dico, cmd, relationName, nodeGenerationId, contextGene
                 nodesToDel.push(refChild);
         }
         if (nodesToDel.length > 0) {
-            yield parentNode.removeChildren(nodesToDel, relationName, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
             if (nodeGenerationId) {
-                const contextGeneration = (0, graphservice_1.getRealNode)(nodeGenerationId);
-                const nodeGeneration = (0, graphservice_1.getRealNode)(contextGenerationId);
+                const contextGeneration = (0, graphservice_1.getRealNode)(contextGenerationId);
+                const nodeGeneration = (0, graphservice_1.getRealNode)(nodeGenerationId);
                 const prom = nodesToDel.map((itm) => {
                     return nodeGeneration.addChildInContext(itm, constant_1.ARCHIVE_RELATION_NAME, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeneration);
                 });
                 yield Promise.all(prom);
             }
+            yield parentNode.removeChildren(nodesToDel, relationName, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
         }
     });
 }

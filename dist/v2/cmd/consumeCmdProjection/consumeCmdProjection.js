@@ -31,6 +31,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
+var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -45,11 +57,13 @@ const consumeBatch_1 = require("../../../utils/consumeBatch");
 const lodash_throttle_1 = __importDefault(require("lodash.throttle"));
 function consumeCmdProjection(cmds, nodeId, contextId, callbackProg) {
     return __awaiter(this, void 0, void 0, function* () {
+        const contextGeneration = (0, utils_1.getRealNode)(contextId);
+        const nodeGeneration = (0, utils_1.getRealNode)(nodeId);
+        const warnNodeGen = getOrCreateGenOutNode(contextGeneration, nodeGeneration, 'warn');
+        const errorNodeGen = getOrCreateGenOutNode(contextGeneration, nodeGeneration, 'error');
         const dico = {};
         const graph = (0, utils_1.getGraph)();
         const contextGeo = yield (0, utils_1.getContextSpatial)(graph);
-        const contextGeneration = (0, utils_1.getRealNode)(contextId);
-        const nodeGeneration = (0, utils_1.getRealNode)(nodeId);
         const cb = (0, lodash_throttle_1.default)(callbackProg, 100);
         recordDico(dico, contextGeo);
         yield contextGeo.find([
@@ -79,10 +93,10 @@ function consumeCmdProjection(cmds, nodeId, contextId, callbackProg) {
             if (isCmdProj(cmd)) {
                 proms.push(consumeCmdProj.bind(this, dico, cmd, contextGeo, () => {
                     cb((++totalIt / totalIteration) * 90 + 10);
-                }, bimContext, bimobjs));
+                }, bimContext, bimobjs, warnNodeGen, contextGeneration));
             }
             else {
-                proms.push(consumeCmdMissingProj.bind(this, nodeGeneration, contextGeo, cmd, bimContext, bimobjs, contextGeneration, () => {
+                proms.push(consumeCmdMissingProj.bind(this, errorNodeGen, contextGeo, cmd, bimContext, bimobjs, contextGeneration, () => {
                     cb((++totalIt / totalIteration) * 90 + 10);
                 }));
             }
@@ -91,32 +105,63 @@ function consumeCmdProjection(cmds, nodeId, contextId, callbackProg) {
     });
 }
 exports.consumeCmdProjection = consumeCmdProjection;
-function consumeCmdMissingProj(nodeGeneration, contextGeo, cmd, bimContext, bimobjs, contextGeneration, callbackProg) {
+function getOrCreateGenOutNode(contextGeneration, nodeGeneration, type) {
+    return __asyncGenerator(this, arguments, function* getOrCreateGenOutNode_1() {
+        let resNode;
+        const nodes = yield __await(nodeGeneration.getChildrenInContext(contextGeneration));
+        for (const node of nodes) {
+            if (type === 'warn' && node.info.name.get() === 'warn') {
+                resNode = node;
+            }
+            else if (type === 'error' && node.info.name.get() === 'error') {
+                resNode = node;
+            }
+        }
+        if (!resNode) {
+            resNode = new spinal_model_graph_1.SpinalNode(type, `GenerationContextType`);
+            nodeGeneration.addChildInContext(resNode, 'hasGenerationContextType', spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeneration);
+        }
+        const children = yield __await(resNode.getChildrenInContext(contextGeneration));
+        while (true)
+            yield yield __await({ node: resNode, children });
+    });
+}
+function consumeCmdMissingProj(errorGen, contextGeo, cmd, bimContext, bimobjs, contextGeneration, callbackProg) {
     return __awaiter(this, void 0, void 0, function* () {
-        const children = yield nodeGeneration.getChildrenInContext(contextGeneration);
+        if (spinal.SHOW_LOG_GENERATION)
+            console.log('consumeCmdMissingProj', cmd);
+        const nodeGeneration = (yield errorGen.next()).value;
         for (const obj of cmd.data) {
-            let child = children.find((node) => node.info.externalId.get() === obj.externalId);
+            if (spinal.SHOW_LOG_GENERATION)
+                console.log(' => ', obj);
+            let child = nodeGeneration.children.find((node) => node.info.externalId.get() === obj.externalId);
             if (child) {
                 updateBimObjInfo(child, obj.name, obj.dbid, cmd.bimFileId, obj.externalId);
             }
             else {
                 child = yield createOrUpdateBimObj(bimContext, bimobjs, cmd.bimFileId, obj.name, obj.dbid, obj.externalId);
-                yield nodeGeneration.addChildInContext(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeneration);
+                yield nodeGeneration.node.addChildInContext(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeneration);
+                yield updateRevitCategory(child, obj.revitCat);
             }
             yield removeOtherParents(child, contextGeo, '');
+            yield removeOtherParents(child, contextGeneration, nodeGeneration.node.info.id.get());
             yield (0, utils_1.waitGetServerId)(child);
             if (callbackProg)
                 callbackProg();
         }
     });
 }
-function consumeCmdProj(dico, cmd, contextGeo, callbackProg, bimContext, bimobjs) {
+function consumeCmdProj(dico, cmd, contextGeo, callbackProg, bimContext, bimobjs, warnGen, contextGeneration) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (spinal.SHOW_LOG_GENERATION)
+            console.log('consumeCmdProj', cmd);
         const parentNode = yield getFromDico(dico, cmd.pNId);
         if (!parentNode)
             throw new Error(`ParentId for ${cmd.type} not found.`);
         const children = yield parentNode.getChildrenInContext(contextGeo);
         for (const obj of cmd.data) {
+            if (spinal.SHOW_LOG_GENERATION)
+                console.log(' => ', obj);
             let child = children.find((node) => node.info.externalId.get() === obj.externalId);
             if (child) {
                 updateBimObjInfo(child, obj.name, obj.dbid, cmd.bimFileId, obj.externalId);
@@ -126,15 +171,26 @@ function consumeCmdProj(dico, cmd, contextGeo, callbackProg, bimContext, bimobjs
                 yield parentNode.addChildInContext(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeo);
             }
             yield removeOtherParents(child, contextGeo, parentNode.info.id.get());
-            yield updateRevitCategory(child, obj);
+            yield updateRevitCategory(child, obj.revitCat);
+            if (obj.flagWarining) {
+                const nodeGeneration = (yield warnGen.next()).value;
+                let childGen = nodeGeneration.children.find((node) => node.info.externalId.get() === obj.externalId);
+                if (!childGen) {
+                    childGen = yield createOrUpdateBimObj(bimContext, bimobjs, cmd.bimFileId, obj.name, obj.dbid, obj.externalId);
+                    yield nodeGeneration.node.addChildInContext(childGen, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeneration);
+                }
+                yield removeOtherParents(child, contextGeneration, nodeGeneration.node.info.id.get());
+            }
             yield (0, utils_1.waitGetServerId)(child);
             if (callbackProg)
                 callbackProg();
         }
     });
 }
-function updateRevitCategory(child, obj) {
+function updateRevitCategory(child, revitCat) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (!revitCat)
+            return;
         let cat = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.getCategoryByName(child, 'default');
         if (!cat) {
             cat = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.addCategoryAttribute(child, 'default');
@@ -142,14 +198,15 @@ function updateRevitCategory(child, obj) {
         const attrsFromNode = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.getAttributesByCategory(child, cat);
         const attrFromNode = attrsFromNode.find((itm) => itm.label.get() === 'revit_category');
         if (attrFromNode) {
-            attrFromNode.value.set(obj.revitCat);
+            attrFromNode.value.set(revitCat);
         }
         else {
-            spinal_env_viewer_plugin_documentation_service_1.attributeService.addAttributeByCategory(child, cat, 'revit_category', obj.revitCat, '', '');
+            spinal_env_viewer_plugin_documentation_service_1.attributeService.addAttributeByCategory(child, cat, 'revit_category', revitCat, '', '');
         }
     });
 }
 function removeOtherParents(child, contextGeo, parentNodeId) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const parents = yield child.getParentsInContext(contextGeo);
         const toRm = [];
@@ -159,7 +216,12 @@ function removeOtherParents(child, contextGeo, parentNodeId) {
             }
         }
         for (const obj of toRm) {
-            yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+            if ((_a = obj.children.LstPtr) === null || _a === void 0 ? void 0 : _a[Constant_1.GEO_EQUIPMENT_RELATION]) {
+                yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_LST_PTR_TYPE);
+            }
+            else {
+                yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+            }
         }
     });
 }

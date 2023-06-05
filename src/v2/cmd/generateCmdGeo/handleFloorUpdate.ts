@@ -52,7 +52,9 @@ export async function handleFloorUpdate(
     FileSystem._objects[floorData.floorArchi.properties.spinalnodeServerId]
   );
   const floorCmd: ICmdNew = getFloorCmdUp(floorData, buildingNode, floorNode);
-  const floorCmds = [floorCmd];
+  dataToDo.push([floorCmd]);
+
+  const floorCmds: ICmdNew[] = [];
   if (floorData.diff.diffRef.delBimObj.length > 0) {
     const delBimObj = {
       pNId: floorNode.info.id.get(),
@@ -72,7 +74,7 @@ export async function handleFloorUpdate(
     };
     floorCmds.push(floorRoomDel);
   }
-  dataToDo.push(floorCmds);
+  if (floorCmds.length > 0) dataToDo.push(floorCmds);
 
   const floorRefCmd = getFloorRefCmd(floorData, floorNode, bimFileId);
   const roomCmds: ICmdNew[] = [],
