@@ -32,49 +32,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCmdProjection = void 0;
-const graphservice_1 = require("../../utils/graphservice");
-const getModelByModelId_1 = require("../../utils/projection/getModelByModelId");
+exports.createCmdProjectionForManualAssing = void 0;
+const utils_1 = require("../../utils");
 const getProperties_1 = require("../../utils/projection/getProperties");
-const getIntersectionRoom_1 = require("./getIntersectionRoom");
+const createCmdNotFoundItm_1 = require("./createCmdNotFoundItm");
 const createCmdProjItm_1 = require("./createCmdProjItm");
-function createCmdProjection(intersects, contextGeoId, floorsData) {
+function createCmdProjectionForManualAssing(warnArr, errorArr) {
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];
-        const dicoBimObjs = {};
-        for (const spinalIntersection of intersects) {
-            const bimObjectDbId = spinalIntersection.origin.dbId;
-            const bimObjectModel = (0, getModelByModelId_1.getModelByModelId)(spinalIntersection.origin.modelId);
+        const resMiss = [];
+        for (const warn of warnArr) {
+            const bimObjectDbId = warn.dbid;
+            const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(warn.bimFileId);
             const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
-            const room = yield (0, getIntersectionRoom_1.getIntersectionRoom)(spinalIntersection.intersections.dbId, spinalIntersection.intersections.modelId, dicoBimObjs, contextGeoId);
-            let flagWarining = false;
-            const floor = yield getFloorFromRoom(room, contextGeoId);
-            if (floor) {
-                const floorData = floorsData[floor.info.id.get()];
-                if (floorData &&
-                    floorData.distance &&
-                    spinalIntersection.intersections.distance > floorData.distance) {
-                    flagWarining = true;
-                }
-            }
-            if (!room) {
-                console.error(`createCmdProjection: room not found for ${bimObjectDbId}`);
+            if (warn.validId) {
+                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, false);
             }
             else {
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, room.info.id.get(), flagWarining);
+                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.PNId, true);
             }
         }
-        return res;
-    });
-}
-exports.createCmdProjection = createCmdProjection;
-function getFloorFromRoom(room, contextGeoId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const contextGeo = (0, graphservice_1.getRealNode)(contextGeoId);
-        const floors = yield room.getParentsInContext(contextGeo);
-        for (const floor of floors) {
-            return floor;
+        for (const warn of errorArr) {
+            const bimObjectDbId = warn.dbid;
+            const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(warn.bimFileId);
+            const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
+            if (warn.validId) {
+                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, false);
+            }
+            else {
+                (0, createCmdNotFoundItm_1.createCmdNotFoundItm)(resMiss, auProp);
+            }
         }
+        return { cmd: res, cmdMiss: resMiss };
     });
 }
-//# sourceMappingURL=createCmdProjection.js.map
+exports.createCmdProjectionForManualAssing = createCmdProjectionForManualAssing;
+//# sourceMappingURL=createCmdProjectionForManualAssing.js.map

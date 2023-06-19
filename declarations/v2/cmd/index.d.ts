@@ -8,3 +8,4 @@ export * from './saveCmd/getCmdServId';
 export * from './saveCmd/saveCmdsGenerateGeo';
 export * from './saveCmd/saveCmdsProjectionGeo';
 export * from './saveCmd/getContextGeneration';
+export * from './generateCmdProjection/createCmdProjectionForManualAssing';

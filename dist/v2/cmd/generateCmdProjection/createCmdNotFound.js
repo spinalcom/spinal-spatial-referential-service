@@ -32,54 +32,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCmdNotFoundItm = exports.createCmdNotFound = void 0;
+exports.createCmdNotFound = void 0;
 const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
 const getDiffSelection_1 = require("./getDiffSelection");
-const getBimFileIdByModelId_1 = require("../../utils/projection/getBimFileIdByModelId");
-const getCategory_1 = require("./getCategory");
+const createCmdNotFoundItm_1 = require("./createCmdNotFoundItm");
 function createCmdNotFound(intersectRes) {
     return __awaiter(this, void 0, void 0, function* () {
         const notFound = (0, getDiffSelection_1.getDiffSelection)(intersectRes);
         const auProps = yield getItemNames(notFound);
         const res = [];
         for (const auProp of auProps) {
-            createCmdNotFoundItm(res, auProp);
+            (0, createCmdNotFoundItm_1.createCmdNotFoundItm)(res, auProp);
         }
         return res;
     });
 }
 exports.createCmdNotFound = createCmdNotFound;
-function createCmdNotFoundItm(target, auProp) {
-    const revitCat = (0, getCategory_1.getCategory)(auProp);
-    const bimFileId = (0, getBimFileIdByModelId_1.getBimFileIdByModelId)(auProp.modelId);
-    const itm = target.find((it) => it.bimFileId === bimFileId);
-    if (itm) {
-        const tmp = itm.data.find((it) => it.dbid === auProp.dbId);
-        if (!tmp) {
-            itm.data.push({
-                dbid: auProp.dbId,
-                externalId: auProp.externalId,
-                name: auProp.name,
-                revitCat: revitCat.displayValue,
-            });
-        }
-    }
-    else {
-        target.push({
-            type: 'CmdMissing',
-            bimFileId,
-            data: [
-                {
-                    dbid: auProp.dbId,
-                    externalId: auProp.externalId,
-                    name: auProp.name,
-                    revitCat: revitCat.displayValue,
-                },
-            ],
-        });
-    }
-}
-exports.createCmdNotFoundItm = createCmdNotFoundItm;
 function getItemNames(data) {
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];

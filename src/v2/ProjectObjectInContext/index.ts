@@ -50,9 +50,15 @@ export * from './projection/getIntersects';
 export * from './projection/raycastItemToMesh';
 export * from './projection/mergeIntersectRes';
 export * from './projection/mergeRoomRef';
+export * from './projection/getRoomRef';
 
 export * from './assignFloor/getRefFloorZMinMax';
 export * from './assignFloor/getFloorChildrenDbIdOfModel';
 export * from './assignFloor/getFloorPropForModel';
 export * from './assignFloor/getFloorsDbIdOfModel';
 export * from './assignFloor/getRoomRefByFloor';
+
+export * from './assignView/getSpatialTree';
+export * from './assignView/getDataAssing';
+export * from './assignView/viewDataAssignInViewer';
+export * from './assignView/getRoomNameFromSelectFloor';

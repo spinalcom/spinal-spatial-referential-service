@@ -171,6 +171,7 @@ function consumeCmdProj(dico, cmd, contextGeo, callbackProg, bimContext, bimobjs
                 yield parentNode.addChildInContext(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeo);
             }
             yield removeOtherParents(child, contextGeo, parentNode.info.id.get());
+            yield removeOtherParents(child, contextGeneration, '');
             yield updateRevitCategory(child, obj.revitCat);
             if (obj.flagWarining) {
                 const nodeGeneration = (yield warnGen.next()).value;
@@ -205,10 +206,10 @@ function updateRevitCategory(child, revitCat) {
         }
     });
 }
-function removeOtherParents(child, contextGeo, parentNodeId) {
+function removeOtherParents(child, context, parentNodeId) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const parents = yield child.getParentsInContext(contextGeo);
+        const parents = yield child.getParentsInContext(context);
         const toRm = [];
         for (const otherParent of parents) {
             if (otherParent.info.id.get() !== parentNodeId) {
@@ -217,7 +218,12 @@ function removeOtherParents(child, contextGeo, parentNodeId) {
         }
         for (const obj of toRm) {
             if ((_a = obj.children.LstPtr) === null || _a === void 0 ? void 0 : _a[Constant_1.GEO_EQUIPMENT_RELATION]) {
-                yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_LST_PTR_TYPE);
+                try {
+                    yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_LST_PTR_TYPE);
+                }
+                catch (e) {
+                    yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+                }
             }
             else {
                 yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);

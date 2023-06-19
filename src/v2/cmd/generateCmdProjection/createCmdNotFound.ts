@@ -28,8 +28,7 @@ import type { IIntersectRes } from '../../interfaces/IIntersectRes';
 import type { ICmdMissing } from '../../interfaces/ICmdMissing';
 import { getBulkProperties } from '../../utils/projection/getBulkProperties';
 import { getDiffSelection } from './getDiffSelection';
-import { getBimFileIdByModelId } from '../../utils/projection/getBimFileIdByModelId';
-import { getCategory } from './getCategory';
+import { createCmdNotFoundItm } from './createCmdNotFoundItm';
 
 export async function createCmdNotFound(
   intersectRes: IIntersectRes
@@ -41,39 +40,6 @@ export async function createCmdNotFound(
     createCmdNotFoundItm(res, auProp);
   }
   return res;
-}
-
-export function createCmdNotFoundItm(
-  target: ICmdMissing[],
-  auProp: AuProps
-): void {
-  const revitCat = getCategory(auProp);
-  const bimFileId = getBimFileIdByModelId(auProp.modelId);
-  const itm = target.find((it) => it.bimFileId === bimFileId);
-  if (itm) {
-    const tmp = itm.data.find((it) => it.dbid === auProp.dbId);
-    if (!tmp) {
-      itm.data.push({
-        dbid: auProp.dbId,
-        externalId: auProp.externalId,
-        name: auProp.name,
-        revitCat: revitCat.displayValue,
-      });
-    }
-  } else {
-    target.push({
-      type: 'CmdMissing',
-      bimFileId,
-      data: [
-        {
-          dbid: auProp.dbId,
-          externalId: auProp.externalId,
-          name: auProp.name,
-          revitCat: revitCat.displayValue,
-        },
-      ],
-    });
-  }
 }
 
 async function getItemNames(data: IIntersectNotFound[]) {

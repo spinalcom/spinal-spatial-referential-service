@@ -60,9 +60,14 @@ __exportStar(require("./projection/getIntersects"), exports);
 __exportStar(require("./projection/raycastItemToMesh"), exports);
 __exportStar(require("./projection/mergeIntersectRes"), exports);
 __exportStar(require("./projection/mergeRoomRef"), exports);
+__exportStar(require("./projection/getRoomRef"), exports);
 __exportStar(require("./assignFloor/getRefFloorZMinMax"), exports);
 __exportStar(require("./assignFloor/getFloorChildrenDbIdOfModel"), exports);
 __exportStar(require("./assignFloor/getFloorPropForModel"), exports);
 __exportStar(require("./assignFloor/getFloorsDbIdOfModel"), exports);
 __exportStar(require("./assignFloor/getRoomRefByFloor"), exports);
+__exportStar(require("./assignView/getSpatialTree"), exports);
+__exportStar(require("./assignView/getDataAssing"), exports);
+__exportStar(require("./assignView/viewDataAssignInViewer"), exports);
+__exportStar(require("./assignView/getRoomNameFromSelectFloor"), exports);
 //# sourceMappingURL=index.js.map

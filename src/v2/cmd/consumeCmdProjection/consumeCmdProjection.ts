@@ -24,7 +24,6 @@
 
 import type { ICmdProjection } from '../../interfaces/ICmdProjection';
 import type { ICmdMissing } from '../../interfaces/ICmdMissing';
-import type { ICmdProjData } from '../../interfaces/ICmdProjData';
 import {
   SPINAL_RELATION_PTR_LST_TYPE,
   type SpinalContext,
@@ -271,6 +270,7 @@ async function consumeCmdProj(
       );
     }
     await removeOtherParents(child, contextGeo, parentNode.info.id.get());
+    await removeOtherParents(child, contextGeneration, '');
     await updateRevitCategory(child, obj.revitCat);
     if (obj.flagWarining) {
       const nodeGeneration = (await warnGen.next()).value;
@@ -333,10 +333,10 @@ async function updateRevitCategory(child: SpinalNode, revitCat: string) {
 
 async function removeOtherParents(
   child: SpinalNode,
-  contextGeo: SpinalContext,
+  context: SpinalContext,
   parentNodeId: string
 ) {
-  const parents = await child.getParentsInContext(contextGeo);
+  const parents = await child.getParentsInContext(context);
   const toRm: SpinalNode[] = [];
   for (const otherParent of parents) {
     if (otherParent.info.id.get() !== parentNodeId) {
@@ -345,11 +345,19 @@ async function removeOtherParents(
   }
   for (const obj of toRm) {
     if (obj.children.LstPtr?.[GEO_EQUIPMENT_RELATION]) {
-      await obj.removeChild(
-        child,
-        GEO_EQUIPMENT_RELATION,
-        SPINAL_RELATION_LST_PTR_TYPE
-      );
+      try {
+        await obj.removeChild(
+          child,
+          GEO_EQUIPMENT_RELATION,
+          SPINAL_RELATION_LST_PTR_TYPE
+        );
+      } catch (e) {
+        await obj.removeChild(
+          child,
+          GEO_EQUIPMENT_RELATION,
+          SPINAL_RELATION_PTR_LST_TYPE
+        );
+      }
     } else {
       await obj.removeChild(
         child,

@@ -49,4 +49,5 @@ __exportStar(require("./saveCmd/getCmdServId"), exports);
 __exportStar(require("./saveCmd/saveCmdsGenerateGeo"), exports);
 __exportStar(require("./saveCmd/saveCmdsProjectionGeo"), exports);
 __exportStar(require("./saveCmd/getContextGeneration"), exports);
+__exportStar(require("./generateCmdProjection/createCmdProjectionForManualAssing"), exports);
 //# sourceMappingURL=index.js.map

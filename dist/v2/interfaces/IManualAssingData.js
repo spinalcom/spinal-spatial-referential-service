@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2023 SpinalCom - www.spinalcom.com
  *
@@ -21,21 +22,5 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-
-export * from './consumeCmdGeo/consumeCmdGeo';
-export * from './consumeCmdProjection/consumeCmdProjection';
-
-// export * from './generateCmdGeo/handleFloorUpdate';
-// export * from './generateCmdGeo/handleFloorCmdNew';
-export * from './generateCmdGeo/generateCmdGeo';
-
-export * from './generateCmdProjection/createCmdNotFound';
-export * from './generateCmdProjection/createCmdProjection';
-
-export * from './saveCmd/decodeCmds';
-export * from './saveCmd/getCmdServId';
-export * from './saveCmd/saveCmdsGenerateGeo';
-export * from './saveCmd/saveCmdsProjectionGeo';
-export * from './saveCmd/getContextGeneration';
-
-export * from './generateCmdProjection/createCmdProjectionForManualAssing';
+Object.defineProperty(exports, "__esModule", { value: true });
+//# sourceMappingURL=IManualAssingData.js.map
