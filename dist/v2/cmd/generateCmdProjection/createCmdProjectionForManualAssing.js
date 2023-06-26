@@ -33,6 +33,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCmdProjectionForManualAssing = void 0;
+const consumeBatch_1 = require("../../../utils/consumeBatch");
 const utils_1 = require("../../utils");
 const getProperties_1 = require("../../utils/projection/getProperties");
 const createCmdNotFoundItm_1 = require("./createCmdNotFoundItm");
@@ -42,32 +43,44 @@ function createCmdProjectionForManualAssing(warnArr, errorArr) {
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];
         const resMiss = [];
+        const proms = [];
         for (const warn of warnArr) {
             const bimObjectDbId = warn.dbid;
-            const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(warn.bimFileId);
-            const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
-            const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
-            if (warn.validId) {
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, centerPos, false);
-            }
-            else {
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.PNId, centerPos, true);
-            }
+            proms.push(() => handleWarnCmd(warn, bimObjectDbId, res));
         }
-        for (const warn of errorArr) {
-            const bimObjectDbId = warn.dbid;
-            const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(warn.bimFileId);
-            const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
-            const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
-            if (warn.validId) {
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, centerPos, false);
-            }
-            else {
-                (0, createCmdNotFoundItm_1.createCmdNotFoundItm)(resMiss, auProp, centerPos);
-            }
+        for (const err of errorArr) {
+            const bimObjectDbId = err.dbid;
+            proms.push(() => handleErrCmd(err, bimObjectDbId, res, resMiss));
         }
+        yield (0, consumeBatch_1.consumeBatch)(proms, 20, console.log.bind(null, 'createCmdProjectionForManualAssing %d/%d'));
         return { cmd: res, cmdMiss: resMiss };
     });
 }
 exports.createCmdProjectionForManualAssing = createCmdProjectionForManualAssing;
+function handleErrCmd(err, bimObjectDbId, res, resMiss) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(err.bimFileId);
+        const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
+        const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
+        if (err.validId) {
+            (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, err.validId, centerPos, false);
+        }
+        else {
+            (0, createCmdNotFoundItm_1.createCmdNotFoundItm)(resMiss, auProp, centerPos);
+        }
+    });
+}
+function handleWarnCmd(warn, bimObjectDbId, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(warn.bimFileId);
+        const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
+        const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
+        if (warn.validId) {
+            (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, centerPos, false);
+        }
+        else {
+            (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.PNId, centerPos, true);
+        }
+    });
+}
 //# sourceMappingURL=createCmdProjectionForManualAssing.js.map

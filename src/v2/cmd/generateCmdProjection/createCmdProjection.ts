@@ -56,6 +56,7 @@ import { getProperties } from '../../utils/projection/getProperties';
 import { getIntersectionRoom } from './getIntersectionRoom';
 import { createCmdProjItm } from './createCmdProjItm';
 import { getCenterPos } from './getCenterPos';
+import { consumeBatch } from '../../../utils/consumeBatch';
 
 export async function createCmdProjection(
   intersects: IRaycastIntersectRes[],
@@ -64,42 +65,60 @@ export async function createCmdProjection(
 ): Promise<ICmdProjection[]> {
   const res: ICmdProjection[] = [];
   const dicoBimObjs: Record<string, SpinalNode[]> = {};
+  const proms = [];
   for (const spinalIntersection of intersects) {
-    const bimObjectDbId = spinalIntersection.origin.dbId;
-    const bimObjectModel = getModelByModelId(spinalIntersection.origin.modelId);
-    const auProp = await getProperties(bimObjectModel, bimObjectDbId);
-    const room = await getIntersectionRoom(
-      spinalIntersection.intersections.dbId,
-      spinalIntersection.intersections.modelId,
-      dicoBimObjs,
-      contextGeoId
+    proms.push(() =>
+      handleCreateCmd(
+        spinalIntersection,
+        dicoBimObjs,
+        contextGeoId,
+        floorsData,
+        res
+      )
     );
-    let flagWarining = false;
-    const floor = await getFloorFromRoom(room, contextGeoId);
-    if (floor) {
-      const floorData = floorsData[floor.info.id.get()];
-      if (
-        floorData &&
-        floorData.distance &&
-        spinalIntersection.intersections.distance > floorData.distance
-      ) {
-        flagWarining = true;
-      }
-    }
-    if (!room) {
-      console.error(`createCmdProjection: room not found for ${bimObjectDbId}`);
-    } else {
-      const centerPos = await getCenterPos(auProp);
-      createCmdProjItm(
-        res,
-        auProp,
-        room.info.id.get(),
-        centerPos,
-        flagWarining
-      );
+  }
+  await consumeBatch(
+    proms,
+    20,
+    console.log.bind(null, 'createCmdProjection %d/%d')
+  );
+  return res;
+}
+
+async function handleCreateCmd(
+  spinalIntersection: IRaycastIntersectRes,
+  dicoBimObjs: Record<string, SpinalNode[]>,
+  contextGeoId: string,
+  floorsData: Record<string, IFloorZData>,
+  res: ICmdProjection[]
+) {
+  const bimObjectDbId = spinalIntersection.origin.dbId;
+  const bimObjectModel = getModelByModelId(spinalIntersection.origin.modelId);
+  const auProp = await getProperties(bimObjectModel, bimObjectDbId);
+  const room = await getIntersectionRoom(
+    spinalIntersection.intersections.dbId,
+    spinalIntersection.intersections.modelId,
+    dicoBimObjs,
+    contextGeoId
+  );
+  let flagWarining = false;
+  const floor = await getFloorFromRoom(room, contextGeoId);
+  if (floor) {
+    const floorData = floorsData[floor.info.id.get()];
+    if (
+      floorData &&
+      floorData.distance &&
+      spinalIntersection.intersections.distance > floorData.distance
+    ) {
+      flagWarining = true;
     }
   }
-  return res;
+  if (!room) {
+    console.error(`createCmdProjection: room not found for ${bimObjectDbId}`);
+  } else {
+    const centerPos = await getCenterPos(auProp);
+    createCmdProjItm(res, auProp, room.info.id.get(), centerPos, flagWarining);
+  }
 }
 
 async function getFloorFromRoom(room: SpinalNode, contextGeoId: string) {

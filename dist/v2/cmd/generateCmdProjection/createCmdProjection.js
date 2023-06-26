@@ -39,37 +39,45 @@ const getProperties_1 = require("../../utils/projection/getProperties");
 const getIntersectionRoom_1 = require("./getIntersectionRoom");
 const createCmdProjItm_1 = require("./createCmdProjItm");
 const getCenterPos_1 = require("./getCenterPos");
+const consumeBatch_1 = require("../../../utils/consumeBatch");
 function createCmdProjection(intersects, contextGeoId, floorsData) {
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];
         const dicoBimObjs = {};
+        const proms = [];
         for (const spinalIntersection of intersects) {
-            const bimObjectDbId = spinalIntersection.origin.dbId;
-            const bimObjectModel = (0, getModelByModelId_1.getModelByModelId)(spinalIntersection.origin.modelId);
-            const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
-            const room = yield (0, getIntersectionRoom_1.getIntersectionRoom)(spinalIntersection.intersections.dbId, spinalIntersection.intersections.modelId, dicoBimObjs, contextGeoId);
-            let flagWarining = false;
-            const floor = yield getFloorFromRoom(room, contextGeoId);
-            if (floor) {
-                const floorData = floorsData[floor.info.id.get()];
-                if (floorData &&
-                    floorData.distance &&
-                    spinalIntersection.intersections.distance > floorData.distance) {
-                    flagWarining = true;
-                }
-            }
-            if (!room) {
-                console.error(`createCmdProjection: room not found for ${bimObjectDbId}`);
-            }
-            else {
-                const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, room.info.id.get(), centerPos, flagWarining);
-            }
+            proms.push(() => handleCreateCmd(spinalIntersection, dicoBimObjs, contextGeoId, floorsData, res));
         }
+        yield (0, consumeBatch_1.consumeBatch)(proms, 20, console.log.bind(null, 'createCmdProjection %d/%d'));
         return res;
     });
 }
 exports.createCmdProjection = createCmdProjection;
+function handleCreateCmd(spinalIntersection, dicoBimObjs, contextGeoId, floorsData, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const bimObjectDbId = spinalIntersection.origin.dbId;
+        const bimObjectModel = (0, getModelByModelId_1.getModelByModelId)(spinalIntersection.origin.modelId);
+        const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
+        const room = yield (0, getIntersectionRoom_1.getIntersectionRoom)(spinalIntersection.intersections.dbId, spinalIntersection.intersections.modelId, dicoBimObjs, contextGeoId);
+        let flagWarining = false;
+        const floor = yield getFloorFromRoom(room, contextGeoId);
+        if (floor) {
+            const floorData = floorsData[floor.info.id.get()];
+            if (floorData &&
+                floorData.distance &&
+                spinalIntersection.intersections.distance > floorData.distance) {
+                flagWarining = true;
+            }
+        }
+        if (!room) {
+            console.error(`createCmdProjection: room not found for ${bimObjectDbId}`);
+        }
+        else {
+            const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
+            (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, room.info.id.get(), centerPos, flagWarining);
+        }
+    });
+}
 function getFloorFromRoom(room, contextGeoId) {
     return __awaiter(this, void 0, void 0, function* () {
         const contextGeo = (0, graphservice_1.getRealNode)(contextGeoId);
