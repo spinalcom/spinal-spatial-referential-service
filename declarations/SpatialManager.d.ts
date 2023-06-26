@@ -1,68 +1,9 @@
 /// <reference types="forge-viewer" />
 import Model = Autodesk.Viewing.Model;
-import { SpinalContext, SpinalNode, SpinalNodeRef } from "spinal-env-viewer-graph-service";
-import { SpatialConfig, IMConfigArchi } from "./models/SpatialConfig";
-interface ComparisionObject {
-    deleted: {
-        levels: {
-            [externalId: string]: Level;
-        };
-        rooms: {
-            [externalId: string]: CmpRoom;
-        };
-    };
-    updated: {
-        levels: {
-            [externalId: string]: Level;
-        };
-        rooms: {
-            [externalId: string]: CmpRoom;
-        };
-    };
-    new: {
-        levels: {
-            [externalId: string]: Level;
-        };
-        rooms: {
-            [externalId: string]: Room[];
-        };
-    };
-}
-export declare type CmpRoom = {
-    levelId: string;
-    room: Room;
-};
-export interface ModelArchi {
-    [dbId: string]: Level;
-}
-export declare type LevelRooms = {
-    [externalId: string]: Room;
-};
-export declare type LevelStructures = {
-    [externalId: string]: Structure;
-};
-export interface Level {
-    properties: Properties;
-    children: LevelRooms;
-    structures: LevelStructures;
-}
-export interface Room {
-    properties: Properties;
-    children: Structure[];
-}
-export interface Structure {
-    properties: Properties;
-}
-export interface Properties {
-    dbId: number;
-    externalId: string;
-    properties: SpinalProps[];
-}
-export interface SpinalProps {
-    name: string;
-    value: any;
-    [type: string]: any;
-}
+import { SpinalContext, SpinalNode, SpinalNodeRef } from 'spinal-env-viewer-graph-service';
+import { SpatialConfig, IMConfigArchi } from './models/SpatialConfig';
+export * from './interfaces';
+import { ComparisionObject, ModelArchi, LevelRooms, Level, Room, Structure, SpinalProps } from './interfaces';
 export declare class SpatialManager {
     private spatialConfig;
     private buildingManager;
@@ -85,7 +26,7 @@ export declare class SpatialManager {
      * @returns {Promise<any>} An empty promise
      */
     waitForFileSystem(promises: Promise<any>[]): Promise<any[]>;
-    addReferenceObject(dbId: number, name: string, model: Model, targetNode: SpinalNode<any>, relationName?: any): Promise<SpinalNode<any>>;
+    addReferenceObject(dbId: number, name: string, model: Model, targetNode: SpinalNode<any>, relationName?: string): Promise<SpinalNode<any>>;
     private addRefStructureToLevel;
     private addRefStructureToRoom;
     createFloor(contextId: string, buildingId: string, name: string, level: Level, model: Model): Promise<void>;
@@ -125,4 +66,3 @@ export declare class SpatialManager {
     getRoomIdFromFloorFinish(floorId: number): string;
     getFloorFinishId(configName: string, model: Model): Promise<number[]>;
 }
-export {};

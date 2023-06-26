@@ -1,11 +1,11 @@
 /// <reference types="forge-viewer" />
 import Model = Autodesk.Viewing.Model;
-import { SpinalNodeRef, SpinalNode } from "spinal-env-viewer-graph-service";
+import { SpinalNodeRef, SpinalNode } from 'spinal-env-viewer-graph-service';
 export interface EntityProp {
     propName: string;
     propVal: any;
 }
-import { SpinalProps } from "../SpatialManager";
+import { SpinalProps } from '../SpatialManager';
 export declare abstract class AbstractEntityManager {
     private invalidObjectManager;
     protected constructor();

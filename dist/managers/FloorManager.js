@@ -31,11 +31,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FloorManager = void 0;
 const AbstractEntityManager_1 = require("./AbstractEntityManager");
 const spinal_env_viewer_graph_service_1 = require("spinal-env-viewer-graph-service");
-const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
+const spinal_env_viewer_context_geographic_service_1 = __importDefault(require("spinal-env-viewer-context-geographic-service"));
 const spinal_models_building_elements_1 = require("spinal-models-building-elements");
 class FloorManager extends AbstractEntityManager_1.AbstractEntityManager {
     constructor() {

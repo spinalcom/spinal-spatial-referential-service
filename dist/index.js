@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright 2020 SpinalCom - www.spinalcom.com
+ * Copyright 2023 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -22,14 +22,40 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const SpatialManager_1 = require("./SpatialManager");
 const Config_1 = require("./Config");
-const constants = require("./Constant");
+const constants = __importStar(require("./Constant"));
+__exportStar(require("./v2/index"), exports);
 exports.default = {
     config: Config_1.config,
     constants,
-    SpatialManager: SpatialManager_1.SpatialManager
+    SpatialManager: SpatialManager_1.SpatialManager,
 };
-// import './test'
 //# sourceMappingURL=index.js.map

@@ -1,11 +1,1 @@
-export declare const ROOM_FINISH_VALUE: string;
-export declare const S_TYPE: string;
-export declare const ROOM_ID_TEXT: string;
-export declare const FLOOR_NEEDED_PROPS: string[];
-export declare const ROOM_WANTED_PROPS: string[];
-export declare const GEO_REFERENCE_RELATION: any;
-export declare const GEO_REFERENCE_ROOM_RELATION: string;
-export declare const GEO_BUILDING_RELATION: any;
-export declare const GEO_FLOOR_RELATION: any;
-export declare const GEO_ROOM_RELATION: any;
-export declare const GEO_ZONE_RELATION: any;
+export { EQUIPMENT_TYPE as GEO_EQUIPMENT_TYPE, EQUIPMENT_RELATION as GEO_EQUIPMENT_RELATION, FLOOR_TYPE as GEO_FLOOR_TYPE, REFERENCE_RELATION as GEO_REFERENCE_RELATION, REFERENCE_ROOM_RELATION as GEO_REFERENCE_ROOM_RELATION, SITE_RELATION as GEO_SITE_RELATION, BUILDING_RELATION as GEO_BUILDING_RELATION, FLOOR_RELATION as GEO_FLOOR_RELATION, ROOM_RELATION as GEO_ROOM_RELATION, ZONE_RELATION as GEO_ZONE_RELATION, ROOM_TYPE as GEO_ROOM_TYPE, EQUIPMENT_TYPE as BIMOBJECT_TYPE, } from 'spinal-env-viewer-context-geographic-service';

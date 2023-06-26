@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright 2020 SpinalCom - www.spinalcom.com
+ * Copyright 2023 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -33,7 +33,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.consumeBatch = void 0;
-function consumeBatch(promises, batchSize = 10) {
+function consumeBatch(promises, batchSize = 10, callBackProgress) {
     return __awaiter(this, void 0, void 0, function* () {
         let index = 0;
         const result = [];
@@ -42,7 +42,9 @@ function consumeBatch(promises, batchSize = 10) {
             if (promises.length <= endIndex)
                 endIndex = promises.length;
             const slice = promises.slice(index, endIndex);
-            const resProm = yield Promise.all(slice.map(e => e()));
+            const resProm = yield Promise.all(slice.map((e) => e()));
+            if (callBackProgress)
+                callBackProgress(endIndex, promises.length);
             result.push(...resProm);
             index = endIndex;
         }

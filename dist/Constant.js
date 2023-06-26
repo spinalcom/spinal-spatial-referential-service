@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.GEO_ZONE_RELATION = exports.GEO_ROOM_RELATION = exports.GEO_FLOOR_RELATION = exports.GEO_BUILDING_RELATION = exports.GEO_REFERENCE_ROOM_RELATION = exports.GEO_REFERENCE_RELATION = exports.ROOM_WANTED_PROPS = exports.FLOOR_NEEDED_PROPS = exports.ROOM_ID_TEXT = exports.S_TYPE = exports.ROOM_FINISH_VALUE = void 0;
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
  *
@@ -24,16 +22,19 @@ exports.GEO_ZONE_RELATION = exports.GEO_ROOM_RELATION = exports.GEO_FLOOR_RELATI
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
-exports.ROOM_FINISH_VALUE = "Room_finish";
-exports.S_TYPE = "stype";
-exports.ROOM_ID_TEXT = "RoomID";
-exports.FLOOR_NEEDED_PROPS = [exports.S_TYPE, 'roomid'];
-exports.ROOM_WANTED_PROPS = ['area', 'volume', 'perimeter', 'local', 'etage', 'Local', 'stype', 'roomid'];
-exports.GEO_REFERENCE_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.REFERENCE_RELATION;
-exports.GEO_REFERENCE_ROOM_RELATION = `${exports.GEO_REFERENCE_RELATION}.ROOM`;
-exports.GEO_BUILDING_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.BUILDING_RELATION;
-exports.GEO_FLOOR_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.FLOOR_RELATION;
-exports.GEO_ROOM_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.ROOM_RELATION;
-exports.GEO_ZONE_RELATION = spinal_env_viewer_context_geographic_service_1.default.constants.ZONE_RELATION;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BIMOBJECT_TYPE = exports.GEO_ROOM_TYPE = exports.GEO_ZONE_RELATION = exports.GEO_ROOM_RELATION = exports.GEO_FLOOR_RELATION = exports.GEO_BUILDING_RELATION = exports.GEO_SITE_RELATION = exports.GEO_REFERENCE_ROOM_RELATION = exports.GEO_REFERENCE_RELATION = exports.GEO_FLOOR_TYPE = exports.GEO_EQUIPMENT_RELATION = exports.GEO_EQUIPMENT_TYPE = void 0;
+var spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
+Object.defineProperty(exports, "GEO_EQUIPMENT_TYPE", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.EQUIPMENT_TYPE; } });
+Object.defineProperty(exports, "GEO_EQUIPMENT_RELATION", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.EQUIPMENT_RELATION; } });
+Object.defineProperty(exports, "GEO_FLOOR_TYPE", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.FLOOR_TYPE; } });
+Object.defineProperty(exports, "GEO_REFERENCE_RELATION", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION; } });
+Object.defineProperty(exports, "GEO_REFERENCE_ROOM_RELATION", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.REFERENCE_ROOM_RELATION; } });
+Object.defineProperty(exports, "GEO_SITE_RELATION", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.SITE_RELATION; } });
+Object.defineProperty(exports, "GEO_BUILDING_RELATION", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.BUILDING_RELATION; } });
+Object.defineProperty(exports, "GEO_FLOOR_RELATION", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.FLOOR_RELATION; } });
+Object.defineProperty(exports, "GEO_ROOM_RELATION", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.ROOM_RELATION; } });
+Object.defineProperty(exports, "GEO_ZONE_RELATION", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.ZONE_RELATION; } });
+Object.defineProperty(exports, "GEO_ROOM_TYPE", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.ROOM_TYPE; } });
+Object.defineProperty(exports, "BIMOBJECT_TYPE", { enumerable: true, get: function () { return spinal_env_viewer_context_geographic_service_1.EQUIPMENT_TYPE; } });
 //# sourceMappingURL=Constant.js.map

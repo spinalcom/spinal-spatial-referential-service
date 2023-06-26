@@ -37,7 +37,7 @@ function getArchiSelectStr(archiSelect) {
         data.push(str);
     }
     data.push(']');
-    return data.join("");
+    return data.join('');
 }
 function createFctGetArchi(config) {
     const levelStr = getArchiSelectStr(config.levelSelect);
@@ -54,9 +54,14 @@ function createFctGetArchi(config) {
     if (config.floorLevelName)
         FLOOR_LEVEL_NAME_ATTR_NAME = config.floorLevelName; // 'Etage'
     const propsToGet = [
-        'name', 'elevation',
-        'area', 'volume', 'perimeter',
-        'stype', 'roomid', 'number'
+        'name',
+        'elevation',
+        'area',
+        'volume',
+        'perimeter',
+        'stype',
+        'roomid',
+        'number',
     ];
     if (FLOOR_ROOM_NUMBER_ATTR_NAME)
         propsToGet.push(FLOOR_ROOM_NUMBER_ATTR_NAME.toLowerCase());
@@ -68,7 +73,7 @@ function createFctGetArchi(config) {
     if (Array.isArray(config.floorSelect) && config.floorSelect.length > 0) {
         useFloor = true;
     }
-    let fct = `function userFunction(pdb) {
+    const fct = `function userFunction(pdb) {
     // TEST
     // let useFloor = false;
     // const levelSelect = testCfg.levelSelect;
