@@ -143,7 +143,7 @@ export async function consumeCmdProjection(
       );
     }
   }
-  await consumeBatch(proms, 1);
+  await consumeBatch(proms, 20);
 }
 
 async function* getOrCreateGenOutNode(

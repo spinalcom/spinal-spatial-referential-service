@@ -101,7 +101,7 @@ function consumeCmdProjection(cmds, nodeId, contextId, callbackProg) {
                 }));
             }
         }
-        yield (0, consumeBatch_1.consumeBatch)(proms, 1);
+        yield (0, consumeBatch_1.consumeBatch)(proms, 20);
     });
 }
 exports.consumeCmdProjection = consumeCmdProjection;
