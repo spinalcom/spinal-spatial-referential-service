@@ -52,6 +52,7 @@ __exportStar(require("./ProjectionItem/ProjectionItem"), exports);
 __exportStar(require("./projectionConfig/getProjectionConfig"), exports);
 __exportStar(require("./projectionConfig/getConfigFromContext"), exports);
 __exportStar(require("./projectionConfig/createConfigNode"), exports);
+__exportStar(require("./projectionConfig/createConfigNodeAndProjGroup"), exports);
 __exportStar(require("./projectionConfig/removeConfigFromContext"), exports);
 __exportStar(require("./rayUtils/raycastWorker"), exports);
 __exportStar(require("./rayUtils/workerManager"), exports);

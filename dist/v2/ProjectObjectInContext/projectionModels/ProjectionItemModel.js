@@ -38,6 +38,7 @@ const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 const utils_1 = require("../../utils");
 const ProjectionOffsetModel_1 = require("./ProjectionOffsetModel");
 const getExternalIdMapping_1 = require("../../utils/getExternalIdMapping");
+const getBimFileByBimFileId_1 = require("../../utils/getBimFileByBimFileId");
 class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
     constructor(projectionItem) {
         super();
@@ -78,6 +79,16 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
     toUxModel() {
         return __awaiter(this, void 0, void 0, function* () {
             const model = (0, utils_1.getModelByBimFileIdLoaded)(this.bimFileId.get());
+            if (!model) {
+                try {
+                    const bimFile = yield (0, getBimFileByBimFileId_1.getBimFileByBimFileId)(this.bimFileId.get());
+                    throw new Error(`Model [${bimFile.info.name.get()}] not loaded for bimFileId : ${this.bimFileId.get()}`);
+                }
+                catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+            }
             let projectionItem;
             if (typeof this.path !== 'undefined') {
                 const path = this.path.get();

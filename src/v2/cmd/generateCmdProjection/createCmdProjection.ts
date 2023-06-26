@@ -55,6 +55,7 @@ import { getModelByModelId } from '../../utils/projection/getModelByModelId';
 import { getProperties } from '../../utils/projection/getProperties';
 import { getIntersectionRoom } from './getIntersectionRoom';
 import { createCmdProjItm } from './createCmdProjItm';
+import { getCenterPos } from './getCenterPos';
 
 export async function createCmdProjection(
   intersects: IRaycastIntersectRes[],
@@ -88,7 +89,14 @@ export async function createCmdProjection(
     if (!room) {
       console.error(`createCmdProjection: room not found for ${bimObjectDbId}`);
     } else {
-      createCmdProjItm(res, auProp, room.info.id.get(), flagWarining);
+      const centerPos = await getCenterPos(auProp);
+      createCmdProjItm(
+        res,
+        auProp,
+        room.info.id.get(),
+        centerPos,
+        flagWarining
+      );
     }
   }
   return res;

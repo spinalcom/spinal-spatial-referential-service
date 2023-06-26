@@ -39,10 +39,13 @@ const createConfigNode_1 = require("../projectionConfig/createConfigNode");
 const removeConfigFromContext_1 = require("../projectionConfig/removeConfigFromContext");
 const ProjectionGroupModel_1 = require("../projectionModels/ProjectionGroupModel");
 const ProjectionItemModel_1 = require("../projectionModels/ProjectionItemModel");
+const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 class ProjectionGroupConfig {
-    constructor(name, uid = `${Date.now()}-${Math.round(Math.random() * 10000)}-${Math.round(Math.random() * 10000)}`) {
+    constructor(name, _server_id, uid = `${Date.now()}-${Math.round(Math.random() * 10000)}-${Math.round(Math.random() * 10000)}`) {
+        this._server_id = _server_id;
         this.data = [];
         this.progress = 100;
+        this.isLoaded = false;
         this.name = name;
         this.uid = uid;
     }
@@ -61,11 +64,42 @@ class ProjectionGroupConfig {
     removeFromContext(context) {
         return (0, removeConfigFromContext_1.removeConfigFromContext)(context, this.uid);
     }
+    loadConfigNode() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (this.isLoaded) {
+                    return;
+                }
+                this.isLoaded = true;
+                const configNode = spinal_core_connectorjs_1.FileSystem._objects[this._server_id];
+                const lstData = yield configNode.getElement();
+                const promises = [];
+                for (const data of lstData) {
+                    promises.push(data.toUxModel());
+                }
+                const data = yield Promise.all(promises);
+                for (const itm of data) {
+                    if (itm)
+                        this.data.push(itm);
+                }
+                if (typeof configNode.info.uid === 'undefined') {
+                    configNode.info.add_attr('uid', this.uid);
+                }
+            }
+            catch (error) {
+                this.isLoaded = false;
+                throw error;
+            }
+        });
+    }
     saveToContext(context) {
         return __awaiter(this, void 0, void 0, function* () {
             let projectLst = yield (0, getConfigFromContext_1.getConfigFromContext)(context, this, true);
-            if (!projectLst)
+            if (!projectLst) {
                 projectLst = yield (0, createConfigNode_1.createConfigNode)(context, this);
+            }
+            if (this.isLoaded === false)
+                yield this.loadConfigNode();
             const promises = [];
             for (const data of this.data) {
                 const itmInModel = projectLst.detect((itm) => itm.uid.get() === data.uid);

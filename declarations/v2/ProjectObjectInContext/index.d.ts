@@ -13,6 +13,7 @@ export * from './ProjectionItem/ProjectionItem';
 export * from './projectionConfig/getProjectionConfig';
 export * from './projectionConfig/getConfigFromContext';
 export * from './projectionConfig/createConfigNode';
+export * from './projectionConfig/createConfigNodeAndProjGroup';
 export * from './projectionConfig/removeConfigFromContext';
 export * from './rayUtils/raycastWorker';
 export * from './rayUtils/workerManager';

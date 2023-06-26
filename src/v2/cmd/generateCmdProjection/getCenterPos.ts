@@ -22,11 +22,18 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-export interface ICmdProjData {
-  dbid: number;
-  externalId: string;
-  name: string;
-  revitCat: string;
-  centerPos: string;
-  flagWarining: boolean;
+import type { AuProps } from '../../interfaces/AuProps';
+import {
+  getFragIds,
+  getModelByModelId,
+  getWorldBoundingBox,
+} from '../../utils';
+
+export async function getCenterPos(auProp: AuProps): Promise<string> {
+  const model = getModelByModelId(auProp.modelId);
+  const fragIds = await getFragIds(auProp.dbId, model);
+  const bbox = getWorldBoundingBox(fragIds, model);
+  const center = new THREE.Vector3();
+  bbox.getCenter(center);
+  return `${center.x};${center.y};${center.z}`;
 }

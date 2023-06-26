@@ -39,13 +39,10 @@ const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-vie
 const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 const consumeBatch_1 = require("../../utils/consumeBatch");
 const getFragIds_1 = require("../utils/getFragIds");
-const getModelByBimFileId_1 = require("../utils/getModelByBimFileId");
 const getWorldBoundingBox_1 = require("../utils/getWorldBoundingBox");
-const updateLoadedModel_1 = require("../utils/archi/updateLoadedModel");
-function setCenterPosInContextGeo(graph) {
+const utils_1 = require("../utils");
+function setCenterPosInContextGeo(graph, cb) {
     return __awaiter(this, void 0, void 0, function* () {
-        const loadedModel = new Map();
-        (0, updateLoadedModel_1.updateLoadedModel)(loadedModel);
         const context = yield (0, getContextSpatial_1.getContextSpatial)(graph);
         const relationNames = [
             Constant_1.GEO_SITE_RELATION,
@@ -57,28 +54,33 @@ function setCenterPosInContextGeo(graph) {
         const roomNodes = yield context.find(relationNames, (node) => {
             return node.info.type.get() === Constant_1.GEO_ROOM_TYPE;
         });
-        const arrProm = [];
+        const roomArrProm = [];
         roomNodes.forEach((roomNode) => {
-            arrProm.push(() => updateRoomPos(roomNode, loadedModel));
+            roomArrProm.push(() => updateRoomPos(roomNode));
         });
-        yield (0, consumeBatch_1.consumeBatch)(arrProm, 20, console.log.bind(null, 'progress: %d/%d'));
+        yield (0, consumeBatch_1.consumeBatch)(roomArrProm, 20, (i, total) => cb(`1/3 room progress: ${i}/${total}`));
+        const bimobjArrProm = [];
+        const roomArrProm2 = roomNodes.map((roomNode) => () => updateBimObj(roomNode, context, bimobjArrProm));
+        yield (0, consumeBatch_1.consumeBatch)(roomArrProm2, 20, (i, total) => cb(`2/3 load bimObj progress: ${i}/${total}`));
+        yield (0, consumeBatch_1.consumeBatch)(bimobjArrProm, 20, (i, total) => cb(`3/3 bimObj update progress: ${i}/${total}`));
+        cb(`done`);
     });
 }
 exports.setCenterPosInContextGeo = setCenterPosInContextGeo;
-function updateRoomPos(roomNode, loadedModel) {
+function updateRoomPos(roomNode) {
     return __awaiter(this, void 0, void 0, function* () {
         const roomRefs = yield roomNode.getChildren(Constant_1.GEO_REFERENCE_ROOM_RELATION);
         let roomBbox = null;
         for (const roomRef of roomRefs) {
             if (roomRef.info.dbid.get() > 0) {
                 // get autodesk Model
-                const model = yield (0, getModelByBimFileId_1.getModelByBimFileId)(roomRef.info.bimFileId.get(), loadedModel);
+                const model = (0, utils_1.getModelByBimFileIdLoaded)(roomRef.info.bimFileId.get());
+                if (!model) {
+                    console.log(`${roomNode.info.name.get()}} skipped : model not loaded`);
+                    continue;
+                }
                 const fragIds = yield (0, getFragIds_1.getFragIds)(roomRef.info.dbid.get(), model);
                 const bbox = (0, getWorldBoundingBox_1.getWorldBoundingBox)(fragIds, model);
-                //  // add attributes to all roomRef ??
-                // const center = bbox.center();
-                // const attrFloor = await getCenterPosAttr(floorRef);
-                // attrFloor.set(`${center.x};${center.y};${center.z}`);
                 if (!roomBbox)
                     roomBbox = bbox;
                 else
@@ -96,7 +98,7 @@ function updateRoomPos(roomNode, loadedModel) {
 function getCenterPosAttr(node) {
     return __awaiter(this, void 0, void 0, function* () {
         const categoryName = 'Spatial';
-        const label = 'centerPos';
+        const label = 'XYZ center';
         let category = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.getCategoryByName(node, categoryName);
         if (!category) {
             category = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.addCategoryAttribute(node, categoryName);
@@ -111,6 +113,27 @@ function getCenterPosAttr(node) {
             }
         }
         return spinal_env_viewer_plugin_documentation_service_1.attributeService.addAttributeByCategory(node, category, label, '0;0;0');
+    });
+}
+function updateBimObj(roomNode, context, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const bimObjs = yield roomNode.getChildrenInContext(context);
+        for (const bimObj of bimObjs) {
+            res.push(() => __awaiter(this, void 0, void 0, function* () {
+                const model = (0, utils_1.getModelByBimFileIdLoaded)(bimObj.info.bimFileId.get());
+                if (!model) {
+                    console.log(`${roomNode.info.name.get()}/${bimObj.info.name.get()} skipped : model not loaded`);
+                    return;
+                }
+                const fragIds = yield (0, getFragIds_1.getFragIds)(bimObj.info.dbid.get(), model);
+                const bbox = (0, getWorldBoundingBox_1.getWorldBoundingBox)(fragIds, model);
+                const center = new THREE.Vector3();
+                bbox.getCenter(center);
+                const attr = yield getCenterPosAttr(bimObj);
+                const str = `${center.x};${center.y};${center.z}`;
+                attr.value.set(str);
+            }));
+        }
     });
 }
 //# sourceMappingURL=setCenterPosInContextGeo.js.map

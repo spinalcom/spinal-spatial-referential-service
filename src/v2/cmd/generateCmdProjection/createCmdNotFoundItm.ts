@@ -29,7 +29,8 @@ import { getCategory } from './getCategory';
 
 export function createCmdNotFoundItm(
   target: ICmdMissing[],
-  auProp: AuProps
+  auProp: AuProps,
+  centerPos: string
 ): void {
   const revitCat = getCategory(auProp);
   const bimFileId = getBimFileIdByModelId(auProp.modelId);
@@ -42,6 +43,7 @@ export function createCmdNotFoundItm(
         externalId: auProp.externalId,
         name: auProp.name,
         revitCat: revitCat.displayValue,
+        centerPos,
       });
     }
   } else {
@@ -54,6 +56,7 @@ export function createCmdNotFoundItm(
           externalId: auProp.externalId,
           name: auProp.name,
           revitCat: revitCat.displayValue,
+          centerPos,
         },
       ],
     });

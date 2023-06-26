@@ -29,6 +29,7 @@ import { getModelByBimFileIdLoaded } from '../../utils';
 import { getProperties } from '../../utils/projection/getProperties';
 import { createCmdNotFoundItm } from './createCmdNotFoundItm';
 import { createCmdProjItm } from './createCmdProjItm';
+import { getCenterPos } from './getCenterPos';
 
 export async function createCmdProjectionForManualAssing(
   warnArr: IManualAssingData[],
@@ -40,20 +41,22 @@ export async function createCmdProjectionForManualAssing(
     const bimObjectDbId = warn.dbid;
     const bimObjectModel = getModelByBimFileIdLoaded(warn.bimFileId);
     const auProp = await getProperties(bimObjectModel, bimObjectDbId);
+    const centerPos = await getCenterPos(auProp);
     if (warn.validId) {
-      createCmdProjItm(res, auProp, warn.validId, false);
+      createCmdProjItm(res, auProp, warn.validId, centerPos, false);
     } else {
-      createCmdProjItm(res, auProp, warn.PNId, true);
+      createCmdProjItm(res, auProp, warn.PNId, centerPos, true);
     }
   }
   for (const warn of errorArr) {
     const bimObjectDbId = warn.dbid;
     const bimObjectModel = getModelByBimFileIdLoaded(warn.bimFileId);
     const auProp = await getProperties(bimObjectModel, bimObjectDbId);
+    const centerPos = await getCenterPos(auProp);
     if (warn.validId) {
-      createCmdProjItm(res, auProp, warn.validId, false);
+      createCmdProjItm(res, auProp, warn.validId, centerPos, false);
     } else {
-      createCmdNotFoundItm(resMiss, auProp);
+      createCmdNotFoundItm(resMiss, auProp, centerPos);
     }
   }
   return { cmd: res, cmdMiss: resMiss };

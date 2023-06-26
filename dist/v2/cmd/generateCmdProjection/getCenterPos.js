@@ -32,40 +32,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCmdNotFound = void 0;
-const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
-const getDiffSelection_1 = require("./getDiffSelection");
-const createCmdNotFoundItm_1 = require("./createCmdNotFoundItm");
-const getCenterPos_1 = require("./getCenterPos");
-function createCmdNotFound(intersectRes) {
+exports.getCenterPos = void 0;
+const utils_1 = require("../../utils");
+function getCenterPos(auProp) {
     return __awaiter(this, void 0, void 0, function* () {
-        const notFound = (0, getDiffSelection_1.getDiffSelection)(intersectRes);
-        const auProps = yield getItemNames(notFound);
-        const res = [];
-        const proms = auProps.map((auProp) => __awaiter(this, void 0, void 0, function* () {
-            const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
-            (0, createCmdNotFoundItm_1.createCmdNotFoundItm)(res, auProp, centerPos);
-        }));
-        yield Promise.all(proms);
-        return res;
+        const model = (0, utils_1.getModelByModelId)(auProp.modelId);
+        const fragIds = yield (0, utils_1.getFragIds)(auProp.dbId, model);
+        const bbox = (0, utils_1.getWorldBoundingBox)(fragIds, model);
+        const center = new THREE.Vector3();
+        bbox.getCenter(center);
+        return `${center.x};${center.y};${center.z}`;
     });
 }
-exports.createCmdNotFound = createCmdNotFound;
-function getItemNames(data) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const res = [];
-        for (const { model, dbIds } of data) {
-            res.push((0, getBulkProperties_1.getBulkProperties)(model, dbIds, {
-                propFilter: ['name', 'externalId', 'Category'],
-            }));
-        }
-        return Promise.all(res).then((arr) => {
-            const result = [];
-            for (const itms of arr) {
-                result.push(...itms);
-            }
-            return result;
-        });
-    });
-}
-//# sourceMappingURL=createCmdNotFound.js.map
+exports.getCenterPos = getCenterPos;
+//# sourceMappingURL=getCenterPos.js.map

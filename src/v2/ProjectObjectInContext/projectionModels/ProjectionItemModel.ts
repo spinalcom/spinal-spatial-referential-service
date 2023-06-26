@@ -41,6 +41,7 @@ import {
 } from '../../utils';
 import { ProjectionOffsetModel } from './ProjectionOffsetModel';
 import { getExternalIdMapping } from '../../utils/getExternalIdMapping';
+import { getBimFileByBimFileId } from '../../utils/getBimFileByBimFileId';
 
 export class ProjectionItemModel extends Model {
   offset: ProjectionOffsetModel;
@@ -85,6 +86,17 @@ export class ProjectionItemModel extends Model {
 
   async toUxModel(): Promise<ProjectionItem> {
     const model = getModelByBimFileIdLoaded(this.bimFileId.get());
+    if (!model) {
+      try {
+        const bimFile = await getBimFileByBimFileId(this.bimFileId.get());
+        throw new Error(
+          `Model [${bimFile.info.name.get()}] not loaded for bimFileId : ${this.bimFileId.get()}`
+        );
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }
     let projectionItem: ProjectionItem;
     if (typeof this.path !== 'undefined') {
       const path = this.path.get();

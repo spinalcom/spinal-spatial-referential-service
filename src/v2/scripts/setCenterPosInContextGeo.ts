@@ -22,7 +22,11 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import type { SpinalGraph, SpinalNode } from 'spinal-model-graph';
+import type {
+  SpinalContext,
+  SpinalGraph,
+  SpinalNode,
+} from 'spinal-model-graph';
 import { getContextSpatial } from '../utils/getContextSpatial';
 import {
   GEO_SITE_RELATION,
@@ -37,15 +41,13 @@ import { attributeService } from 'spinal-env-viewer-plugin-documentation-service
 import { Val } from 'spinal-core-connectorjs';
 import { consumeBatch } from '../../utils/consumeBatch';
 import { getFragIds } from '../utils/getFragIds';
-import { getModelByBimFileId } from '../utils/getModelByBimFileId';
 import { getWorldBoundingBox } from '../utils/getWorldBoundingBox';
-import { updateLoadedModel } from '../utils/archi/updateLoadedModel';
+import { getModelByBimFileIdLoaded } from '../utils';
 
 export async function setCenterPosInContextGeo(
-  graph: SpinalGraph
+  graph: SpinalGraph,
+  cb: (msg: string) => void
 ): Promise<void> {
-  const loadedModel = new Map<string, Promise<Autodesk.Viewing.Model>>();
-  updateLoadedModel(loadedModel);
   const context = await getContextSpatial(graph);
   const relationNames = [
     GEO_SITE_RELATION,
@@ -57,32 +59,41 @@ export async function setCenterPosInContextGeo(
   const roomNodes = await context.find(relationNames, (node: SpinalNode) => {
     return node.info.type.get() === GEO_ROOM_TYPE;
   });
-  const arrProm = [];
+  const roomArrProm = [];
   roomNodes.forEach((roomNode) => {
-    arrProm.push(() => updateRoomPos(roomNode, loadedModel));
+    roomArrProm.push(() => updateRoomPos(roomNode));
   });
-  await consumeBatch(arrProm, 20, console.log.bind(null, 'progress: %d/%d'));
+  await consumeBatch(roomArrProm, 20, (i, total) =>
+    cb(`1/3 room progress: ${i}/${total}`)
+  );
+  const bimobjArrProm = [];
+  const roomArrProm2 = roomNodes.map(
+    (roomNode) => () => updateBimObj(roomNode, context, bimobjArrProm)
+  );
+
+  await consumeBatch(roomArrProm2, 20, (i, total) =>
+    cb(`2/3 load bimObj progress: ${i}/${total}`)
+  );
+
+  await consumeBatch(bimobjArrProm, 20, (i, total) =>
+    cb(`3/3 bimObj update progress: ${i}/${total}`)
+  );
+  cb(`done`);
 }
 
-async function updateRoomPos(
-  roomNode: SpinalNode,
-  loadedModel: Map<string, Promise<Autodesk.Viewing.Model>>
-): Promise<void> {
+async function updateRoomPos(roomNode: SpinalNode): Promise<void> {
   const roomRefs = await roomNode.getChildren(GEO_REFERENCE_ROOM_RELATION);
   let roomBbox: THREE.Box3 = null;
   for (const roomRef of roomRefs) {
     if (roomRef.info.dbid.get() > 0) {
       // get autodesk Model
-      const model = await getModelByBimFileId(
-        roomRef.info.bimFileId.get(),
-        loadedModel
-      );
+      const model = getModelByBimFileIdLoaded(roomRef.info.bimFileId.get());
+      if (!model) {
+        console.log(`${roomNode.info.name.get()}} skipped : model not loaded`);
+        continue;
+      }
       const fragIds = await getFragIds(roomRef.info.dbid.get(), model);
       const bbox = getWorldBoundingBox(fragIds, model);
-      //  // add attributes to all roomRef ??
-      // const center = bbox.center();
-      // const attrFloor = await getCenterPosAttr(floorRef);
-      // attrFloor.set(`${center.x};${center.y};${center.z}`);
       if (!roomBbox) roomBbox = bbox;
       else roomBbox.union(bbox);
     }
@@ -96,7 +107,7 @@ async function updateRoomPos(
 }
 async function getCenterPosAttr(node: SpinalNode) {
   const categoryName = 'Spatial';
-  const label = 'centerPos';
+  const label = 'XYZ center';
   let category = await attributeService.getCategoryByName(node, categoryName);
   if (!category) {
     category = await attributeService.addCategoryAttribute(node, categoryName);
@@ -116,4 +127,30 @@ async function getCenterPosAttr(node: SpinalNode) {
     label,
     '0;0;0'
   );
+}
+
+async function updateBimObj(
+  roomNode: SpinalNode,
+  context: SpinalContext,
+  res: (() => Promise<void>)[]
+) {
+  const bimObjs = await roomNode.getChildrenInContext(context);
+  for (const bimObj of bimObjs) {
+    res.push(async () => {
+      const model = getModelByBimFileIdLoaded(bimObj.info.bimFileId.get());
+      if (!model) {
+        console.log(
+          `${roomNode.info.name.get()}/${bimObj.info.name.get()} skipped : model not loaded`
+        );
+        return;
+      }
+      const fragIds = await getFragIds(bimObj.info.dbid.get(), model);
+      const bbox = getWorldBoundingBox(fragIds, model);
+      const center = new THREE.Vector3();
+      bbox.getCenter(center);
+      const attr = await getCenterPosAttr(bimObj);
+      const str = `${center.x};${center.y};${center.z}`;
+      attr.value.set(str);
+    });
+  }
 }

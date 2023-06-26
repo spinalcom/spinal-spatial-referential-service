@@ -141,7 +141,7 @@ function consumeCmdMissingProj(errorGen, contextGeo, cmd, bimContext, bimobjs, c
             else {
                 child = yield createOrUpdateBimObj(bimContext, bimobjs, cmd.bimFileId, obj.name, obj.dbid, obj.externalId);
                 yield nodeGeneration.node.addChildInContext(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeneration);
-                yield updateRevitCategory(child, obj.revitCat);
+                yield updateRevitCategory(child, obj.revitCat, obj.centerPos);
             }
             yield removeOtherParents(child, contextGeo, '');
             yield removeOtherParents(child, contextGeneration, nodeGeneration.node.info.id.get());
@@ -172,7 +172,7 @@ function consumeCmdProj(dico, cmd, contextGeo, callbackProg, bimContext, bimobjs
             }
             yield removeOtherParents(child, contextGeo, parentNode.info.id.get());
             yield removeOtherParents(child, contextGeneration, '');
-            yield updateRevitCategory(child, obj.revitCat);
+            yield updateRevitCategory(child, obj.revitCat, obj.centerPos);
             if (obj.flagWarining) {
                 const nodeGeneration = (yield warnGen.next()).value;
                 let childGen = nodeGeneration.children.find((node) => node.info.externalId.get() === obj.externalId);
@@ -188,21 +188,30 @@ function consumeCmdProj(dico, cmd, contextGeo, callbackProg, bimContext, bimobjs
         }
     });
 }
-function updateRevitCategory(child, revitCat) {
+function updateRevitCategory(child, revitCat, centerPos) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!revitCat)
             return;
-        let cat = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.getCategoryByName(child, 'default');
+        let cat = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.getCategoryByName(child, 'Spatial');
         if (!cat) {
-            cat = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.addCategoryAttribute(child, 'default');
+            cat = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.addCategoryAttribute(child, 'Spatial');
         }
         const attrsFromNode = yield spinal_env_viewer_plugin_documentation_service_1.attributeService.getAttributesByCategory(child, cat);
-        const attrFromNode = attrsFromNode.find((itm) => itm.label.get() === 'revit_category');
-        if (attrFromNode) {
-            attrFromNode.value.set(revitCat);
+        const revitCatAttr = attrsFromNode.find((itm) => itm.label.get() === 'revit_category');
+        if (revitCatAttr) {
+            revitCatAttr.value.set(revitCat);
         }
         else {
             spinal_env_viewer_plugin_documentation_service_1.attributeService.addAttributeByCategory(child, cat, 'revit_category', revitCat, '', '');
+        }
+        if (centerPos) {
+            const centerPosAttr = attrsFromNode.find((itm) => itm.label.get() === 'XYZ center');
+            if (centerPosAttr) {
+                centerPosAttr.value.set(centerPos);
+            }
+            else {
+                spinal_env_viewer_plugin_documentation_service_1.attributeService.addAttributeByCategory(child, cat, 'XYZ center', centerPos, '', '');
+            }
         }
     });
 }

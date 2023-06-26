@@ -24,21 +24,26 @@
 
 import type { SpinalContext } from 'spinal-model-graph';
 import type { TProjectionLst } from '../../interfaces/TProjectionLst';
+import type { ProjectionItem } from './ProjectionItem';
+import type { ProjectionGroup } from './ProjectionGroup';
 import { isProjectionGroup } from '../../utils/projection/isProjectionGroup';
 import { getConfigFromContext } from '../projectionConfig/getConfigFromContext';
 import { createConfigNode } from '../projectionConfig/createConfigNode';
 import { removeConfigFromContext } from '../projectionConfig/removeConfigFromContext';
 import { ProjectionGroupModel } from '../projectionModels/ProjectionGroupModel';
 import { ProjectionItemModel } from '../projectionModels/ProjectionItemModel';
+import { FileSystem } from 'spinal-core-connectorjs';
 
 export class ProjectionGroupConfig {
   name: string;
   uid: string;
   data: TProjectionLst = [];
   progress = 100;
+  isLoaded = false;
 
   constructor(
     name: string,
+    readonly _server_id: number,
     uid = `${Date.now()}-${Math.round(Math.random() * 10000)}-${Math.round(
       Math.random() * 10000
     )}`
@@ -64,9 +69,37 @@ export class ProjectionGroupConfig {
     return removeConfigFromContext(context, this.uid);
   }
 
+  async loadConfigNode() {
+    try {
+      if (this.isLoaded) {
+        return;
+      }
+      this.isLoaded = true;
+      const configNode = FileSystem._objects[this._server_id];
+      const lstData = await configNode.getElement();
+      const promises: Promise<ProjectionItem | ProjectionGroup>[] = [];
+      for (const data of lstData) {
+        promises.push(data.toUxModel());
+      }
+      const data = await Promise.all(promises);
+      for (const itm of data) {
+        if (itm) this.data.push(itm);
+      }
+      if (typeof configNode.info.uid === 'undefined') {
+        configNode.info.add_attr('uid', this.uid);
+      }
+    } catch (error) {
+      this.isLoaded = false;
+      throw error;
+    }
+  }
+
   async saveToContext(context: SpinalContext): Promise<void> {
     let projectLst = await getConfigFromContext(context, this, true);
-    if (!projectLst) projectLst = await createConfigNode(context, this);
+    if (!projectLst) {
+      projectLst = await createConfigNode(context, this);
+    }
+    if (this.isLoaded === false) await this.loadConfigNode();
     const promises: Promise<ProjectionGroupModel | ProjectionItemModel>[] = [];
     for (const data of this.data) {
       const itmInModel = projectLst.detect((itm) => itm.uid.get() === data.uid);

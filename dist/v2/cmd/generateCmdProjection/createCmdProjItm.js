@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCmdProjItm = void 0;
 const getCategory_1 = require("./getCategory");
 const getBimFileIdByModelId_1 = require("../../utils/projection/getBimFileIdByModelId");
-function createCmdProjItm(target, auProp, pNId, flagWarining) {
+function createCmdProjItm(target, auProp, pNId, centerPos, flagWarining) {
     const bimFileId = (0, getBimFileIdByModelId_1.getBimFileIdByModelId)(auProp.modelId);
     const itm = target.find((it) => it.bimFileId === bimFileId && pNId === it.pNId);
     const revitCat = (0, getCategory_1.getCategory)(auProp);
@@ -38,6 +38,7 @@ function createCmdProjItm(target, auProp, pNId, flagWarining) {
                 externalId: auProp.externalId,
                 name: auProp.name,
                 revitCat: revitCat.displayValue,
+                centerPos,
                 flagWarining,
             });
         }
@@ -53,6 +54,7 @@ function createCmdProjItm(target, auProp, pNId, flagWarining) {
                     externalId: auProp.externalId,
                     name: auProp.name,
                     revitCat: revitCat.displayValue,
+                    centerPos,
                     flagWarining,
                 },
             ],

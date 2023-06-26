@@ -38,6 +38,7 @@ const getModelByModelId_1 = require("../../utils/projection/getModelByModelId");
 const getProperties_1 = require("../../utils/projection/getProperties");
 const getIntersectionRoom_1 = require("./getIntersectionRoom");
 const createCmdProjItm_1 = require("./createCmdProjItm");
+const getCenterPos_1 = require("./getCenterPos");
 function createCmdProjection(intersects, contextGeoId, floorsData) {
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];
@@ -61,7 +62,8 @@ function createCmdProjection(intersects, contextGeoId, floorsData) {
                 console.error(`createCmdProjection: room not found for ${bimObjectDbId}`);
             }
             else {
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, room.info.id.get(), flagWarining);
+                const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
+                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, room.info.id.get(), centerPos, flagWarining);
             }
         }
         return res;

@@ -29,6 +29,7 @@ import type { ICmdMissing } from '../../interfaces/ICmdMissing';
 import { getBulkProperties } from '../../utils/projection/getBulkProperties';
 import { getDiffSelection } from './getDiffSelection';
 import { createCmdNotFoundItm } from './createCmdNotFoundItm';
+import { getCenterPos } from './getCenterPos';
 
 export async function createCmdNotFound(
   intersectRes: IIntersectRes
@@ -36,9 +37,11 @@ export async function createCmdNotFound(
   const notFound = getDiffSelection(intersectRes);
   const auProps = await getItemNames(notFound);
   const res: ICmdMissing[] = [];
-  for (const auProp of auProps) {
-    createCmdNotFoundItm(res, auProp);
-  }
+  const proms = auProps.map(async (auProp) => {
+    const centerPos = await getCenterPos(auProp);
+    createCmdNotFoundItm(res, auProp, centerPos);
+  });
+  await Promise.all(proms);
   return res;
 }
 

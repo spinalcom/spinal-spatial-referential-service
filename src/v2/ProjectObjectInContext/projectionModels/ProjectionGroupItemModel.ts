@@ -39,6 +39,7 @@ import {
   getPropPath,
 } from '../../utils';
 import { getExternalIdMapping } from '../../utils/getExternalIdMapping';
+import { getBimFileByBimFileId } from '../../utils/getBimFileByBimFileId';
 
 export class ProjectionGroupItemModel extends Model {
   bimFileId: Str;
@@ -79,6 +80,17 @@ export class ProjectionGroupItemModel extends Model {
   }
   async toUxModel(): Promise<{ modelId: number; dbid: number }> {
     const model = getModelByBimFileIdLoaded(this.bimFileId.get());
+    if (!model) {
+      try {
+        const bimFile = await getBimFileByBimFileId(this.bimFileId.get());
+        throw new Error(
+          `Model [${bimFile.info.name.get()}] not loaded for bimFileId : ${this.bimFileId.get()}`
+        );
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }
     if (typeof this.path !== 'undefined') {
       const path = this.path.get();
       const props = await getPropItemFromPropPath(path, model);

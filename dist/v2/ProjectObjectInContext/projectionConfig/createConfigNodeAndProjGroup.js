@@ -32,40 +32,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCmdNotFound = void 0;
-const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
-const getDiffSelection_1 = require("./getDiffSelection");
-const createCmdNotFoundItm_1 = require("./createCmdNotFoundItm");
-const getCenterPos_1 = require("./getCenterPos");
-function createCmdNotFound(intersectRes) {
+exports.createConfigNodeAndProjGroup = void 0;
+const ProjectionGroupConfig_1 = require("../ProjectionItem/ProjectionGroupConfig");
+const spinal_model_graph_1 = require("spinal-model-graph");
+const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
+const constant_1 = require("../../constant");
+const utils_1 = require("../../utils");
+function createConfigNodeAndProjGroup(context, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const notFound = (0, getDiffSelection_1.getDiffSelection)(intersectRes);
-        const auProps = yield getItemNames(notFound);
-        const res = [];
-        const proms = auProps.map((auProp) => __awaiter(this, void 0, void 0, function* () {
-            const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
-            (0, createCmdNotFoundItm_1.createCmdNotFoundItm)(res, auProp, centerPos);
-        }));
-        yield Promise.all(proms);
-        return res;
+        const config = new spinal_core_connectorjs_1.Lst();
+        const configNode = new spinal_model_graph_1.SpinalNode(name, constant_1.PROJECTION_CONFIG_TYPE, config);
+        context.addChild(configNode, constant_1.PROJECTION_CONFIG_RELATION, constant_1.PROJECTION_CONFIG_RELATION_TYPE);
+        yield (0, utils_1.waitGetServerId)(configNode);
+        const cfgGroup = new ProjectionGroupConfig_1.ProjectionGroupConfig(name, configNode._server_id);
+        configNode.info.add_attr('uid', cfgGroup.uid);
+        return cfgGroup;
     });
 }
-exports.createCmdNotFound = createCmdNotFound;
-function getItemNames(data) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const res = [];
-        for (const { model, dbIds } of data) {
-            res.push((0, getBulkProperties_1.getBulkProperties)(model, dbIds, {
-                propFilter: ['name', 'externalId', 'Category'],
-            }));
-        }
-        return Promise.all(res).then((arr) => {
-            const result = [];
-            for (const itms of arr) {
-                result.push(...itms);
-            }
-            return result;
-        });
-    });
-}
-//# sourceMappingURL=createCmdNotFound.js.map
+exports.createConfigNodeAndProjGroup = createConfigNodeAndProjGroup;
+//# sourceMappingURL=createConfigNodeAndProjGroup.js.map

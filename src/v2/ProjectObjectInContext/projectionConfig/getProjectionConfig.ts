@@ -23,13 +23,12 @@
  */
 
 import type { SpinalContext, SpinalNode } from 'spinal-model-graph';
-import type { ProjectionGroup } from '../ProjectionItem/ProjectionGroup';
-import type { ProjectionItem } from '../ProjectionItem/ProjectionItem';
 import type { ProjectionItemModel } from '../projectionModels/ProjectionItemModel';
 import type { ProjectionGroupModel } from '../projectionModels/ProjectionGroupModel';
 import type { Lst } from 'spinal-core-connectorjs';
 import { PROJECTION_CONFIG_RELATION } from '../../constant';
 import { ProjectionGroupConfig } from '../ProjectionItem/ProjectionGroupConfig';
+import { waitGetServerId } from '../../utils';
 
 export async function getProjectionConfig(
   context: SpinalContext
@@ -40,30 +39,20 @@ export async function getProjectionConfig(
 
   const res: ProjectionGroupConfig[] = [];
   for (const configNode of configNodes) {
+    await waitGetServerId(configNode);
     let projectionGroupConfig: ProjectionGroupConfig;
     // old config => add uid
     if (typeof configNode.info.uid === 'undefined') {
       projectionGroupConfig = new ProjectionGroupConfig(
-        configNode.info.name.get()
+        configNode.info.name.get(),
+        configNode._server_id
       );
     } else {
       projectionGroupConfig = new ProjectionGroupConfig(
         configNode.info.name.get(),
+        configNode._server_id,
         configNode.info.uid.get()
       );
-    }
-    const lstData = await configNode.getElement();
-    const promises: Promise<ProjectionItem | ProjectionGroup>[] = [];
-    for (const data of lstData) {
-      promises.push(data.toUxModel());
-    }
-    const data = await Promise.all(promises);
-    for (const itm of data) {
-      if (itm) projectionGroupConfig.data.push(itm);
-    }
-
-    if (typeof configNode.info.uid === 'undefined') {
-      configNode.info.add_attr('uid', projectionGroupConfig.uid);
     }
     res.push(projectionGroupConfig);
   }

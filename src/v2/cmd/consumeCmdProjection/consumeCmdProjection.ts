@@ -212,7 +212,7 @@ async function consumeCmdMissingProj(
         SPINAL_RELATION_PTR_LST_TYPE,
         contextGeneration
       );
-      await updateRevitCategory(child, obj.revitCat);
+      await updateRevitCategory(child, obj.revitCat, obj.centerPos);
     }
     await removeOtherParents(child, contextGeo, '');
     await removeOtherParents(
@@ -271,7 +271,7 @@ async function consumeCmdProj(
     }
     await removeOtherParents(child, contextGeo, parentNode.info.id.get());
     await removeOtherParents(child, contextGeneration, '');
-    await updateRevitCategory(child, obj.revitCat);
+    await updateRevitCategory(child, obj.revitCat, obj.centerPos);
     if (obj.flagWarining) {
       const nodeGeneration = (await warnGen.next()).value;
       let childGen = nodeGeneration.children.find(
@@ -304,21 +304,25 @@ async function consumeCmdProj(
   }
 }
 
-async function updateRevitCategory(child: SpinalNode, revitCat: string) {
+async function updateRevitCategory(
+  child: SpinalNode,
+  revitCat: string,
+  centerPos: string
+) {
   if (!revitCat) return;
-  let cat = await attributeService.getCategoryByName(child, 'default');
+  let cat = await attributeService.getCategoryByName(child, 'Spatial');
   if (!cat) {
-    cat = await attributeService.addCategoryAttribute(child, 'default');
+    cat = await attributeService.addCategoryAttribute(child, 'Spatial');
   }
   const attrsFromNode = await attributeService.getAttributesByCategory(
     child,
     cat
   );
-  const attrFromNode = attrsFromNode.find(
+  const revitCatAttr = attrsFromNode.find(
     (itm) => itm.label.get() === 'revit_category'
   );
-  if (attrFromNode) {
-    attrFromNode.value.set(revitCat);
+  if (revitCatAttr) {
+    revitCatAttr.value.set(revitCat);
   } else {
     attributeService.addAttributeByCategory(
       child,
@@ -328,6 +332,23 @@ async function updateRevitCategory(child: SpinalNode, revitCat: string) {
       '',
       ''
     );
+  }
+  if (centerPos) {
+    const centerPosAttr = attrsFromNode.find(
+      (itm) => itm.label.get() === 'XYZ center'
+    );
+    if (centerPosAttr) {
+      centerPosAttr.value.set(centerPos);
+    } else {
+      attributeService.addAttributeByCategory(
+        child,
+        cat,
+        'XYZ center',
+        centerPos,
+        '',
+        ''
+      );
+    }
   }
 }
 

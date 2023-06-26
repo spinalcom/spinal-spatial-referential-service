@@ -3,5 +3,6 @@ export interface ICmdProjData {
     externalId: string;
     name: string;
     revitCat: string;
+    centerPos: string;
     flagWarining: boolean;
 }

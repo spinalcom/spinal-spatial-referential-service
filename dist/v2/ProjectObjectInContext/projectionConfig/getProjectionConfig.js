@@ -35,31 +35,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProjectionConfig = void 0;
 const constant_1 = require("../../constant");
 const ProjectionGroupConfig_1 = require("../ProjectionItem/ProjectionGroupConfig");
+const utils_1 = require("../../utils");
 function getProjectionConfig(context) {
     return __awaiter(this, void 0, void 0, function* () {
         const configNodes = yield context.getChildren(constant_1.PROJECTION_CONFIG_RELATION);
         const res = [];
         for (const configNode of configNodes) {
+            yield (0, utils_1.waitGetServerId)(configNode);
             let projectionGroupConfig;
             // old config => add uid
             if (typeof configNode.info.uid === 'undefined') {
-                projectionGroupConfig = new ProjectionGroupConfig_1.ProjectionGroupConfig(configNode.info.name.get());
+                projectionGroupConfig = new ProjectionGroupConfig_1.ProjectionGroupConfig(configNode.info.name.get(), configNode._server_id);
             }
             else {
-                projectionGroupConfig = new ProjectionGroupConfig_1.ProjectionGroupConfig(configNode.info.name.get(), configNode.info.uid.get());
-            }
-            const lstData = yield configNode.getElement();
-            const promises = [];
-            for (const data of lstData) {
-                promises.push(data.toUxModel());
-            }
-            const data = yield Promise.all(promises);
-            for (const itm of data) {
-                if (itm)
-                    projectionGroupConfig.data.push(itm);
-            }
-            if (typeof configNode.info.uid === 'undefined') {
-                configNode.info.add_attr('uid', projectionGroupConfig.uid);
+                projectionGroupConfig = new ProjectionGroupConfig_1.ProjectionGroupConfig(configNode.info.name.get(), configNode._server_id, configNode.info.uid.get());
             }
             res.push(projectionGroupConfig);
         }

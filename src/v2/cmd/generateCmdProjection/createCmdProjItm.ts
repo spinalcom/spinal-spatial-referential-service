@@ -31,6 +31,7 @@ export function createCmdProjItm(
   target: ICmdProjection[],
   auProp: AuProps,
   pNId: string,
+  centerPos: string,
   flagWarining: boolean
 ) {
   const bimFileId = getBimFileIdByModelId(auProp.modelId);
@@ -46,6 +47,7 @@ export function createCmdProjItm(
         externalId: auProp.externalId,
         name: auProp.name,
         revitCat: revitCat.displayValue,
+        centerPos,
         flagWarining,
       });
     }
@@ -60,6 +62,7 @@ export function createCmdProjItm(
           externalId: auProp.externalId,
           name: auProp.name,
           revitCat: revitCat.displayValue,
+          centerPos,
           flagWarining,
         },
       ],

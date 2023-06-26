@@ -37,6 +37,7 @@ const utils_1 = require("../../utils");
 const getProperties_1 = require("../../utils/projection/getProperties");
 const createCmdNotFoundItm_1 = require("./createCmdNotFoundItm");
 const createCmdProjItm_1 = require("./createCmdProjItm");
+const getCenterPos_1 = require("./getCenterPos");
 function createCmdProjectionForManualAssing(warnArr, errorArr) {
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];
@@ -45,22 +46,24 @@ function createCmdProjectionForManualAssing(warnArr, errorArr) {
             const bimObjectDbId = warn.dbid;
             const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(warn.bimFileId);
             const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
+            const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
             if (warn.validId) {
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, false);
+                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, centerPos, false);
             }
             else {
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.PNId, true);
+                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.PNId, centerPos, true);
             }
         }
         for (const warn of errorArr) {
             const bimObjectDbId = warn.dbid;
             const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(warn.bimFileId);
             const auProp = yield (0, getProperties_1.getProperties)(bimObjectModel, bimObjectDbId);
+            const centerPos = yield (0, getCenterPos_1.getCenterPos)(auProp);
             if (warn.validId) {
-                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, false);
+                (0, createCmdProjItm_1.createCmdProjItm)(res, auProp, warn.validId, centerPos, false);
             }
             else {
-                (0, createCmdNotFoundItm_1.createCmdNotFoundItm)(resMiss, auProp);
+                (0, createCmdNotFoundItm_1.createCmdNotFoundItm)(resMiss, auProp, centerPos);
             }
         }
         return { cmd: res, cmdMiss: resMiss };
