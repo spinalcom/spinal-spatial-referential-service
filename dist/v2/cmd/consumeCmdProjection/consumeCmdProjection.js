@@ -55,7 +55,7 @@ const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewe
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
 const consumeBatch_1 = require("../../../utils/consumeBatch");
 const lodash_throttle_1 = __importDefault(require("lodash.throttle"));
-function consumeCmdProjection(cmds, nodeId, contextId, callbackProg) {
+function consumeCmdProjection(cmds, nodeId, contextId, callbackProg, consumeBatchSize = 20) {
     return __awaiter(this, void 0, void 0, function* () {
         const contextGeneration = (0, utils_1.getRealNode)(contextId);
         const nodeGeneration = (0, utils_1.getRealNode)(nodeId);
@@ -101,7 +101,7 @@ function consumeCmdProjection(cmds, nodeId, contextId, callbackProg) {
                 }));
             }
         }
-        yield (0, consumeBatch_1.consumeBatch)(proms, 20);
+        yield (0, consumeBatch_1.consumeBatch)(proms, consumeBatchSize);
     });
 }
 exports.consumeCmdProjection = consumeCmdProjection;

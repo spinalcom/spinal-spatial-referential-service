@@ -51,7 +51,8 @@ export async function consumeCmdGeo(
   cmds: ICmdNew[][],
   nodeGenerationId: string,
   contextGenerationId: string,
-  callbackProg?: (indexCmd: number, idxInCmd: number) => void
+  callbackProg?: (indexCmd: number, idxInCmd: number) => void,
+  consumeBatchSize = 20
 ) {
   const graph = getGraph();
   const contextGeo = await getContextSpatial(graph);
@@ -100,7 +101,7 @@ export async function consumeCmdGeo(
         proms.push(consumeRefNode.bind(null, dico, cmd, contextGeo));
       }
     }
-    await consumeBatch(proms, 10, (idx) => {
+    await consumeBatch(proms, consumeBatchSize, (idx) => {
       try {
         if (callbackProg) callbackProg(index, idx);
       } catch (error) {

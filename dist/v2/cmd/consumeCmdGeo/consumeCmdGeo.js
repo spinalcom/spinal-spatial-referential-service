@@ -45,7 +45,7 @@ const waitGetServerId_1 = require("../../utils/waitGetServerId");
 const getBimContextByBimFileId_1 = require("../../utils/getBimContextByBimFileId");
 const constant_1 = require("../../constant");
 const Constant_1 = require("../../../Constant");
-function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg) {
+function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg, consumeBatchSize = 20) {
     return __awaiter(this, void 0, void 0, function* () {
         const graph = (0, graphservice_1.getGraph)();
         const contextGeo = yield (0, getContextSpatial_1.getContextSpatial)(graph);
@@ -82,7 +82,7 @@ function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg
                     proms.push(consumeRefNode.bind(null, dico, cmd, contextGeo));
                 }
             }
-            yield (0, consumeBatch_1.consumeBatch)(proms, 10, (idx) => {
+            yield (0, consumeBatch_1.consumeBatch)(proms, consumeBatchSize, (idx) => {
                 try {
                     if (callbackProg)
                         callbackProg(index, idx);

@@ -65,7 +65,8 @@ export async function consumeCmdProjection(
   cmds: (ICmdMissing | ICmdProjection)[],
   nodeId: string,
   contextId: string,
-  callbackProg?: (index: number) => void
+  callbackProg?: (index: number) => void,
+  consumeBatchSize = 20
 ): Promise<void> {
   const contextGeneration = getRealNode(contextId);
   const nodeGeneration = getRealNode(nodeId);
@@ -143,7 +144,7 @@ export async function consumeCmdProjection(
       );
     }
   }
-  await consumeBatch(proms, 20);
+  await consumeBatch(proms, consumeBatchSize);
 }
 
 async function* getOrCreateGenOutNode(
