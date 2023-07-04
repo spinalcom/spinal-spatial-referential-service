@@ -163,9 +163,7 @@ function consumeNewUpdateCmd(dico, cmd, contextGeo, createMtd) {
         let child = children.find((node) => node.info.id.get() === cmd.id);
         if (!child) {
             // id not found => create Child
-            child = yield createMtd(contextGeo, parentNode, cmd.name);
-            if (cmd.id)
-                (0, updateInfoByKey_1.updateInfoByKey)(child, 'id', cmd.id);
+            child = yield createMtd(contextGeo, parentNode, cmd.name, cmd.id);
         }
         // update the floor with cmd!
         // update info
@@ -174,7 +172,16 @@ function consumeNewUpdateCmd(dico, cmd, contextGeo, createMtd) {
         if (cmd.name)
             (0, updateInfoByKey_1.updateInfoByKey)(child, 'name', cmd.name);
         recordDico(dico, child);
+        yield removeFromContextGen(child);
         yield (0, waitGetServerId_1.waitGetServerId)(child);
+    });
+}
+function removeFromContextGen(roomNode) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const parents = yield roomNode.getParents(constant_1.ARCHIVE_RELATION_NAME);
+        yield Promise.all(parents.map((parent) => {
+            return parent.removeChild(roomNode, constant_1.ARCHIVE_RELATION_NAME, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+        }));
     });
 }
 function createOrUpdateBimObjByBimFileId(dico, id, bimFileId, name, dbId, externalId) {

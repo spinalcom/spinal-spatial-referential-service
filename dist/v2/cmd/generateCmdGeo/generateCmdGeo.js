@@ -39,10 +39,12 @@ const getModType_1 = require("../../utils/archi/getModType");
 const isInSkipList_1 = require("../../utils/archi/isInSkipList");
 const handleFloorCmdNew_1 = require("./handleFloorCmdNew");
 const handleFloorUpdate_1 = require("./handleFloorUpdate");
+const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
 function generateCmdGeo(data, skipList, buildingServerId, bimFileId) {
     return __awaiter(this, void 0, void 0, function* () {
         const dataToDo = [];
         const buildingNode = spinal_core_connectorjs_1.FileSystem._objects[buildingServerId];
+        const refContext = yield (0, spinal_env_viewer_context_geographic_service_1.getOrCreateRefContext)(spinal_env_viewer_context_geographic_service_1.ROOM_REFERENCE_CONTEXT);
         for (const floorData of data) {
             if ((0, isInSkipList_1.isInSkipList)(skipList, floorData.floorArchi.properties.externalId))
                 continue;
@@ -53,11 +55,11 @@ function generateCmdGeo(data, skipList, buildingServerId, bimFileId) {
                         console.warn(`${floorData.floorArchi.properties.externalId} got update modification type but no Diff object`);
                     }
                     else {
-                        yield (0, handleFloorUpdate_1.handleFloorUpdate)(floorData, buildingNode, dataToDo, skipList, bimFileId);
+                        yield (0, handleFloorUpdate_1.handleFloorUpdate)(floorData, buildingNode, dataToDo, skipList, bimFileId, refContext);
                     }
                     break;
                 case IGetArchi_1.EModificationType.create:
-                    (0, handleFloorCmdNew_1.handleFloorCmdNew)(floorData, buildingNode, bimFileId, dataToDo, skipList);
+                    yield (0, handleFloorCmdNew_1.handleFloorCmdNew)(floorData, buildingNode, bimFileId, dataToDo, skipList, refContext);
                     break;
                 default:
                     // do nothing | no delete floor

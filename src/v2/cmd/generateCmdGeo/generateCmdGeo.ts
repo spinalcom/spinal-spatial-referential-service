@@ -32,6 +32,10 @@ import { getModType } from '../../utils/archi/getModType';
 import { isInSkipList } from '../../utils/archi/isInSkipList';
 import { handleFloorCmdNew } from './handleFloorCmdNew';
 import { handleFloorUpdate } from './handleFloorUpdate';
+import {
+  ROOM_REFERENCE_CONTEXT,
+  getOrCreateRefContext,
+} from 'spinal-env-viewer-context-geographic-service';
 
 export async function generateCmdGeo(
   data: IFloorData[],
@@ -41,6 +45,8 @@ export async function generateCmdGeo(
 ) {
   const dataToDo: ICmdNew[][] = [];
   const buildingNode = <SpinalNode>FileSystem._objects[buildingServerId];
+  const refContext = await getOrCreateRefContext(ROOM_REFERENCE_CONTEXT);
+
   for (const floorData of data) {
     if (isInSkipList(skipList, floorData.floorArchi.properties.externalId))
       continue;
@@ -58,17 +64,19 @@ export async function generateCmdGeo(
             buildingNode,
             dataToDo,
             skipList,
-            bimFileId
+            bimFileId,
+            refContext
           );
         }
         break;
       case EModificationType.create:
-        handleFloorCmdNew(
+        await handleFloorCmdNew(
           floorData,
           buildingNode,
           bimFileId,
           dataToDo,
-          skipList
+          skipList,
+          refContext
         );
         break;
       default:

@@ -195,8 +195,7 @@ async function consumeNewUpdateCmd(
   let child = children.find((node) => node.info.id.get() === cmd.id);
   if (!child) {
     // id not found => create Child
-    child = await createMtd(contextGeo, parentNode, cmd.name);
-    if (cmd.id) updateInfoByKey(child, 'id', cmd.id);
+    child = await createMtd(contextGeo, parentNode, cmd.name, cmd.id);
   }
   // update the floor with cmd!
   // update info
@@ -204,7 +203,21 @@ async function consumeNewUpdateCmd(
   await updateAttr(child, cmd.attr); // update attr
   if (cmd.name) updateInfoByKey(child, 'name', cmd.name);
   recordDico(dico, child);
+  await removeFromContextGen(child);
   await waitGetServerId(child);
+}
+
+async function removeFromContextGen(roomNode: SpinalNode) {
+  const parents = await roomNode.getParents(ARCHIVE_RELATION_NAME);
+  await Promise.all(
+    parents.map((parent) => {
+      return parent.removeChild(
+        roomNode,
+        ARCHIVE_RELATION_NAME,
+        SPINAL_RELATION_PTR_LST_TYPE
+      );
+    })
+  );
 }
 
 async function createOrUpdateBimObjByBimFileId(

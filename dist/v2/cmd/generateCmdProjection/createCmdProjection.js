@@ -48,7 +48,7 @@ function createCmdProjection(intersects, contextGeoId, floorsData) {
         for (const spinalIntersection of intersects) {
             proms.push(() => handleCreateCmd(spinalIntersection, dicoBimObjs, contextGeoId, floorsData, res));
         }
-        yield (0, consumeBatch_1.consumeBatch)(proms, 20, console.log.bind(null, 'createCmdProjection %d/%d'));
+        yield (0, consumeBatch_1.consumeBatch)(proms, 500, console.log.bind(null, 'createCmdProjection %d/%d'));
         return res;
     });
 }

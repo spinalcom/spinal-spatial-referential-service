@@ -27,20 +27,22 @@ import type {
   IRoomArchi,
   IStructures,
 } from '../../interfaces/IGetArchi';
-import type { SpinalNode } from 'spinal-model-graph';
+import type { SpinalContext, SpinalNode } from 'spinal-model-graph';
 import type { IFloorData } from '../../interfaces/IFloorData';
 import type { ISkipItem } from '../../interfaces/ISkipItem';
 import type { ICmdNew } from '../../interfaces/ICmdNew';
 import { parseUnit } from '../../scripts/transformArchi';
 import { guid } from '../../utils/guid';
 import { isInSkipList } from '../../utils/archi/isInSkipList';
+import { GEO_ROOM_RELATION } from '../../../Constant';
 
-export function handleFloorCmdNew(
+export async function handleFloorCmdNew(
   floorData: IFloorData,
   buildingNode: SpinalNode,
   bimFileId: string,
   dataToDo: ICmdNew[][],
-  skipList: ISkipItem[]
+  skipList: ISkipItem[],
+  refContext: SpinalContext
 ) {
   const floorCmd = getFloorCmdNew(floorData, buildingNode, bimFileId);
   dataToDo.push([floorCmd]);
@@ -52,22 +54,24 @@ export function handleFloorCmdNew(
     'floorRef'
   );
   // rooms
-  const { roomCmds, roomRefCmds } = getFloorRoomsCmdNew(
+  const { roomCmds, roomRefCmds } = await getFloorRoomsCmdNew(
     floorData,
     floorCmd,
     bimFileId,
-    skipList
+    skipList,
+    refContext
   );
   const floorRefAndRoomCmds = floorRefCmds.concat(roomCmds);
   if (floorRefAndRoomCmds.length > 0) dataToDo.push(floorRefAndRoomCmds);
   if (roomRefCmds.length > 0) dataToDo.push(roomRefCmds);
 }
 
-function getFloorRoomsCmdNew(
+async function getFloorRoomsCmdNew(
   floorData: IFloorData,
   floorCmd: ICmdNew,
   bimFileId: string,
-  skipList: ISkipItem[]
+  skipList: ISkipItem[],
+  refContext: SpinalContext
 ) {
   const roomCmds: ICmdNew[] = [];
   const roomRefCmds: ICmdNew[] = [];
@@ -80,18 +84,36 @@ function getFloorRoomsCmdNew(
     ) {
       const roomArchi = floorData.floorArchi.children[floorExtId];
       if (isInSkipList(skipList, roomArchi.properties.externalId)) continue;
-      getRoomCmd(roomArchi, floorCmd.id, bimFileId, roomCmds, roomRefCmds);
+      await getRoomCmd(
+        roomArchi,
+        floorCmd.id,
+        bimFileId,
+        roomCmds,
+        roomRefCmds,
+        refContext
+      );
     }
   }
   return { roomCmds, roomRefCmds };
 }
 
-export function getRoomCmd(
+export async function getRoomFromRefByName(
+  refContext: SpinalContext,
+  name: string
+) {
+  const children = await refContext.getChildren(GEO_ROOM_RELATION);
+  for (const child of children) {
+    if (child.info.name.get() === name) return child;
+  }
+}
+
+export async function getRoomCmd(
   roomArchi: IRoomArchi,
   pNId: string,
   bimFileId: string,
   roomCmds: ICmdNew[],
-  roomRefCmds: ICmdNew[]
+  roomRefCmds: ICmdNew[],
+  refContext: SpinalContext
 ) {
   let name = '';
   let number = undefined;
@@ -105,9 +127,11 @@ export function getRoomCmd(
     };
   });
   name = number ? `${number}-${name}` : name;
+  const node = await getRoomFromRefByName(refContext, name);
+  const id = node ? node.info.id.get() : guid();
   const roomCmd: ICmdNew = {
     pNId,
-    id: guid(),
+    id,
     type: 'room',
     name,
     info: {

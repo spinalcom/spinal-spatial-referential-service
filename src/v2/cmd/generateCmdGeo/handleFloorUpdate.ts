@@ -22,7 +22,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import type { SpinalNode } from 'spinal-model-graph';
+import type { SpinalContext, SpinalNode } from 'spinal-model-graph';
 import type { IFloorData } from '../../interfaces/IFloorData';
 import type { ISkipItem } from '../../interfaces/ISkipItem';
 import type { ICmdNew, ICmdNewInfo } from '../../interfaces/ICmdNew';
@@ -46,7 +46,8 @@ export async function handleFloorUpdate(
   buildingNode: SpinalNode,
   dataToDo: ICmdNew[][],
   skipList: ISkipItem[],
-  bimFileId: string
+  bimFileId: string,
+  refContext: SpinalContext
 ) {
   const floorNode = <SpinalNode>(
     FileSystem._objects[floorData.floorArchi.properties.spinalnodeServerId]
@@ -86,7 +87,8 @@ export async function handleFloorUpdate(
         floorNode.info.id.get(),
         bimFileId,
         roomCmds,
-        roomRefCmds
+        roomRefCmds,
+        refContext
       );
   });
   await getRoomCmdUp(

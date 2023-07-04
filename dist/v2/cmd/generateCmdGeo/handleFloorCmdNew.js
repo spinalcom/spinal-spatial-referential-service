@@ -22,69 +22,97 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRefCmd = exports.getRoomCmd = exports.handleFloorCmdNew = void 0;
+exports.getRefCmd = exports.getRoomCmd = exports.getRoomFromRefByName = exports.handleFloorCmdNew = void 0;
 const transformArchi_1 = require("../../scripts/transformArchi");
 const guid_1 = require("../../utils/guid");
 const isInSkipList_1 = require("../../utils/archi/isInSkipList");
-function handleFloorCmdNew(floorData, buildingNode, bimFileId, dataToDo, skipList) {
-    const floorCmd = getFloorCmdNew(floorData, buildingNode, bimFileId);
-    dataToDo.push([floorCmd]);
-    // floor ref structs
-    const floorRefCmds = getFloorRefCmdNew(floorData.floorArchi.structures, floorCmd.id, bimFileId, 'floorRef');
-    // rooms
-    const { roomCmds, roomRefCmds } = getFloorRoomsCmdNew(floorData, floorCmd, bimFileId, skipList);
-    const floorRefAndRoomCmds = floorRefCmds.concat(roomCmds);
-    if (floorRefAndRoomCmds.length > 0)
-        dataToDo.push(floorRefAndRoomCmds);
-    if (roomRefCmds.length > 0)
-        dataToDo.push(roomRefCmds);
+const Constant_1 = require("../../../Constant");
+function handleFloorCmdNew(floorData, buildingNode, bimFileId, dataToDo, skipList, refContext) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const floorCmd = getFloorCmdNew(floorData, buildingNode, bimFileId);
+        dataToDo.push([floorCmd]);
+        // floor ref structs
+        const floorRefCmds = getFloorRefCmdNew(floorData.floorArchi.structures, floorCmd.id, bimFileId, 'floorRef');
+        // rooms
+        const { roomCmds, roomRefCmds } = yield getFloorRoomsCmdNew(floorData, floorCmd, bimFileId, skipList, refContext);
+        const floorRefAndRoomCmds = floorRefCmds.concat(roomCmds);
+        if (floorRefAndRoomCmds.length > 0)
+            dataToDo.push(floorRefAndRoomCmds);
+        if (roomRefCmds.length > 0)
+            dataToDo.push(roomRefCmds);
+    });
 }
 exports.handleFloorCmdNew = handleFloorCmdNew;
-function getFloorRoomsCmdNew(floorData, floorCmd, bimFileId, skipList) {
-    const roomCmds = [];
-    const roomRefCmds = [];
-    for (const floorExtId in floorData.floorArchi.children) {
-        if (Object.prototype.hasOwnProperty.call(floorData.floorArchi.children, floorExtId)) {
-            const roomArchi = floorData.floorArchi.children[floorExtId];
-            if ((0, isInSkipList_1.isInSkipList)(skipList, roomArchi.properties.externalId))
-                continue;
-            getRoomCmd(roomArchi, floorCmd.id, bimFileId, roomCmds, roomRefCmds);
+function getFloorRoomsCmdNew(floorData, floorCmd, bimFileId, skipList, refContext) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const roomCmds = [];
+        const roomRefCmds = [];
+        for (const floorExtId in floorData.floorArchi.children) {
+            if (Object.prototype.hasOwnProperty.call(floorData.floorArchi.children, floorExtId)) {
+                const roomArchi = floorData.floorArchi.children[floorExtId];
+                if ((0, isInSkipList_1.isInSkipList)(skipList, roomArchi.properties.externalId))
+                    continue;
+                yield getRoomCmd(roomArchi, floorCmd.id, bimFileId, roomCmds, roomRefCmds, refContext);
+            }
         }
-    }
-    return { roomCmds, roomRefCmds };
-}
-function getRoomCmd(roomArchi, pNId, bimFileId, roomCmds, roomRefCmds) {
-    let name = '';
-    let number = undefined;
-    const attr = roomArchi.properties.properties.map((itm) => {
-        if (itm.name === 'name')
-            name = itm.value;
-        if (itm.name === 'number')
-            number = itm.value;
-        return {
-            label: itm.name,
-            value: itm.value,
-            unit: (0, transformArchi_1.parseUnit)(itm.dataTypeContext),
-        };
+        return { roomCmds, roomRefCmds };
     });
-    name = number ? `${number}-${name}` : name;
-    const roomCmd = {
-        pNId,
-        id: (0, guid_1.guid)(),
-        type: 'room',
-        name,
-        info: {
-            dbid: roomArchi.properties.dbId,
-            externalId: roomArchi.properties.externalId,
-            bimFileId,
-        },
-        attr,
-    };
-    roomCmds.push(roomCmd);
-    roomArchi.children.forEach((nodeInfo) => {
-        const roomRefCmd = getRefCmd(nodeInfo, roomCmd.id, 'roomRef', bimFileId);
-        roomRefCmds.push(roomRefCmd);
+}
+function getRoomFromRefByName(refContext, name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const children = yield refContext.getChildren(Constant_1.GEO_ROOM_RELATION);
+        for (const child of children) {
+            if (child.info.name.get() === name)
+                return child;
+        }
+    });
+}
+exports.getRoomFromRefByName = getRoomFromRefByName;
+function getRoomCmd(roomArchi, pNId, bimFileId, roomCmds, roomRefCmds, refContext) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let name = '';
+        let number = undefined;
+        const attr = roomArchi.properties.properties.map((itm) => {
+            if (itm.name === 'name')
+                name = itm.value;
+            if (itm.name === 'number')
+                number = itm.value;
+            return {
+                label: itm.name,
+                value: itm.value,
+                unit: (0, transformArchi_1.parseUnit)(itm.dataTypeContext),
+            };
+        });
+        name = number ? `${number}-${name}` : name;
+        const node = yield getRoomFromRefByName(refContext, name);
+        const id = node ? node.info.id.get() : (0, guid_1.guid)();
+        const roomCmd = {
+            pNId,
+            id,
+            type: 'room',
+            name,
+            info: {
+                dbid: roomArchi.properties.dbId,
+                externalId: roomArchi.properties.externalId,
+                bimFileId,
+            },
+            attr,
+        };
+        roomCmds.push(roomCmd);
+        roomArchi.children.forEach((nodeInfo) => {
+            const roomRefCmd = getRefCmd(nodeInfo, roomCmd.id, 'roomRef', bimFileId);
+            roomRefCmds.push(roomRefCmd);
+        });
     });
 }
 exports.getRoomCmd = getRoomCmd;

@@ -41,7 +41,7 @@ const guid_1 = require("../../utils/guid");
 const getNodeInfoArchiAttr_1 = require("../../utils/archi/getNodeInfoArchiAttr");
 const serverIdArrToNodeIdArr_1 = require("../../utils/archi/serverIdArrToNodeIdArr");
 const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
-function handleFloorUpdate(floorData, buildingNode, dataToDo, skipList, bimFileId) {
+function handleFloorUpdate(floorData, buildingNode, dataToDo, skipList, bimFileId, refContext) {
     return __awaiter(this, void 0, void 0, function* () {
         const floorNode = (spinal_core_connectorjs_1.FileSystem._objects[floorData.floorArchi.properties.spinalnodeServerId]);
         const floorCmd = getFloorCmdUp(floorData, buildingNode, floorNode);
@@ -70,7 +70,7 @@ function handleFloorUpdate(floorData, buildingNode, dataToDo, skipList, bimFileI
         const roomCmds = [], roomRefCmds = [];
         floorData.diff.diffRoom.newRooms.forEach((roomArchi) => {
             if (!(0, isInSkipList_1.isInSkipList)(skipList, roomArchi.properties.externalId))
-                (0, handleFloorCmdNew_1.getRoomCmd)(roomArchi, floorNode.info.id.get(), bimFileId, roomCmds, roomRefCmds);
+                (0, handleFloorCmdNew_1.getRoomCmd)(roomArchi, floorNode.info.id.get(), bimFileId, roomCmds, roomRefCmds, refContext);
         });
         yield getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, skipList);
         const floorRefAndRoomCmds = floorRefCmd.concat(roomCmds);
