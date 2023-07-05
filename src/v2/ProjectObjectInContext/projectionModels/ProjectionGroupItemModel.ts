@@ -95,10 +95,9 @@ export class ProjectionGroupItemModel extends Model {
       const path = this.path.get();
       const props = await getPropItemFromPropPath(path, model);
       if (!props) {
-        console.error(
+        throw new Error(
           `ProjectionGroupItemModel [${this.uid.get()}] no item found for path : ${path}`
         );
-        return;
       }
       return {
         modelId: model.id,
@@ -108,10 +107,9 @@ export class ProjectionGroupItemModel extends Model {
       const extMap = await getExternalIdMapping(model);
       const dbid = extMap[this.externalId.get()];
       if (!dbid) {
-        console.warn(
+        throw new Error(
           `ProjectionGroupItemModel [${this.uid.get()}] skiped - no item found for externalId : ${this.externalId.get()}`
         );
-        return;
       }
       return {
         modelId: model.id,

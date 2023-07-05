@@ -220,23 +220,33 @@ function removeOtherParents(child, context, parentNodeId) {
     return __awaiter(this, void 0, void 0, function* () {
         const parents = yield child.getParentsInContext(context);
         const toRm = [];
-        for (const otherParent of parents) {
-            if (otherParent.info.id.get() !== parentNodeId) {
-                toRm.push(otherParent);
-            }
-        }
-        for (const obj of toRm) {
-            if ((_a = obj.children.LstPtr) === null || _a === void 0 ? void 0 : _a[Constant_1.GEO_EQUIPMENT_RELATION]) {
-                try {
-                    yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_LST_PTR_TYPE);
+        try {
+            for (const otherParent of parents) {
+                if (otherParent.info.id.get() !== parentNodeId) {
+                    toRm.push(otherParent);
                 }
-                catch (e) {
+            }
+            for (const obj of toRm) {
+                if ((_a = obj.children.LstPtr) === null || _a === void 0 ? void 0 : _a[Constant_1.GEO_EQUIPMENT_RELATION]) {
+                    try {
+                        yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_LST_PTR_TYPE);
+                    }
+                    catch (e) {
+                        yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+                    }
+                }
+                else {
                     yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
                 }
             }
-            else {
-                yield obj.removeChild(child, Constant_1.GEO_EQUIPMENT_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
-            }
+        }
+        catch (error) {
+            console.error(error);
+            console.log('trying to removeOtherParents', {
+                child,
+                context,
+                parentNodeId,
+            });
         }
     });
 }

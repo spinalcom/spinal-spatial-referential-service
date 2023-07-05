@@ -94,8 +94,7 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
                 const path = this.path.get();
                 const props = yield (0, utils_1.getPropItemFromPropPath)(path, model);
                 if (!props) {
-                    console.error(`projectionItemModel [${this.uid.get()}] no item found for path : ${path}`);
-                    return;
+                    throw new Error(`projectionItemModel [${this.uid.get()}] no item found for path : ${path}`);
                 }
                 projectionItem = new ProjectionItem_1.ProjectionItem(props.name, model.id, props.dbId, props.properties, props.externalId);
             }
@@ -103,8 +102,7 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
                 const extMap = yield (0, getExternalIdMapping_1.getExternalIdMapping)(model);
                 const dbid = extMap[this.externalId.get()];
                 if (!dbid) {
-                    console.warn(`projectionItemModel [${this.uid.get()}] skiped - no item found for externalId : ${this.externalId.get()}`);
-                    return;
+                    throw new Error(`projectionItemModel [${this.uid.get()}] skiped - no item found for externalId : ${this.externalId.get()}`);
                 }
                 const props = yield (0, utils_1.getBulkProperties)(model, [dbid]);
                 projectionItem = new ProjectionItem_1.ProjectionItem(props[0].name, model.id, dbid, props[0].properties, props[0].externalId);

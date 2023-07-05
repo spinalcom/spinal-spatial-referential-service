@@ -360,33 +360,42 @@ async function removeOtherParents(
 ) {
   const parents = await child.getParentsInContext(context);
   const toRm: SpinalNode[] = [];
-  for (const otherParent of parents) {
-    if (otherParent.info.id.get() !== parentNodeId) {
-      toRm.push(otherParent);
+  try {
+    for (const otherParent of parents) {
+      if (otherParent.info.id.get() !== parentNodeId) {
+        toRm.push(otherParent);
+      }
     }
-  }
-  for (const obj of toRm) {
-    if (obj.children.LstPtr?.[GEO_EQUIPMENT_RELATION]) {
-      try {
-        await obj.removeChild(
-          child,
-          GEO_EQUIPMENT_RELATION,
-          SPINAL_RELATION_LST_PTR_TYPE
-        );
-      } catch (e) {
+    for (const obj of toRm) {
+      if (obj.children.LstPtr?.[GEO_EQUIPMENT_RELATION]) {
+        try {
+          await obj.removeChild(
+            child,
+            GEO_EQUIPMENT_RELATION,
+            SPINAL_RELATION_LST_PTR_TYPE
+          );
+        } catch (e) {
+          await obj.removeChild(
+            child,
+            GEO_EQUIPMENT_RELATION,
+            SPINAL_RELATION_PTR_LST_TYPE
+          );
+        }
+      } else {
         await obj.removeChild(
           child,
           GEO_EQUIPMENT_RELATION,
           SPINAL_RELATION_PTR_LST_TYPE
         );
       }
-    } else {
-      await obj.removeChild(
-        child,
-        GEO_EQUIPMENT_RELATION,
-        SPINAL_RELATION_PTR_LST_TYPE
-      );
     }
+  } catch (error) {
+    console.error(error);
+    console.log('trying to removeOtherParents', {
+      child,
+      context,
+      parentNodeId,
+    });
   }
 }
 
