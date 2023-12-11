@@ -45,6 +45,7 @@ function updateBimObjectFromBimFileId(bimFileId, model, updateBimobjectsName, up
             throw new Error('No BimOject found with this bimFileId');
         const map = yield (0, getExternalIdMapping_1.getExternalIdMapping)(model);
         const bimobjs = yield bimContext.getChildren(Constant_1.GEO_EQUIPMENT_RELATION);
+        const promises = [];
         for (const bimobj of bimobjs) {
             if (bimobj.info.bimFileId.get() === bimFileId) {
                 const dbid = map[bimobj.info.externalId.get()];
@@ -56,15 +57,30 @@ function updateBimObjectFromBimFileId(bimFileId, model, updateBimobjectsName, up
                     }
                 }
                 else if (updateBimobjectsName && dbid) {
-                    model.getProperties(dbid, (prop) => {
-                        if (prop.name) {
-                            bimobj.info.name.set(prop.name);
-                        }
-                    });
+                    promises.push(updateName(model, dbid, bimobj));
                 }
             }
         }
+        // 20s timeout
+        yield Promise.race([Promise.all(promises), timeout(20000)]);
     });
 }
 exports.updateBimObjectFromBimFileId = updateBimObjectFromBimFileId;
+function timeout(ms) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject();
+        }, ms);
+    });
+}
+function updateName(model, dbid, bimobj) {
+    return new Promise(resolve => {
+        model.getProperties(dbid, (prop) => {
+            if (prop === null || prop === void 0 ? void 0 : prop.name) {
+                bimobj.info.name.set(prop.name);
+            }
+            resolve();
+        });
+    });
+}
 //# sourceMappingURL=updateBimObjectFromBimFileId.js.map

@@ -22,6 +22,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
+import type { SpinalNode } from 'spinal-model-graph';
 import { GEO_EQUIPMENT_RELATION } from '../../Constant';
 import { getBimContextByBimFileId } from '../utils/getBimContextByBimFileId';
 import { getExternalIdMapping } from '../utils/getExternalIdMapping';
@@ -38,6 +39,7 @@ export async function updateBimObjectFromBimFileId(
     throw new Error('No BimOject found with this bimFileId');
   const map = await getExternalIdMapping(model);
   const bimobjs = await bimContext.getChildren(GEO_EQUIPMENT_RELATION);
+  const promises: Promise<void>[] = [];
   for (const bimobj of bimobjs) {
     if (bimobj.info.bimFileId.get() === bimFileId) {
       const dbid = map[bimobj.info.externalId.get()];
@@ -47,12 +49,29 @@ export async function updateBimObjectFromBimFileId(
           bimobj.info.dbid.set(-1);
         }
       } else if (updateBimobjectsName && dbid) {
-        model.getProperties(dbid, (prop) => {
-          if (prop.name) {
-            bimobj.info.name.set(prop.name);
-          }
-        });
+        promises.push(updateName(model, dbid, bimobj));
       }
     }
   }
+  // 20s timeout
+  await Promise.race([Promise.all(promises), timeout(20000)])
+}
+
+function timeout(ms: number) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject();
+    }, ms)
+  })
+}
+
+function updateName(model: Autodesk.Viewing.Model, dbid: number, bimobj: SpinalNode) {
+  return new Promise<void>(resolve => {
+    model.getProperties(dbid, (prop) => {
+      if (prop?.name) {
+        bimobj.info.name.set(prop.name);
+      }
+      resolve();
+    });
+  })
 }
