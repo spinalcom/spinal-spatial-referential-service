@@ -255,24 +255,20 @@ function getProps(dbId, model) {
  */
 function waitForFileSystem(promises) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('waitForFileSystem', promises.length);
         const nodes = yield Promise.all(promises);
         const realNodes = nodes.map((item) => {
             if (item && Object.prototype.hasOwnProperty.call(item, 'id')) {
                 return (0, graphservice_1.getRealNode)(item.id.get());
             }
         });
-        console.log('waitForFileSystem after promise.all', realNodes);
         return new Promise((resolve) => {
             const inter = setInterval(() => {
-                console.log('in interval');
                 for (const node of realNodes) {
                     if (node &&
                         typeof spinal_core_connectorjs_1.FileSystem._objects[node._server_id] === 'undefined') {
                         return;
                     }
                 }
-                console.log('in interval RESOLVED');
                 clearInterval(inter);
                 resolve(nodes);
             }, 500);

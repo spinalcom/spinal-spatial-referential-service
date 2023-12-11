@@ -39,8 +39,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./consumeCmdGeo/consumeCmdGeo"), exports);
 __exportStar(require("./consumeCmdProjection/consumeCmdProjection"), exports);
-// export * from './generateCmdGeo/handleFloorUpdate';
-// export * from './generateCmdGeo/handleFloorCmdNew';
 __exportStar(require("./generateCmdGeo/generateCmdGeo"), exports);
 __exportStar(require("./generateCmdProjection/createCmdNotFound"), exports);
 __exportStar(require("./generateCmdProjection/createCmdProjection"), exports);

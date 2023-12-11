@@ -22,11 +22,15 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import type { SpinalNode } from 'spinal-model-graph';
+import type { SpinalContext, SpinalNode } from 'spinal-model-graph';
 import type { IFloorData } from '../../interfaces/IFloorData';
 import type { ISkipItem } from '../../interfaces/ISkipItem';
-import type { ICmdNew } from '../../interfaces/ICmdNew';
-import { FileSystem } from 'spinal-core-connectorjs';
+import type {
+  ICmdNew,
+  ICmdNewDelete,
+  ICmdNewRef,
+  ICmdNewSpace,
+} from '../../interfaces/ICmdNew';
 import { EModificationType } from '../../interfaces/IGetArchi';
 import { getModType } from '../../utils/archi/getModType';
 import { isInSkipList } from '../../utils/archi/isInSkipList';
@@ -36,6 +40,8 @@ import {
   ROOM_REFERENCE_CONTEXT,
   getOrCreateRefContext,
 } from 'spinal-env-viewer-context-geographic-service';
+import { getOrLoadModel } from '../../utils/getOrLoadModel';
+import { getContextSpatial, getGraph } from '../../utils';
 
 export async function generateCmdGeo(
   data: IFloorData[],
@@ -44,13 +50,61 @@ export async function generateCmdGeo(
   bimFileId: string
 ) {
   const dataToDo: ICmdNew[][] = [];
-  const buildingNode = <SpinalNode>FileSystem._objects[buildingServerId];
+  const buildingNode = <SpinalNode>await getOrLoadModel(buildingServerId);
   const refContext = await getOrCreateRefContext(ROOM_REFERENCE_CONTEXT);
+  const graph = getGraph();
+  const contextGeo = await getContextSpatial(graph);
+  await generateCmdGeoLoop(
+    data,
+    skipList,
+    buildingNode.info.id.get(),
+    dataToDo,
+    bimFileId,
+    refContext,
+    contextGeo.info.id.get()
+  );
+  return dataToDo;
+}
 
+export async function generateCmdBIMGeo(
+  data: IFloorData[],
+  skipList: ISkipItem[],
+  BIMGeocontextServId: number,
+  bimFileId: string
+) {
+  const dataToDo: ICmdNew[][] = [];
+  const context = await getOrLoadModel<SpinalContext>(BIMGeocontextServId);
+  const refContext = await getOrCreateRefContext(ROOM_REFERENCE_CONTEXT);
+  const contextId = context.info.id.get();
+  await generateCmdGeoLoop(
+    data,
+    skipList,
+    contextId,
+    dataToDo,
+    bimFileId,
+    refContext,
+    contextId
+  );
+  return dataToDo;
+}
+
+async function generateCmdGeoLoop(
+  data: IFloorData[],
+  skipList: ISkipItem[],
+  parentNodeId: string,
+  dataToDo: ICmdNew[][],
+  bimFileId: string,
+  refContext: SpinalNode,
+  contextId: string
+) {
+  const floors: ICmdNewSpace[] = [];
+  const floorRefs: ICmdNewRef[] = [];
+  const rooms: ICmdNewSpace[] = [];
+  const roomRefs: ICmdNewRef[] = [];
+  const itemDeletes: ICmdNewDelete[] = [];
   for (const floorData of data) {
     if (isInSkipList(skipList, floorData.floorArchi.properties.externalId))
       continue;
-
     switch (getModType(floorData.floorArchi.properties.modificationType)) {
       case EModificationType.update:
       case EModificationType.none:
@@ -61,22 +115,31 @@ export async function generateCmdGeo(
         } else {
           await handleFloorUpdate(
             floorData,
-            buildingNode,
-            dataToDo,
+            parentNodeId,
             skipList,
             bimFileId,
-            refContext
+            refContext,
+            contextId,
+            floors,
+            floorRefs,
+            rooms,
+            roomRefs,
+            itemDeletes
           );
         }
         break;
       case EModificationType.create:
         await handleFloorCmdNew(
           floorData,
-          buildingNode,
+          parentNodeId,
           bimFileId,
-          dataToDo,
           skipList,
-          refContext
+          refContext,
+          contextId,
+          floors,
+          floorRefs,
+          rooms,
+          roomRefs
         );
         break;
       default:
@@ -84,5 +147,9 @@ export async function generateCmdGeo(
         break;
     }
   }
-  return dataToDo;
+  if (floors.length > 0) dataToDo.push(floors);
+  if (floorRefs.length > 0) dataToDo.push(floorRefs);
+  if (rooms.length > 0) dataToDo.push(rooms);
+  if (roomRefs.length > 0) dataToDo.push(roomRefs);
+  if (itemDeletes.length > 0) dataToDo.push(itemDeletes);
 }

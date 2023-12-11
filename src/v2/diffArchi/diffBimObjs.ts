@@ -32,16 +32,20 @@ import {
 import { getNodeFromGeo } from './getNodeFromGeo';
 import { findNodeArchiWithSpinalNode } from './findNodeArchiWithSpinalNode';
 
-export function diffBimObjs(
+export async function diffBimObjs(
   bimObjInfos: INodeInfo[],
   bimObjNodes: SpinalNode[],
   manualAssingment: TManualAssingment
-): IDiffBimObj {
+): Promise<IDiffBimObj> {
   const newBimObj: INodeInfo[] = [];
   const delBimObj: number[] = [];
 
   for (const bimObjInfo of bimObjInfos) {
-    const node = getNodeFromGeo(bimObjNodes, bimObjInfo, manualAssingment);
+    const node = await getNodeFromGeo(
+      bimObjNodes,
+      bimObjInfo,
+      manualAssingment
+    );
     if (!node) {
       // not found
       newBimObj.push(bimObjInfo);
@@ -50,7 +54,7 @@ export function diffBimObjs(
     }
   }
   for (const bimObjNode of bimObjNodes) {
-    const nodeArchi = findNodeArchiWithSpinalNode(
+    const nodeArchi = await findNodeArchiWithSpinalNode(
       bimObjNode,
       bimObjInfos,
       manualAssingment

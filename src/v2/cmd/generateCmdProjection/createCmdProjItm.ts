@@ -38,7 +38,7 @@ export function createCmdProjItm(
   const itm = target.find(
     (it) => it.bimFileId === bimFileId && pNId === it.pNId
   );
-  const revitCat = getCategory(auProp);
+  const revitCat = <string>getCategory(auProp)?.displayValue;
   if (itm) {
     const tmp = itm.data.find((it) => it.dbid === auProp.dbId);
     if (!tmp) {
@@ -46,7 +46,7 @@ export function createCmdProjItm(
         dbid: auProp.dbId,
         externalId: auProp.externalId,
         name: auProp.name,
-        revitCat: revitCat.displayValue,
+        revitCat: revitCat,
         centerPos,
         flagWarining,
       });
@@ -61,7 +61,7 @@ export function createCmdProjItm(
           dbid: auProp.dbId,
           externalId: auProp.externalId,
           name: auProp.name,
-          revitCat: revitCat.displayValue,
+          revitCat: revitCat,
           centerPos,
           flagWarining,
         },

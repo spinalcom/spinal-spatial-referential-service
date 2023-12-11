@@ -34,17 +34,17 @@ import { getDiffRefFloor } from './getDiffRefFloor';
 import { diffRoomChildren } from './diffRoomChildren';
 import { diffInfoAttr } from './diffInfoAttr';
 
-export async function diffFloorWithContextGeo(
+export async function diffFloorWithContext(
   floorArchi: IFloorArchi,
-  contextGeo: SpinalContext,
-  buildingServerId: number,
-  manualAssingment: TManualAssingment
+  context: SpinalContext,
+  manualAssingment: TManualAssingment,
+  buildingServerId?: number
 ): Promise<IDiffFloor> {
   const floorNode = await getFloorFromContext(
-    contextGeo,
-    buildingServerId,
+    context,
     floorArchi,
-    manualAssingment
+    manualAssingment,
+    buildingServerId
   );
   if (!floorNode) {
     // floor not found
@@ -57,7 +57,7 @@ export async function diffFloorWithContextGeo(
     // -> diff archi info
     diffInfoAttr(floorArchi.properties, floorNode),
     // -> diff archi children
-    diffRoomChildren(floorNode, contextGeo, floorArchi, manualAssingment),
+    diffRoomChildren(floorNode, context, floorArchi, manualAssingment),
     // diff structures
     getDiffRefFloor(floorNode, floorArchi, manualAssingment),
   ]);

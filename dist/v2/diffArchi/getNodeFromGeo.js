@@ -22,28 +22,39 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNodeFromGeo = void 0;
 const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
-const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
+const getOrLoadModel_1 = require("../utils/getOrLoadModel");
 function getNodeFromGeo(geoNodes, nodeInfo, manualAssingment) {
     var _a, _b;
-    // check ManualAssingment retrun it if found;
-    const serverId = manualAssingment.get(nodeInfo.externalId);
-    if (serverId)
-        return spinal_core_connectorjs_1.FileSystem._objects[serverId];
-    // not in manualAssing
-    // search via externalId
-    for (const geoRoomNode of geoNodes) {
-        if (((_a = geoRoomNode.info.externalId) === null || _a === void 0 ? void 0 : _a.get()) === nodeInfo.externalId)
-            return geoRoomNode;
-    }
-    // search via name
-    const roomArchiName = (0, getNodeInfoArchiAttr_1.getNodeInfoArchiAttr)(nodeInfo, 'name');
-    for (const geoRoomNode of geoNodes) {
-        if (((_b = geoRoomNode.info.externalId) === null || _b === void 0 ? void 0 : _b.get()) === roomArchiName)
-            return geoRoomNode;
-    }
+    return __awaiter(this, void 0, void 0, function* () {
+        // check ManualAssingment retrun it if found;
+        const serverId = manualAssingment.get(nodeInfo.externalId);
+        if (serverId)
+            return (0, getOrLoadModel_1.getOrLoadModel)(serverId);
+        // not in manualAssing
+        // search via externalId
+        for (const geoRoomNode of geoNodes) {
+            if (((_a = geoRoomNode.info.externalId) === null || _a === void 0 ? void 0 : _a.get()) === nodeInfo.externalId)
+                return geoRoomNode;
+        }
+        // search via name
+        const roomArchiName = (0, getNodeInfoArchiAttr_1.getNodeInfoArchiAttr)(nodeInfo, 'name');
+        for (const geoRoomNode of geoNodes) {
+            if (((_b = geoRoomNode.info.externalId) === null || _b === void 0 ? void 0 : _b.get()) === roomArchiName)
+                return geoRoomNode;
+        }
+    });
 }
 exports.getNodeFromGeo = getNodeFromGeo;
 //# sourceMappingURL=getNodeFromGeo.js.map

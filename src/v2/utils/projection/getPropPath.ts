@@ -40,7 +40,7 @@ export async function getPropPath(
     res.push(prop.name);
     const p = prop.properties.find((p) => p.attributeName === 'parent');
     if (!p) return undefined;
-    currentDbId = parseInt(p.displayValue);
+    currentDbId = parseInt(p.displayValue?.toString());
   }
   return res.reverse();
 }

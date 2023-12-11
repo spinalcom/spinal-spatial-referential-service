@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BIMCONTEXT_RELATION_NAME = exports.ARCHIVE_RELATION_NAME = exports.GENERATION_PROJECTION_TYPE = exports.GENERATION_GEO_TYPE = exports.GENERATION_RELATION = exports.GENERATION_TYPE = exports.GENERATION_CONTEXT_TYPE = exports.GENERATION_CONTEXT_NAME = exports.OVERLAY_SPHERES_PREVIEW_POSITION_NAME = exports.OVERLAY_LINES_PREVIEW_POSITION_NAME = exports.NOT_FOUND_DATE_TYPE = exports.CONTEXT_NOT_FOUND_RELATION = exports.CONTEXT_NOT_FOUND_TYPE = exports.CONTEXT_NOT_FOUND_NAME = exports.PROJECTION_CONFIG_RELATION_TYPE = exports.PROJECTION_CONFIG_RELATION = exports.PROJECTION_CONFIG_TYPE = void 0;
+exports.BIM_GEO_FLOOR_PART_TYPE = exports.BIM_GEO_CONTEXT_TYPE = exports.BIMCONTEXT_RELATION_NAME = exports.ARCHIVE_RELATION_NAME = exports.GENERATION_PROJECTION_TYPE = exports.GENERATION_GEO_TYPE = exports.GENERATION_RELATION = exports.GENERATION_TYPE = exports.GENERATION_CONTEXT_TYPE = exports.GENERATION_CONTEXT_NAME = exports.OVERLAY_SPHERES_PREVIEW_POSITION_NAME = exports.OVERLAY_LINES_PREVIEW_POSITION_NAME = exports.NOT_FOUND_DATE_TYPE = exports.CONTEXT_NOT_FOUND_RELATION = exports.CONTEXT_NOT_FOUND_TYPE = exports.CONTEXT_NOT_FOUND_NAME = exports.PROJECTION_CONFIG_RELATION_TYPE = exports.PROJECTION_CONFIG_RELATION = exports.PROJECTION_CONFIG_TYPE = void 0;
 exports.PROJECTION_CONFIG_TYPE = 'ProjectionConfig';
 exports.PROJECTION_CONFIG_RELATION = 'hasProjectionConfig';
 var spinal_model_graph_1 = require("spinal-model-graph");
@@ -42,4 +42,6 @@ exports.GENERATION_GEO_TYPE = 'ContextSpatial';
 exports.GENERATION_PROJECTION_TYPE = 'ProjectionSpatial';
 exports.ARCHIVE_RELATION_NAME = 'hasGenerationArchive';
 exports.BIMCONTEXT_RELATION_NAME = 'hasBimContext';
+exports.BIM_GEO_CONTEXT_TYPE = 'bimGeoContext';
+exports.BIM_GEO_FLOOR_PART_TYPE = 'floorBimGeo';
 //# sourceMappingURL=constant.js.map

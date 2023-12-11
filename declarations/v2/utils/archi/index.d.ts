@@ -9,3 +9,7 @@ export * from './updateAttr';
 export * from './updateInfoByKey';
 export * from './updateInfo';
 export * from './updateLoadedModel';
+export * from './getFloorNodesFromBIMGeo';
+export * from './getFloorNodesFromGeo';
+export * from './getRoomNodesFromBIMGeo';
+export * from './getRoomNodesFromFloor';

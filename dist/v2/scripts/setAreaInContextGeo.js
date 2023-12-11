@@ -78,7 +78,7 @@ function updateRoomArea(room, loadedModel) {
     });
 }
 function getADAreaProp(refRoom, loadedModel) {
-    var _a;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const dbid = (_a = refRoom.info.dbid) === null || _a === void 0 ? void 0 : _a.get();
@@ -86,7 +86,7 @@ function getADAreaProp(refRoom, loadedModel) {
                 const model = yield (0, getModelByBimFileId_1.getModelByBimFileId)(refRoom.info.bimFileId.get(), loadedModel);
                 const refProps = yield (0, getADModelProps_1.getADModelProps)(model, dbid);
                 const refADProp = (0, getADPropBylabel_1.getADPropBylabel)(refProps, 'Area');
-                return (refADProp === null || refADProp === void 0 ? void 0 : refADProp.displayValue) || '0';
+                return ((_b = refADProp === null || refADProp === void 0 ? void 0 : refADProp.displayValue) === null || _b === void 0 ? void 0 : _b.toString()) || '0';
             }
             return '0';
         }

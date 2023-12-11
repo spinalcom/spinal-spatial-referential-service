@@ -35,6 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPropPath = void 0;
 const getBulkProperties_1 = require("./getBulkProperties");
 function getPropPath(dbId, model) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];
         const tree = model.getInstanceTree();
@@ -49,7 +50,7 @@ function getPropPath(dbId, model) {
             const p = prop.properties.find((p) => p.attributeName === 'parent');
             if (!p)
                 return undefined;
-            currentDbId = parseInt(p.displayValue);
+            currentDbId = parseInt((_a = p.displayValue) === null || _a === void 0 ? void 0 : _a.toString());
         }
         return res.reverse();
     });

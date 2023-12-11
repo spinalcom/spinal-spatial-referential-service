@@ -38,7 +38,7 @@ export async function getRoomNodeFromSelectFloor() {
   }
 }
 async function getFloorSelectedBimObj() {
-  const aggregateSelection: IAuAggregateSelectItem[] =
+  const aggregateSelection: readonly IAuAggregateSelectItem[] =
     getViewer().getAggregateSelection();
   const { model, dbid } = get1stDbidFromAggre(aggregateSelection);
   if (!model && !dbid) return;
@@ -50,7 +50,9 @@ async function getFloorSelectedBimObj() {
   }
 }
 
-function get1stDbidFromAggre(aggregateSelection: IAuAggregateSelectItem[]) {
+function get1stDbidFromAggre(
+  aggregateSelection: readonly IAuAggregateSelectItem[]
+) {
   for (const { model, selection } of aggregateSelection) {
     return { model, dbid: selection[0] };
   }

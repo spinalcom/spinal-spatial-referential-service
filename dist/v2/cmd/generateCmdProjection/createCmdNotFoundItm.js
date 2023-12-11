@@ -27,7 +27,8 @@ exports.createCmdNotFoundItm = void 0;
 const getBimFileIdByModelId_1 = require("../../utils/projection/getBimFileIdByModelId");
 const getCategory_1 = require("./getCategory");
 function createCmdNotFoundItm(target, auProp, centerPos) {
-    const revitCat = (0, getCategory_1.getCategory)(auProp);
+    var _a;
+    const revitCat = (_a = (0, getCategory_1.getCategory)(auProp)) === null || _a === void 0 ? void 0 : _a.displayValue;
     const bimFileId = (0, getBimFileIdByModelId_1.getBimFileIdByModelId)(auProp.modelId);
     const itm = target.find((it) => it.bimFileId === bimFileId);
     if (itm) {
@@ -37,7 +38,7 @@ function createCmdNotFoundItm(target, auProp, centerPos) {
                 dbid: auProp.dbId,
                 externalId: auProp.externalId,
                 name: auProp.name,
-                revitCat: revitCat.displayValue,
+                revitCat: revitCat,
                 centerPos,
             });
         }
@@ -51,7 +52,7 @@ function createCmdNotFoundItm(target, auProp, centerPos) {
                     dbid: auProp.dbId,
                     externalId: auProp.externalId,
                     name: auProp.name,
-                    revitCat: revitCat.displayValue,
+                    revitCat: revitCat,
                     centerPos,
                 },
             ],

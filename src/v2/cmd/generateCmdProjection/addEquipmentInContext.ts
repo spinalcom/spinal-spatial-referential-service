@@ -357,7 +357,6 @@ function getProps(
  * @returns {Promise<any>} An empty promise
  */
 async function waitForFileSystem(promises) {
-  console.log('waitForFileSystem', promises.length);
   const nodes = await Promise.all(promises);
 
   const realNodes = nodes.map((item) => {
@@ -365,10 +364,8 @@ async function waitForFileSystem(promises) {
       return getRealNode(item.id.get());
     }
   });
-  console.log('waitForFileSystem after promise.all', realNodes);
   return new Promise((resolve) => {
     const inter = setInterval(() => {
-      console.log('in interval');
       for (const node of realNodes) {
         if (
           node &&
@@ -377,7 +374,6 @@ async function waitForFileSystem(promises) {
           return;
         }
       }
-      console.log('in interval RESOLVED');
       clearInterval(inter);
       resolve(nodes);
     }, 500);

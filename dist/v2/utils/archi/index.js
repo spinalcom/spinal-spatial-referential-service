@@ -48,4 +48,8 @@ __exportStar(require("./updateAttr"), exports);
 __exportStar(require("./updateInfoByKey"), exports);
 __exportStar(require("./updateInfo"), exports);
 __exportStar(require("./updateLoadedModel"), exports);
+__exportStar(require("./getFloorNodesFromBIMGeo"), exports);
+__exportStar(require("./getFloorNodesFromGeo"), exports);
+__exportStar(require("./getRoomNodesFromBIMGeo"), exports);
+__exportStar(require("./getRoomNodesFromFloor"), exports);
 //# sourceMappingURL=index.js.map

@@ -25,16 +25,16 @@
 import type { SpinalNode } from 'spinal-model-graph';
 import type { INodeInfo, TManualAssingment } from '../interfaces/IGetArchi';
 import { getNodeInfoArchiAttr } from '../utils/archi/getNodeInfoArchiAttr';
-import { FileSystem } from 'spinal-core-connectorjs';
+import { getOrLoadModel } from '../utils/getOrLoadModel';
 
-export function getNodeFromGeo(
+export async function getNodeFromGeo(
   geoNodes: SpinalNode[],
   nodeInfo: INodeInfo,
   manualAssingment: TManualAssingment
-): SpinalNode {
+): Promise<SpinalNode> {
   // check ManualAssingment retrun it if found;
   const serverId = manualAssingment.get(nodeInfo.externalId);
-  if (serverId) return <SpinalNode>FileSystem._objects[serverId];
+  if (serverId) return getOrLoadModel(serverId);
 
   // not in manualAssing
   // search via externalId

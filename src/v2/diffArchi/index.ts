@@ -23,7 +23,9 @@
  */
 export * from './checkDiffObj';
 export * from './diffBimObjs';
-export * from './diffFloorWithContextGeo';
+export * from './diffArchiWithContextGeo';
+export * from './diffArchiWithContextBIMGeo';
+export * from './diffFloorWithContext';
 export * from './diffInfoAttr';
 export * from './diffRoomChildren';
 export * from './findNodeArchiWithSpinalNode';

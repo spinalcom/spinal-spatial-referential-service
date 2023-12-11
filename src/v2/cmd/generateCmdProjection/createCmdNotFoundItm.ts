@@ -32,7 +32,7 @@ export function createCmdNotFoundItm(
   auProp: AuProps,
   centerPos: string
 ): void {
-  const revitCat = getCategory(auProp);
+  const revitCat = <string>getCategory(auProp)?.displayValue;
   const bimFileId = getBimFileIdByModelId(auProp.modelId);
   const itm = target.find((it) => it.bimFileId === bimFileId);
   if (itm) {
@@ -42,7 +42,7 @@ export function createCmdNotFoundItm(
         dbid: auProp.dbId,
         externalId: auProp.externalId,
         name: auProp.name,
-        revitCat: revitCat.displayValue,
+        revitCat: revitCat,
         centerPos,
       });
     }
@@ -55,7 +55,7 @@ export function createCmdNotFoundItm(
           dbid: auProp.dbId,
           externalId: auProp.externalId,
           name: auProp.name,
-          revitCat: revitCat.displayValue,
+          revitCat: revitCat,
           centerPos,
         },
       ],

@@ -39,7 +39,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 __exportStar(require("./checkDiffObj"), exports);
 __exportStar(require("./diffBimObjs"), exports);
-__exportStar(require("./diffFloorWithContextGeo"), exports);
+__exportStar(require("./diffArchiWithContextGeo"), exports);
+__exportStar(require("./diffArchiWithContextBIMGeo"), exports);
+__exportStar(require("./diffFloorWithContext"), exports);
 __exportStar(require("./diffInfoAttr"), exports);
 __exportStar(require("./diffRoomChildren"), exports);
 __exportStar(require("./findNodeArchiWithSpinalNode"), exports);

@@ -46,3 +46,5 @@ export const GENERATION_PROJECTION_TYPE = 'ProjectionSpatial';
 export const ARCHIVE_RELATION_NAME = 'hasGenerationArchive';
 
 export const BIMCONTEXT_RELATION_NAME = 'hasBimContext';
+export const BIM_GEO_CONTEXT_TYPE = 'bimGeoContext';
+export const BIM_GEO_FLOOR_PART_TYPE = 'floorBimGeo';

@@ -32,19 +32,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateCmdGeo = void 0;
-const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
+exports.generateCmdBIMGeo = exports.generateCmdGeo = void 0;
 const IGetArchi_1 = require("../../interfaces/IGetArchi");
 const getModType_1 = require("../../utils/archi/getModType");
 const isInSkipList_1 = require("../../utils/archi/isInSkipList");
 const handleFloorCmdNew_1 = require("./handleFloorCmdNew");
 const handleFloorUpdate_1 = require("./handleFloorUpdate");
 const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
+const getOrLoadModel_1 = require("../../utils/getOrLoadModel");
+const utils_1 = require("../../utils");
 function generateCmdGeo(data, skipList, buildingServerId, bimFileId) {
     return __awaiter(this, void 0, void 0, function* () {
         const dataToDo = [];
-        const buildingNode = spinal_core_connectorjs_1.FileSystem._objects[buildingServerId];
+        const buildingNode = yield (0, getOrLoadModel_1.getOrLoadModel)(buildingServerId);
         const refContext = yield (0, spinal_env_viewer_context_geographic_service_1.getOrCreateRefContext)(spinal_env_viewer_context_geographic_service_1.ROOM_REFERENCE_CONTEXT);
+        const graph = (0, utils_1.getGraph)();
+        const contextGeo = yield (0, utils_1.getContextSpatial)(graph);
+        yield generateCmdGeoLoop(data, skipList, buildingNode.info.id.get(), dataToDo, bimFileId, refContext, contextGeo.info.id.get());
+        return dataToDo;
+    });
+}
+exports.generateCmdGeo = generateCmdGeo;
+function generateCmdBIMGeo(data, skipList, BIMGeocontextServId, bimFileId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const dataToDo = [];
+        const context = yield (0, getOrLoadModel_1.getOrLoadModel)(BIMGeocontextServId);
+        const refContext = yield (0, spinal_env_viewer_context_geographic_service_1.getOrCreateRefContext)(spinal_env_viewer_context_geographic_service_1.ROOM_REFERENCE_CONTEXT);
+        const contextId = context.info.id.get();
+        yield generateCmdGeoLoop(data, skipList, contextId, dataToDo, bimFileId, refContext, contextId);
+        return dataToDo;
+    });
+}
+exports.generateCmdBIMGeo = generateCmdBIMGeo;
+function generateCmdGeoLoop(data, skipList, parentNodeId, dataToDo, bimFileId, refContext, contextId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const floors = [];
+        const floorRefs = [];
+        const rooms = [];
+        const roomRefs = [];
+        const itemDeletes = [];
         for (const floorData of data) {
             if ((0, isInSkipList_1.isInSkipList)(skipList, floorData.floorArchi.properties.externalId))
                 continue;
@@ -55,19 +81,27 @@ function generateCmdGeo(data, skipList, buildingServerId, bimFileId) {
                         console.warn(`${floorData.floorArchi.properties.externalId} got update modification type but no Diff object`);
                     }
                     else {
-                        yield (0, handleFloorUpdate_1.handleFloorUpdate)(floorData, buildingNode, dataToDo, skipList, bimFileId, refContext);
+                        yield (0, handleFloorUpdate_1.handleFloorUpdate)(floorData, parentNodeId, skipList, bimFileId, refContext, contextId, floors, floorRefs, rooms, roomRefs, itemDeletes);
                     }
                     break;
                 case IGetArchi_1.EModificationType.create:
-                    yield (0, handleFloorCmdNew_1.handleFloorCmdNew)(floorData, buildingNode, bimFileId, dataToDo, skipList, refContext);
+                    yield (0, handleFloorCmdNew_1.handleFloorCmdNew)(floorData, parentNodeId, bimFileId, skipList, refContext, contextId, floors, floorRefs, rooms, roomRefs);
                     break;
                 default:
                     // do nothing | no delete floor
                     break;
             }
         }
-        return dataToDo;
+        if (floors.length > 0)
+            dataToDo.push(floors);
+        if (floorRefs.length > 0)
+            dataToDo.push(floorRefs);
+        if (rooms.length > 0)
+            dataToDo.push(rooms);
+        if (roomRefs.length > 0)
+            dataToDo.push(roomRefs);
+        if (itemDeletes.length > 0)
+            dataToDo.push(itemDeletes);
     });
 }
-exports.generateCmdGeo = generateCmdGeo;
 //# sourceMappingURL=generateCmdGeo.js.map

@@ -33,27 +33,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleFloorUpdate = void 0;
-const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 const isInSkipList_1 = require("../../utils/archi/isInSkipList");
-const handleFloorCmdNew_1 = require("./handleFloorCmdNew");
+const getRoomCmd_1 = require("./getRoomCmd");
+const getRefCmd_1 = require("./getRefCmd");
 const transformArchi_1 = require("../../scripts/transformArchi");
 const guid_1 = require("../../utils/guid");
 const getNodeInfoArchiAttr_1 = require("../../utils/archi/getNodeInfoArchiAttr");
 const serverIdArrToNodeIdArr_1 = require("../../utils/archi/serverIdArrToNodeIdArr");
 const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
-function handleFloorUpdate(floorData, buildingNode, dataToDo, skipList, bimFileId, refContext) {
+const getOrLoadModel_1 = require("../../utils/getOrLoadModel");
+`
+`;
+function handleFloorUpdate(floorData, parentNodeId, skipList, bimFileId, refContext, contextId, floors, floorRefs, roomCmds, roomRefCmds, itemDeletes) {
     return __awaiter(this, void 0, void 0, function* () {
-        const floorNode = (spinal_core_connectorjs_1.FileSystem._objects[floorData.floorArchi.properties.spinalnodeServerId]);
-        const floorCmd = getFloorCmdUp(floorData, buildingNode, floorNode);
-        dataToDo.push([floorCmd]);
-        const floorCmds = [];
+        const floorNode = (yield (0, getOrLoadModel_1.getOrLoadModel)(floorData.floorArchi.properties.spinalnodeServerId));
+        const floorCmd = getFloorCmdUp(floorData, parentNodeId, floorNode, contextId);
+        floors.push(floorCmd);
         if (floorData.diff.diffRef.delBimObj.length > 0) {
             const delBimObj = {
                 pNId: floorNode.info.id.get(),
                 type: 'floorRefDel',
                 nIdToDel: (0, serverIdArrToNodeIdArr_1.serverIdArrToNodeIdArr)(floorData.diff.diffRef.delBimObj),
             };
-            floorCmds.push(delBimObj);
+            itemDeletes.push(delBimObj);
         }
         const roomDelServerId = floorData.diff.diffRoom.delRooms.filter((itm) => !(0, isInSkipList_1.isInSkipList)(skipList, itm));
         if (roomDelServerId.length > 0) {
@@ -62,26 +64,20 @@ function handleFloorUpdate(floorData, buildingNode, dataToDo, skipList, bimFileI
                 type: 'floorRoomDel',
                 nIdToDel: (0, serverIdArrToNodeIdArr_1.serverIdArrToNodeIdArr)(roomDelServerId),
             };
-            floorCmds.push(floorRoomDel);
+            itemDeletes.push(floorRoomDel);
         }
-        if (floorCmds.length > 0)
-            dataToDo.push(floorCmds);
-        const floorRefCmd = getFloorRefCmd(floorData, floorNode, bimFileId);
-        const roomCmds = [], roomRefCmds = [];
-        floorData.diff.diffRoom.newRooms.forEach((roomArchi) => {
+        getFloorRefCmd(floorData, floorNode, bimFileId, floorRefs);
+        const promRooms = floorData.diff.diffRoom.newRooms.map((roomArchi) => {
             if (!(0, isInSkipList_1.isInSkipList)(skipList, roomArchi.properties.externalId))
-                (0, handleFloorCmdNew_1.getRoomCmd)(roomArchi, floorNode.info.id.get(), bimFileId, roomCmds, roomRefCmds, refContext);
+                return (0, getRoomCmd_1.getRoomCmd)(roomArchi, floorNode.info.id.get(), bimFileId, roomCmds, roomRefCmds, refContext, contextId);
+            return Promise.resolve();
         });
-        yield getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, skipList);
-        const floorRefAndRoomCmds = floorRefCmd.concat(roomCmds);
-        if (floorRefAndRoomCmds.length > 0)
-            dataToDo.push(floorRefAndRoomCmds);
-        if (roomRefCmds.length > 0)
-            dataToDo.push(roomRefCmds);
+        yield Promise.all(promRooms);
+        yield getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, skipList, contextId, itemDeletes);
     });
 }
 exports.handleFloorUpdate = handleFloorUpdate;
-function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, skipList) {
+function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, skipList, contextId, itemDeletes) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const updatedRoomSet = new Set();
@@ -93,18 +89,19 @@ function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, sk
             if ((0, isInSkipList_1.isInSkipList)(skipList, roomArchi.properties.externalId))
                 continue;
             const { name, attr, info } = getRoomNameAndAttr(roomArchi, diff);
-            const roomNode = (spinal_core_connectorjs_1.FileSystem._objects[roomArchi.properties.spinalnodeServerId]);
+            const roomNode = (yield (0, getOrLoadModel_1.getOrLoadModel)(roomArchi.properties.spinalnodeServerId));
             const roomCmd = {
                 pNId: floorNode.info.id.get(),
                 id: ((_a = roomNode === null || roomNode === void 0 ? void 0 : roomNode.info.id) === null || _a === void 0 ? void 0 : _a.get()) || (0, guid_1.guid)(),
                 type: 'room',
+                contextId,
                 name,
                 info,
                 attr,
             };
             roomCmds.push(roomCmd);
             roomArchi.children.forEach((nodeInfo) => {
-                const roomRefCmd = (0, handleFloorCmdNew_1.getRefCmd)(nodeInfo, roomCmd.id, 'roomRef', bimFileId);
+                const roomRefCmd = (0, getRefCmd_1.getRefCmd)(nodeInfo, roomCmd.id, 'roomRef', bimFileId);
                 roomRefCmds.push(roomRefCmd);
             });
         }
@@ -117,7 +114,7 @@ function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, sk
                 if ((0, isInSkipList_1.isInSkipList)(skipList, roomExtId))
                     continue;
                 // get realNode
-                const roomNode = (spinal_core_connectorjs_1.FileSystem._objects[roomArchi.properties.spinalnodeServerId]);
+                const roomNode = (yield (0, getOrLoadModel_1.getOrLoadModel)(roomArchi.properties.spinalnodeServerId));
                 if (!roomNode)
                     continue;
                 proms.push(roomNode
@@ -128,6 +125,7 @@ function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, sk
                         children,
                         roomArchi,
                         roomCmd: {
+                            contextId,
                             pNId: floorNode.info.id.get(),
                             id: ((_a = roomNode === null || roomNode === void 0 ? void 0 : roomNode.info.id) === null || _a === void 0 ? void 0 : _a.get()) || (0, guid_1.guid)(),
                             type: 'RefNode',
@@ -138,7 +136,7 @@ function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, sk
         }
         const cmds = yield Promise.all(proms);
         for (const { children, roomCmd, roomArchi } of cmds) {
-            const roomRefCmds2 = [];
+            // const roomRefCmds2: ICmdNewRef[] = [];
             const refsToRm = [];
             // check child to remove
             for (const child of children) {
@@ -154,27 +152,34 @@ function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, sk
                     refsToRm.push(child.info.externalId.get());
                 }
             }
+            let needUpdate = false;
             roomArchi.children.forEach((nodeInfo) => {
-                // check if it exist
+                // check if it exist => skip
                 for (const child of children) {
                     if (child.info.externalId.get() === nodeInfo.externalId)
                         return;
                 }
                 // if not exist add to list createRef
-                const roomRefCmd = (0, handleFloorCmdNew_1.getRefCmd)(nodeInfo, roomCmd.id, 'roomRef', bimFileId);
-                roomRefCmds2.push(roomRefCmd);
+                const roomRefCmd = (0, getRefCmd_1.getRefCmd)(nodeInfo, roomCmd.id, 'roomRef', bimFileId);
+                roomRefCmds.push(roomRefCmd);
+                needUpdate = true;
             });
-            if (refsToRm.length > 0 || roomRefCmds2.length > 0) {
-                roomCmds.push(roomCmd);
+            if (refsToRm.length > 0 || needUpdate) {
+                let needPushRefNode = false;
+                for (const room of roomCmds) {
+                    if (room.id === roomCmd.id) {
+                        needPushRefNode = true;
+                        break;
+                    }
+                }
+                if (needPushRefNode)
+                    roomCmds.push(roomCmd);
                 if (refsToRm.length > 0) {
-                    roomRefCmds.push({
+                    itemDeletes.push({
                         pNId: roomCmd.id,
                         type: 'roomRefDel',
                         nIdToDel: refsToRm,
                     });
-                }
-                if (roomRefCmds2.length > 0) {
-                    roomRefCmds.push(...roomRefCmds2);
                 }
             }
         }
@@ -204,8 +209,7 @@ function getRoomNameAndAttr(roomArchi, diff) {
     });
     return { name, attr, info };
 }
-function getFloorRefCmd(floorData, floorNode, bimFileId) {
-    const floorRefCmd = [];
+function getFloorRefCmd(floorData, floorNode, bimFileId, floorRefCmd) {
     for (const strucNodeInfo of floorData.diff.diffRef.newBimObj) {
         let name = '';
         strucNodeInfo.properties.forEach((itm) => {
@@ -224,7 +228,6 @@ function getFloorRefCmd(floorData, floorNode, bimFileId) {
             },
         });
     }
-    return floorRefCmd;
 }
 function getFloorName(floorData) {
     for (const infoObj of floorData.diff.diffInfo.diffInfo) {
@@ -233,7 +236,7 @@ function getFloorName(floorData) {
     }
     return (0, getNodeInfoArchiAttr_1.getNodeInfoArchiAttr)(floorData.floorArchi.properties, 'name');
 }
-function getFloorCmdUp(floorData, buildingNode, floorNode) {
+function getFloorCmdUp(floorData, parentNodeId, floorNode, contextId) {
     var _a;
     const info = {};
     for (const diffInfo of floorData.diff.diffInfo.diffInfo) {
@@ -249,8 +252,9 @@ function getFloorCmdUp(floorData, buildingNode, floorNode) {
     });
     const floorCmd = {
         type: 'floor',
-        pNId: buildingNode.info.id.get(),
+        pNId: parentNodeId,
         id: (_a = floorNode === null || floorNode === void 0 ? void 0 : floorNode.info.id) === null || _a === void 0 ? void 0 : _a.get(),
+        contextId,
         name,
         info,
         attr,

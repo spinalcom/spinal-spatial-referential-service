@@ -52,13 +52,20 @@ function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg
         const dico = {};
         recordDico(dico, contextGeo);
         const buildings = yield contextGeo.getChildrenInContext();
+        const contexts = yield graph.getChildren();
+        contexts.forEach(recordDico.bind(null, dico));
         buildings.forEach(recordDico.bind(null, dico));
         for (let index = 0; index < cmds.length; index++) {
             const cmdArr = cmds[index];
             const proms = [];
+            let isFloors = false;
             for (const cmd of cmdArr) {
-                if (cmd.type === 'floor') {
-                    proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, contextGeo, spinal_env_viewer_context_geographic_service_1.addFloor));
+                if (cmd.type === 'building') {
+                    proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.addBuilding));
+                }
+                else if (cmd.type === 'floor') {
+                    proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.addFloor));
+                    isFloors = true;
                 }
                 else if (cmd.type === 'floorRef') {
                     proms.push(consumeNewUpdateRefCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION));
@@ -70,7 +77,7 @@ function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg
                     proms.push(consumeDeleteCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.ROOM_RELATION, nodeGenerationId, contextGenerationId));
                 }
                 else if (cmd.type === 'room') {
-                    proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, contextGeo, spinal_env_viewer_context_geographic_service_1.addRoom));
+                    proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.addRoom));
                 }
                 else if (cmd.type === 'roomRef') {
                     proms.push(consumeNewUpdateRefCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_ROOM_RELATION));
@@ -79,10 +86,10 @@ function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg
                     proms.push(consumeDeleteCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_ROOM_RELATION));
                 }
                 else if (cmd.type === 'RefNode') {
-                    proms.push(consumeRefNode.bind(null, dico, cmd, contextGeo));
+                    proms.push(consumeRefNode.bind(null, dico, cmd));
                 }
             }
-            yield (0, consumeBatch_1.consumeBatch)(proms, consumeBatchSize, (idx) => {
+            yield (0, consumeBatch_1.consumeBatch)(proms, isFloors ? 1 : consumeBatchSize, (idx) => {
                 try {
                     if (callbackProg)
                         callbackProg(index, idx);
@@ -108,15 +115,18 @@ function getBimContext(dico, bimFileId) {
         return dico[bimFileId];
     });
 }
-function consumeRefNode(dico, cmd, contextGeo) {
+function consumeRefNode(dico, cmd) {
     return __awaiter(this, void 0, void 0, function* () {
         if (spinal.SHOW_LOG_GENERATION)
             console.log('consumeRef', cmd);
         const parentNode = dico[cmd.pNId];
         if (!parentNode)
             throw new Error(`ParentId for ${cmd.type} not found.`);
+        const context = dico[cmd.contextId];
+        if (!context)
+            throw new Error(`contextId [${cmd.contextId}] for ${cmd.type} not found.`);
         // find id in parentChildren
-        const children = yield parentNode.getChildrenInContext(contextGeo);
+        const children = yield parentNode.getChildrenInContext(context);
         const child = children.find((node) => node.info.id.get() === cmd.id);
         recordDico(dico, child);
     });
@@ -151,29 +161,127 @@ function consumeDeleteCmd(dico, cmd, relationName, nodeGenerationId, contextGene
 function recordDico(dico, node) {
     dico[node.info.id.get()] = node;
 }
-function consumeNewUpdateCmd(dico, cmd, contextGeo, createMtd) {
+function consumeNewUpdateCmd(dico, cmd, createMtd) {
     return __awaiter(this, void 0, void 0, function* () {
         if (spinal.SHOW_LOG_GENERATION)
             console.log('consumeNewUpdateCmd', cmd);
         const parentNode = dico[cmd.pNId];
         if (!parentNode)
             throw new Error(`ParentId for ${cmd.type} not found.`);
+        const context = dico[cmd.contextId];
+        if (!context)
+            throw new Error(`contextId [${cmd.contextId}] for ${cmd.type} not found.`);
         // find id in parentChildren
-        const children = yield parentNode.getChildrenInContext(contextGeo);
+        const children = yield parentNode.getChildrenInContext(context);
         let child = children.find((node) => node.info.id.get() === cmd.id);
         if (!child) {
             // id not found => create Child
-            child = yield createMtd(contextGeo, parentNode, cmd.name, cmd.id);
+            child = yield createMtd(context, parentNode, cmd.name, cmd.id);
         }
         // update the floor with cmd!
         // update info
-        (0, updateInfo_1.updateInfo)(child, cmd.info);
+        if (cmd.info)
+            (0, updateInfo_1.updateInfo)(child, cmd.info);
         yield (0, updateAttr_1.updateAttr)(child, cmd.attr); // update attr
         if (cmd.name)
             (0, updateInfoByKey_1.updateInfoByKey)(child, 'name', cmd.name);
+        // Update linkedBimGeos
+        yield handleLinkedBimGeosInfo(cmd, child, context);
         recordDico(dico, child);
         yield removeFromContextGen(child);
         yield (0, waitGetServerId_1.waitGetServerId)(child);
+    });
+}
+function handleLinkedBimGeosInfo(cmd, floorNode, contextGeo) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!cmd.linkedBimGeos) {
+            return;
+        }
+        // update child.info.linkedBimGeos
+        if (typeof floorNode.info.linkedBimGeos === 'undefined') {
+            floorNode.info.add_attr('linkedBimGeos', cmd.linkedBimGeos);
+        }
+        else {
+            const toRm = [];
+            let found = false;
+            for (const item of cmd.linkedBimGeos) {
+                for (const itmNode of floorNode.info.linkedBimGeos) {
+                    if (itmNode.contextId.get() === item.contextId &&
+                        itmNode.floorId.get() === item.floorId) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    floorNode.info.linkedBimGeos.push({
+                        floorId: item.floorId,
+                        contextId: item.contextId,
+                    });
+                }
+            }
+            for (const item of floorNode.info.linkedBimGeos) {
+                if (!cmd.linkedBimGeos.some((itm) => itm.contextId === item.contextId.get() &&
+                    itm.floorId === item.floorId.get())) {
+                    toRm.push(item);
+                }
+            }
+            for (const itm of toRm) {
+                const idx = floorNode.info.linkedBimGeos.indexOf_ref(itm);
+                if (idx != -1)
+                    floorNode.info.linkedBimGeos.splice(idx, 1);
+            }
+        }
+        // update child node children
+        yield updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd);
+    });
+}
+function updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const roomNodes = yield floorNode.getChildrenInContext(contextGeo);
+        if (cmd.linkedBimGeos.length === 0 && roomNodes.length > 0) {
+            return floorNode.removeChildren(roomNodes, Constant_1.GEO_ROOM_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+        }
+        for (const item of cmd.linkedBimGeos) {
+            const bimContext = (0, graphservice_1.getRealNode)(item.contextId);
+            if (!bimContext) {
+                console.error(`Unknown linkedBimGeos contextId [${item.contextId}] for floor node ${floorNode.info.name.get()}`);
+                continue;
+            }
+            // get floor
+            const bimFloorNodes = yield bimContext.getChildrenInContext(bimContext);
+            const bimFloorNode = bimFloorNodes.find((itm) => itm.info.id.get() === item.floorId);
+            if (!bimFloorNode) {
+                console.error(`Unknown linkedBimGeos bimFloorNode [${item.floorId}] from ${bimContext.info.name.get()} context to link to floor node ${floorNode.info.name.get()}`);
+                continue;
+            }
+            // get rooms
+            const bimRoomNodes = yield bimFloorNode.getChildrenInContext(bimContext);
+            // get room to add
+            const roomsToAdd = bimRoomNodes.filter((nodeBim) => {
+                return !roomNodes.some((nodeGeo) => nodeGeo.info.id.get() === nodeBim.info.id.get());
+            });
+            // add room to add to floorNode
+            const proms = roomsToAdd.map((roomToAdd) => floorNode.addChildInContext(roomToAdd, Constant_1.GEO_ROOM_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeo));
+            // get room to remove
+            const roomsToRm = new Set;
+            const promsGetParent = roomNodes.map((itm) => itm.getParentsInContext(bimContext).then((parents) => {
+                return { room: itm, parent: parents[0] };
+            }));
+            const parentNodes = yield Promise.all(promsGetParent);
+            for (const { parent, room } of parentNodes) {
+                if (parent === bimFloorNode &&
+                    !bimRoomNodes.some((itm) => itm === room)) {
+                    roomsToRm.add(room);
+                }
+                else if (!cmd.linkedBimGeos.some(itm => itm.floorId === parent.info.id.get())) {
+                    roomsToRm.add(room);
+                }
+            }
+            const arrToRm = Array.from(roomsToRm);
+            if (arrToRm.length > 0)
+                yield floorNode.removeChildren(arrToRm, Constant_1.GEO_ROOM_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+            yield Promise.all(proms);
+        }
     });
 }
 function removeFromContextGen(roomNode) {
@@ -187,6 +295,7 @@ function removeFromContextGen(roomNode) {
 function createOrUpdateBimObjByBimFileId(dico, id, bimFileId, name, dbId, externalId) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const bimContext = yield getBimContext(dico, bimFileId);
         const bimobjs = yield bimContext.getChildren(Constant_1.GEO_EQUIPMENT_RELATION);
         if (externalId) {

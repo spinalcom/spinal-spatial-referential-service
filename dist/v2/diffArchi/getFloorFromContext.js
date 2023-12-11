@@ -34,35 +34,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFloorFromContext = void 0;
 const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
-const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
-function getFloorFromContext(contextGeo, buildingServId, floorArchi, manualAssingment) {
+const getOrLoadModel_1 = require("../utils/getOrLoadModel");
+const Constant_1 = require("../../Constant");
+function getFloorFromContext(context, floorArchi, manualAssingment, buildingServId) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         // check ManualAssingment retrun it if found;
         const serverId = manualAssingment.get(floorArchi.properties.externalId);
         if (serverId)
-            return spinal_core_connectorjs_1.FileSystem._objects[serverId];
+            return (0, getOrLoadModel_1.getOrLoadModel)(serverId);
         // not in manualAssing; get building floors
-        const buildings = yield contextGeo.getChildrenInContext(contextGeo);
-        const buildingsFloors = yield Promise.all(buildings.map((building) => {
-            if (building._server_id === buildingServId)
-                return building.getChildrenInContext(contextGeo);
-        }));
+        const parentNode = buildingServId
+            ? yield (0, getOrLoadModel_1.getOrLoadModel)(buildingServId)
+            : context;
+        const floorNodes = yield parentNode.find([
+            Constant_1.GEO_SITE_RELATION,
+            Constant_1.GEO_BUILDING_RELATION,
+            Constant_1.GEO_FLOOR_RELATION,
+            Constant_1.GEO_ZONE_RELATION,
+        ], (node) => Constant_1.GEO_FLOOR_TYPE === node.info.type.get());
         // search via externalId
-        for (const buildingFloors of buildingsFloors) {
-            if (buildingFloors)
-                for (const floorNode of buildingFloors) {
-                    if (floorNode.info.externalId.get() === floorArchi.properties.externalId)
-                        return floorNode;
-                }
+        for (const floorNode of floorNodes) {
+            if (((_a = floorNode.info.externalId) === null || _a === void 0 ? void 0 : _a.get()) === floorArchi.properties.externalId)
+                return floorNode;
         }
         // search via name
         const floorArchiName = ((0, getNodeInfoArchiAttr_1.getNodeInfoArchiAttr)(floorArchi.properties, 'name'));
-        for (const buildingFloors of buildingsFloors) {
-            if (buildingFloors)
-                for (const floorNode of buildingFloors) {
-                    if (floorNode.info.name.get() === floorArchiName)
-                        return floorNode;
-                }
+        for (const floorNode of floorNodes) {
+            if (floorNode.info.name.get() === floorArchiName)
+                return floorNode;
         }
     });
 }

@@ -31,7 +31,7 @@ export async function addSelectionToList(
   list: TProjectionLst,
   viewer: Autodesk.Viewing.Viewer3D
 ): Promise<void> {
-  const aggregateSelection: IAuAggregateSelectItem[] =
+  const aggregateSelection: readonly IAuAggregateSelectItem[] =
     viewer.getAggregateSelection();
   for (const select of aggregateSelection) {
     const props = await getBulkProperties(select.model, select.selection);

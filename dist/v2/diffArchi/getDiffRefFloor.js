@@ -39,8 +39,7 @@ function getDiffRefFloor(floorNode, floorArchi, manualAssingment) {
     return __awaiter(this, void 0, void 0, function* () {
         const floorNodeRefObjs = yield floorNode.getChildren(Constant_1.GEO_REFERENCE_RELATION);
         const structures = Object.values(floorArchi.structures).map((itm) => itm.properties);
-        const diffRef = (0, diffBimObjs_1.diffBimObjs)(structures, floorNodeRefObjs, manualAssingment);
-        return diffRef;
+        return (0, diffBimObjs_1.diffBimObjs)(structures, floorNodeRefObjs, manualAssingment);
     });
 }
 exports.getDiffRefFloor = getDiffRefFloor;

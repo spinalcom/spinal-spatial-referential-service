@@ -88,7 +88,7 @@ async function getADAreaProp(
       );
       const refProps = await getADModelProps(model, dbid);
       const refADProp = getADPropBylabel(refProps, 'Area');
-      return refADProp?.displayValue || '0';
+      return refADProp?.displayValue?.toString() || '0';
     }
     return '0';
   } catch (error) {

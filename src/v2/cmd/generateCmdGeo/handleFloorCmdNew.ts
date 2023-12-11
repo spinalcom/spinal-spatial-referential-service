@@ -22,48 +22,58 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import type {
-  INodeInfo,
-  IRoomArchi,
-  IStructures,
-} from '../../interfaces/IGetArchi';
-import type { SpinalContext, SpinalNode } from 'spinal-model-graph';
+import type { IStructures } from '../../interfaces/IGetArchi';
+import type { SpinalContext } from 'spinal-model-graph';
 import type { IFloorData } from '../../interfaces/IFloorData';
 import type { ISkipItem } from '../../interfaces/ISkipItem';
-import type { ICmdNew } from '../../interfaces/ICmdNew';
+import type {
+  ICmdNew,
+  ICmdNewRef,
+  ICmdNewSpace,
+} from '../../interfaces/ICmdNew';
 import { parseUnit } from '../../scripts/transformArchi';
 import { guid } from '../../utils/guid';
 import { isInSkipList } from '../../utils/archi/isInSkipList';
-import { GEO_ROOM_RELATION } from '../../../Constant';
+import { getRefCmd } from './getRefCmd';
+import { getRoomCmd } from './getRoomCmd';
 
 export async function handleFloorCmdNew(
   floorData: IFloorData,
-  buildingNode: SpinalNode,
+  parentNodeId: string,
   bimFileId: string,
-  dataToDo: ICmdNew[][],
   skipList: ISkipItem[],
-  refContext: SpinalContext
+  refContext: SpinalContext,
+  contextId: string,
+  floors: ICmdNewSpace[],
+  floorRefs: ICmdNewRef[],
+  rooms: ICmdNewSpace[],
+  roomRefs: ICmdNewRef[]
 ) {
-  const floorCmd = getFloorCmdNew(floorData, buildingNode, bimFileId);
-  dataToDo.push([floorCmd]);
+  const floorCmd = getFloorCmdNew(
+    floorData,
+    parentNodeId,
+    bimFileId,
+    contextId
+  );
   // floor ref structs
-  const floorRefCmds = getFloorRefCmdNew(
+  getFloorRefCmdNew(
     floorData.floorArchi.structures,
     floorCmd.id,
     bimFileId,
-    'floorRef'
+    floorRefs
   );
   // rooms
-  const { roomCmds, roomRefCmds } = await getFloorRoomsCmdNew(
+  await getFloorRoomsCmdNew(
     floorData,
     floorCmd,
     bimFileId,
     skipList,
-    refContext
+    refContext,
+    contextId,
+    rooms,
+    roomRefs
   );
-  const floorRefAndRoomCmds = floorRefCmds.concat(roomCmds);
-  if (floorRefAndRoomCmds.length > 0) dataToDo.push(floorRefAndRoomCmds);
-  if (roomRefCmds.length > 0) dataToDo.push(roomRefCmds);
+  floors.push(floorCmd);
 }
 
 async function getFloorRoomsCmdNew(
@@ -71,10 +81,11 @@ async function getFloorRoomsCmdNew(
   floorCmd: ICmdNew,
   bimFileId: string,
   skipList: ISkipItem[],
-  refContext: SpinalContext
+  refContext: SpinalContext,
+  contextId: string,
+  roomCmds: ICmdNewSpace[],
+  roomRefCmds: ICmdNewRef[]
 ) {
-  const roomCmds: ICmdNew[] = [];
-  const roomRefCmds: ICmdNew[] = [];
   for (const floorExtId in floorData.floorArchi.children) {
     if (
       Object.prototype.hasOwnProperty.call(
@@ -90,107 +101,38 @@ async function getFloorRoomsCmdNew(
         bimFileId,
         roomCmds,
         roomRefCmds,
-        refContext
+        refContext,
+        contextId
       );
     }
   }
-  return { roomCmds, roomRefCmds };
-}
-
-export async function getRoomFromRefByName(
-  refContext: SpinalContext,
-  name: string
-) {
-  const children = await refContext.getChildren(GEO_ROOM_RELATION);
-  for (const child of children) {
-    if (child.info.name.get() === name) return child;
-  }
-}
-
-export async function getRoomCmd(
-  roomArchi: IRoomArchi,
-  pNId: string,
-  bimFileId: string,
-  roomCmds: ICmdNew[],
-  roomRefCmds: ICmdNew[],
-  refContext: SpinalContext
-) {
-  let name = '';
-  let number = undefined;
-  const attr = roomArchi.properties.properties.map((itm) => {
-    if (itm.name === 'name') name = <string>itm.value;
-    if (itm.name === 'number') number = <string>itm.value;
-    return {
-      label: itm.name,
-      value: itm.value,
-      unit: parseUnit(itm.dataTypeContext),
-    };
-  });
-  name = number ? `${number}-${name}` : name;
-  const node = await getRoomFromRefByName(refContext, name);
-  const id = node ? node.info.id.get() : guid();
-  const roomCmd: ICmdNew = {
-    pNId,
-    id,
-    type: 'room',
-    name,
-    info: {
-      dbid: roomArchi.properties.dbId,
-      externalId: roomArchi.properties.externalId,
-      bimFileId,
-    },
-    attr,
-  };
-  roomCmds.push(roomCmd);
-  roomArchi.children.forEach((nodeInfo) => {
-    const roomRefCmd = getRefCmd(nodeInfo, roomCmd.id, 'roomRef', bimFileId);
-    roomRefCmds.push(roomRefCmd);
-  });
 }
 
 function getFloorRefCmdNew(
   structures: IStructures,
   floorId: string,
   bimFileId: string,
-  type: string
-): ICmdNew[] {
-  const refObjs: ICmdNew[] = [];
+  floorRefs: ICmdNewRef[]
+) {
   for (const RefExtId in structures) {
     if (Object.prototype.hasOwnProperty.call(structures, RefExtId)) {
       const { properties } = structures[RefExtId];
-      const struct: ICmdNew = getRefCmd(properties, floorId, type, bimFileId);
-      refObjs.push(struct);
+      const struct: ICmdNewRef = getRefCmd(
+        properties,
+        floorId,
+        'floorRef',
+        bimFileId
+      );
+      floorRefs.push(struct);
     }
   }
-  return refObjs;
-}
-export function getRefCmd(
-  properties: INodeInfo,
-  pNId: string,
-  type: string,
-  bimFileId: string
-): ICmdNew {
-  let name = '';
-  properties.properties.forEach((itm) => {
-    if (itm.name === 'name') name = <string>itm.value;
-  });
-  return {
-    pNId,
-    id: guid(),
-    type,
-    name,
-    info: {
-      dbid: properties.dbId,
-      externalId: properties.externalId,
-      bimFileId,
-    },
-  };
 }
 function getFloorCmdNew(
   floorData: IFloorData,
-  buildingNode: SpinalNode,
-  bimFileId: string
-): ICmdNew {
+  parentNodeId: string,
+  bimFileId: string,
+  contextId: string
+): ICmdNewSpace {
   const info = {
     dbid: floorData.floorArchi.properties.dbId,
     externalId: floorData.floorArchi.properties.externalId,
@@ -206,7 +148,8 @@ function getFloorCmdNew(
     };
   });
   return {
-    pNId: buildingNode.info.id.get(),
+    pNId: parentNodeId,
+    contextId,
     id: guid(),
     type: 'floor',
     name,

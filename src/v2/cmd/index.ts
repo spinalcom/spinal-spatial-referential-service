@@ -25,8 +25,6 @@
 export * from './consumeCmdGeo/consumeCmdGeo';
 export * from './consumeCmdProjection/consumeCmdProjection';
 
-// export * from './generateCmdGeo/handleFloorUpdate';
-// export * from './generateCmdGeo/handleFloorCmdNew';
 export * from './generateCmdGeo/generateCmdGeo';
 
 export * from './generateCmdProjection/createCmdNotFound';

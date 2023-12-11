@@ -45,7 +45,7 @@ function diffRoomChildren(floorNode, contextGeo, floorArchi, manualAssingment) {
         const proms = [];
         const roomNodes = yield floorNode.getChildrenInContext(contextGeo);
         for (const [, roomAchi] of Object.entries(floorArchi.children)) {
-            const roomNode = (0, getNodeFromGeo_1.getNodeFromGeo)(roomNodes, roomAchi.properties, manualAssingment);
+            const roomNode = yield (0, getNodeFromGeo_1.getNodeFromGeo)(roomNodes, roomAchi.properties, manualAssingment);
             if (!roomNode) {
                 // not found
                 newRooms.push(roomAchi);
@@ -66,7 +66,7 @@ function diffRoomChildren(floorNode, contextGeo, floorArchi, manualAssingment) {
         yield Promise.all(proms);
         const nodeInfosArchi = Object.values(floorArchi.children).map((it) => it.properties);
         for (const roomNode of roomNodes) {
-            const roomArchi = (0, findNodeArchiWithSpinalNode_1.findNodeArchiWithSpinalNode)(roomNode, nodeInfosArchi, manualAssingment);
+            const roomArchi = yield (0, findNodeArchiWithSpinalNode_1.findNodeArchiWithSpinalNode)(roomNode, nodeInfosArchi, manualAssingment);
             if (roomArchi === undefined) {
                 delRooms.push(roomNode._server_id);
             }

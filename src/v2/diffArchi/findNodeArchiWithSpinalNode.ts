@@ -25,16 +25,16 @@
 import type { SpinalNode } from 'spinal-model-graph';
 import type { INodeInfo, TManualAssingment } from '../interfaces/IGetArchi';
 import { getNodeInfoArchiAttr } from '../utils/archi/getNodeInfoArchiAttr';
-import { FileSystem } from 'spinal-core-connectorjs';
+import { getOrLoadModel } from '../utils/getOrLoadModel';
 
-export function findNodeArchiWithSpinalNode(
+export async function findNodeArchiWithSpinalNode(
   node: SpinalNode,
   nodeInfosArchi: INodeInfo[],
   manualAssingment: TManualAssingment
-): INodeInfo {
+): Promise<INodeInfo> {
   // check ManualAssingment retrun it if found;
   for (const [extId, serverId] of manualAssingment) {
-    if (FileSystem._objects[serverId] === node) {
+    if ((await getOrLoadModel(serverId)) === node) {
       for (const nodeArchi of nodeInfosArchi) {
         if (nodeArchi.externalId === extId) {
           return nodeArchi;

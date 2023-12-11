@@ -48,7 +48,7 @@ export async function diffRoomChildren(
 
   const roomNodes = await floorNode.getChildrenInContext(contextGeo);
   for (const [, roomAchi] of Object.entries(floorArchi.children)) {
-    const roomNode = getNodeFromGeo(
+    const roomNode = await getNodeFromGeo(
       roomNodes,
       roomAchi.properties,
       manualAssingment
@@ -79,7 +79,7 @@ export async function diffRoomChildren(
   );
 
   for (const roomNode of roomNodes) {
-    const roomArchi = findNodeArchiWithSpinalNode(
+    const roomArchi = await findNodeArchiWithSpinalNode(
       roomNode,
       nodeInfosArchi,
       manualAssingment

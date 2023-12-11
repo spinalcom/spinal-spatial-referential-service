@@ -32,35 +32,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diffFloorWithContextGeo = void 0;
-const IGetArchi_1 = require("../interfaces/IGetArchi");
-const getFloorFromContext_1 = require("./getFloorFromContext");
-const getDiffRefFloor_1 = require("./getDiffRefFloor");
-const diffRoomChildren_1 = require("./diffRoomChildren");
-const diffInfoAttr_1 = require("./diffInfoAttr");
-function diffFloorWithContextGeo(floorArchi, contextGeo, buildingServerId, manualAssingment) {
+exports.diffArchiWithContextGeo = void 0;
+const diffFloorWithContext_1 = require("./diffFloorWithContext");
+const utils_1 = require("../utils");
+const mergeManualAssignArchiFloor_1 = require("./mergeManualAssignArchiFloor");
+function diffArchiWithContextGeo(archiData, buildingServerId, manualAssingment) {
     return __awaiter(this, void 0, void 0, function* () {
-        const floorNode = yield (0, getFloorFromContext_1.getFloorFromContext)(contextGeo, buildingServerId, floorArchi, manualAssingment);
-        if (!floorNode) {
-            // floor not found
-            floorArchi.properties.modificationType = IGetArchi_1.EModificationType.create;
-            return undefined;
+        const graph = (0, utils_1.getGraph)();
+        const contextGeo = yield (0, utils_1.getContextSpatial)(graph);
+        const data = yield (0, mergeManualAssignArchiFloor_1.mergeManualAssignArchiFloor)(archiData, manualAssingment, contextGeo);
+        const archiDataRes = [];
+        for (const floorArchi of data) {
+            const diff = yield (0, diffFloorWithContext_1.diffFloorWithContext)(floorArchi, contextGeo, manualAssingment);
+            archiDataRes.push({ diff, floorArchi });
         }
-        // archi exist in context
-        const [diffInfo, diffRoom, diffRef] = yield Promise.all([
-            // -> diff archi info
-            (0, diffInfoAttr_1.diffInfoAttr)(floorArchi.properties, floorNode),
-            // -> diff archi children
-            (0, diffRoomChildren_1.diffRoomChildren)(floorNode, contextGeo, floorArchi, manualAssingment),
-            // diff structures
-            (0, getDiffRefFloor_1.getDiffRefFloor)(floorNode, floorArchi, manualAssingment),
-        ]);
-        return {
-            diffInfo,
-            diffRoom,
-            diffRef,
-        };
+        return archiDataRes;
     });
 }
-exports.diffFloorWithContextGeo = diffFloorWithContextGeo;
-//# sourceMappingURL=diffFloorWithContextGeo.js.map
+exports.diffArchiWithContextGeo = diffArchiWithContextGeo;
+//# sourceMappingURL=diffArchiWithContextGeo.js.map

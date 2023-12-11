@@ -15,3 +15,5 @@ export declare const GENERATION_GEO_TYPE = "ContextSpatial";
 export declare const GENERATION_PROJECTION_TYPE = "ProjectionSpatial";
 export declare const ARCHIVE_RELATION_NAME = "hasGenerationArchive";
 export declare const BIMCONTEXT_RELATION_NAME = "hasBimContext";
+export declare const BIM_GEO_CONTEXT_TYPE = "bimGeoContext";
+export declare const BIM_GEO_FLOOR_PART_TYPE = "floorBimGeo";

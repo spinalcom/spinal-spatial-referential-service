@@ -40,6 +40,5 @@ export async function getDiffRefFloor(
   const structures = Object.values(floorArchi.structures).map(
     (itm) => itm.properties
   );
-  const diffRef = diffBimObjs(structures, floorNodeRefObjs, manualAssingment);
-  return diffRef;
+  return diffBimObjs(structures, floorNodeRefObjs, manualAssingment);
 }

@@ -27,9 +27,10 @@ exports.createCmdProjItm = void 0;
 const getCategory_1 = require("./getCategory");
 const getBimFileIdByModelId_1 = require("../../utils/projection/getBimFileIdByModelId");
 function createCmdProjItm(target, auProp, pNId, centerPos, flagWarining) {
+    var _a;
     const bimFileId = (0, getBimFileIdByModelId_1.getBimFileIdByModelId)(auProp.modelId);
     const itm = target.find((it) => it.bimFileId === bimFileId && pNId === it.pNId);
-    const revitCat = (0, getCategory_1.getCategory)(auProp);
+    const revitCat = (_a = (0, getCategory_1.getCategory)(auProp)) === null || _a === void 0 ? void 0 : _a.displayValue;
     if (itm) {
         const tmp = itm.data.find((it) => it.dbid === auProp.dbId);
         if (!tmp) {
@@ -37,7 +38,7 @@ function createCmdProjItm(target, auProp, pNId, centerPos, flagWarining) {
                 dbid: auProp.dbId,
                 externalId: auProp.externalId,
                 name: auProp.name,
-                revitCat: revitCat.displayValue,
+                revitCat: revitCat,
                 centerPos,
                 flagWarining,
             });
@@ -53,7 +54,7 @@ function createCmdProjItm(target, auProp, pNId, centerPos, flagWarining) {
                     dbid: auProp.dbId,
                     externalId: auProp.externalId,
                     name: auProp.name,
-                    revitCat: revitCat.displayValue,
+                    revitCat: revitCat,
                     centerPos,
                     flagWarining,
                 },

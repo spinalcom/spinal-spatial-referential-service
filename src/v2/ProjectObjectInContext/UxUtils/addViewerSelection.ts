@@ -36,7 +36,7 @@ export async function addViewerSelection(
 ) {
   const prom: Promise<void>[] = [];
   const toDel: ProjectionItem[] = [];
-  const aggregateSelection: IAuAggregateSelectItem[] =
+  const aggregateSelection: readonly IAuAggregateSelectItem[] =
     viewer.getAggregateSelection();
   const aggrProps: AuProps[] = [];
   for (const select of aggregateSelection) {

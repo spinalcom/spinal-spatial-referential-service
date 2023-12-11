@@ -43,6 +43,6 @@ __exportStar(require("./setAreaInContextGeo"), exports);
 __exportStar(require("./setCenterPosInContextGeo"), exports);
 __exportStar(require("./setLevelInContextGeo"), exports);
 __exportStar(require("./transformArchi"), exports);
-__exportStar(require("./updateDbIds"), exports);
+__exportStar(require("./updateBimObjectFromBimFileId"), exports);
 __exportStar(require("./updateRoomDbId"), exports);
 //# sourceMappingURL=index.js.map

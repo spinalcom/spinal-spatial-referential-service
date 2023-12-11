@@ -25,44 +25,50 @@
 import type { SpinalContext, SpinalNode } from 'spinal-model-graph';
 import type { IFloorArchi, TManualAssingment } from '../interfaces/IGetArchi';
 import { getNodeInfoArchiAttr } from '../utils/archi/getNodeInfoArchiAttr';
-import { FileSystem } from 'spinal-core-connectorjs';
+import { getOrLoadModel } from '../utils/getOrLoadModel';
+import {
+  GEO_BUILDING_RELATION,
+  GEO_FLOOR_RELATION,
+  GEO_FLOOR_TYPE,
+  GEO_SITE_RELATION,
+  GEO_ZONE_RELATION,
+} from '../../Constant';
 
 export async function getFloorFromContext(
-  contextGeo: SpinalContext,
-  buildingServId: number,
+  context: SpinalContext,
   floorArchi: IFloorArchi,
-  manualAssingment: TManualAssingment
+  manualAssingment: TManualAssingment,
+  buildingServId: number
 ): Promise<SpinalNode> {
   // check ManualAssingment retrun it if found;
   const serverId = manualAssingment.get(floorArchi.properties.externalId);
-  if (serverId) return <SpinalNode>FileSystem._objects[serverId];
+  if (serverId) return getOrLoadModel(serverId);
 
   // not in manualAssing; get building floors
-  const buildings = await contextGeo.getChildrenInContext(contextGeo);
-  const buildingsFloors = await Promise.all(
-    buildings.map((building) => {
-      if (building._server_id === buildingServId)
-        return building.getChildrenInContext(contextGeo);
-    })
+  const parentNode = buildingServId
+    ? await getOrLoadModel<SpinalNode>(buildingServId)
+    : context;
+  const floorNodes = await parentNode.find(
+    [
+      GEO_SITE_RELATION,
+      GEO_BUILDING_RELATION,
+      GEO_FLOOR_RELATION,
+      GEO_ZONE_RELATION,
+    ],
+    (node) => GEO_FLOOR_TYPE === node.info.type.get()
   );
+
   // search via externalId
-  for (const buildingFloors of buildingsFloors) {
-    if (buildingFloors)
-      for (const floorNode of buildingFloors) {
-        if (
-          floorNode.info.externalId.get() === floorArchi.properties.externalId
-        )
-          return floorNode;
-      }
+  for (const floorNode of floorNodes) {
+    if (floorNode.info.externalId?.get() === floorArchi.properties.externalId)
+      return floorNode;
   }
   // search via name
   const floorArchiName = <string>(
     getNodeInfoArchiAttr(floorArchi.properties, 'name')
   );
-  for (const buildingFloors of buildingsFloors) {
-    if (buildingFloors)
-      for (const floorNode of buildingFloors) {
-        if (floorNode.info.name.get() === floorArchiName) return floorNode;
-      }
+
+  for (const floorNode of floorNodes) {
+    if (floorNode.info.name.get() === floorArchiName) return floorNode;
   }
 }

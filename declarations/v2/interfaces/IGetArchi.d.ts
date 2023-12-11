@@ -5,6 +5,8 @@ export interface IFloorArchi {
     properties: INodeInfo;
     children: Record<string, IRoomArchi>;
     structures: IStructures;
+    merged?: number;
+    propertiesArr?: INodeInfo[];
 }
 export interface INodeInfo {
     dbId: number;
@@ -45,7 +47,7 @@ export interface IDiffNodeInfoAttr {
 }
 export interface IDiffObj {
     label: string;
-    nodeValue: string | number | boolean;
+    nodeValue?: string | number | boolean;
     archiValue: string | number;
     unit?: string;
 }

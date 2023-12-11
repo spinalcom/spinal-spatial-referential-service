@@ -28,4 +28,5 @@ export * from './cmd';
 export * from './utils';
 export * from './diffArchi';
 export * from './ProjectObjectInContext';
+export * from './mergeBimGeo';
 export * from './constant';

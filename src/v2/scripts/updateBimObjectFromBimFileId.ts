@@ -26,10 +26,13 @@ import { GEO_EQUIPMENT_RELATION } from '../../Constant';
 import { getBimContextByBimFileId } from '../utils/getBimContextByBimFileId';
 import { getExternalIdMapping } from '../utils/getExternalIdMapping';
 
-export async function updateDbIds(
+export async function updateBimObjectFromBimFileId(
   bimFileId: string,
-  model: Autodesk.Viewing.Model
+  model: Autodesk.Viewing.Model,
+  updateBimobjectsName: boolean,
+  updateBimobjectsDbid: boolean
 ): Promise<void> {
+  if (!updateBimobjectsName && !updateBimobjectsDbid) return;
   const bimContext = await getBimContextByBimFileId(bimFileId);
   if (typeof bimContext === 'undefined')
     throw new Error('No BimOject found with this bimFileId');
@@ -38,9 +41,17 @@ export async function updateDbIds(
   for (const bimobj of bimobjs) {
     if (bimobj.info.bimFileId.get() === bimFileId) {
       const dbid = map[bimobj.info.externalId.get()];
-      if (dbid) bimobj.info.dbid.set(dbid);
-      else {
-        bimobj.info.dbid.set(-1);
+      if (updateBimobjectsDbid) {
+        if (dbid) bimobj.info.dbid.set(dbid);
+        else {
+          bimobj.info.dbid.set(-1);
+        }
+      } else if (updateBimobjectsName && dbid) {
+        model.getProperties(dbid, (prop) => {
+          if (prop.name) {
+            bimobj.info.name.set(prop.name);
+          }
+        });
       }
     }
   }

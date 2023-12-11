@@ -27,8 +27,8 @@ export function getWorldBoundingBox(
   model: Autodesk.Viewing.Model
 ) {
   const fragList = model.getFragmentList();
-  const fragbBox = new window.THREE.Box3();
-  const nodebBox = new window.THREE.Box3();
+  const fragbBox = new THREE.Box3();
+  const nodebBox = new THREE.Box3();
   fragIds.forEach(function (fragId) {
     fragList.getWorldBounds(fragId, fragbBox);
     nodebBox.union(fragbBox);

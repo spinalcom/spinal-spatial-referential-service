@@ -50,4 +50,7 @@ __exportStar(require("./projection"), exports);
 __exportStar(require("./waitGetServerId"), exports);
 __exportStar(require("./waitPathSendToHub"), exports);
 __exportStar(require("./getViewer"), exports);
+__exportStar(require("./getOrLoadModel"), exports);
+__exportStar(require("./createBIMGeoContext"), exports);
+__exportStar(require("./getBimGeoContexts"), exports);
 //# sourceMappingURL=index.js.map

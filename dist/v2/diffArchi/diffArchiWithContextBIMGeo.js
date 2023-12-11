@@ -32,28 +32,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateDbIds = void 0;
-const Constant_1 = require("../../Constant");
-const getBimContextByBimFileId_1 = require("../utils/getBimContextByBimFileId");
-const getExternalIdMapping_1 = require("../utils/getExternalIdMapping");
-function updateDbIds(bimFileId, model) {
+exports.diffArchiWithContextBIMGeo = void 0;
+const diffFloorWithContext_1 = require("./diffFloorWithContext");
+const mergeManualAssignArchiFloor_1 = require("./mergeManualAssignArchiFloor");
+const getOrLoadModel_1 = require("../utils/getOrLoadModel");
+function diffArchiWithContextBIMGeo(archiData, BIMGeocontextServId, manualAssingment) {
     return __awaiter(this, void 0, void 0, function* () {
-        const bimContext = yield (0, getBimContextByBimFileId_1.getBimContextByBimFileId)(bimFileId);
-        if (typeof bimContext === 'undefined')
-            throw new Error('No BimOject found with this bimFileId');
-        const map = yield (0, getExternalIdMapping_1.getExternalIdMapping)(model);
-        const bimobjs = yield bimContext.getChildren(Constant_1.GEO_EQUIPMENT_RELATION);
-        for (const bimobj of bimobjs) {
-            if (bimobj.info.bimFileId.get() === bimFileId) {
-                const dbid = map[bimobj.info.externalId.get()];
-                if (dbid)
-                    bimobj.info.dbid.set(dbid);
-                else {
-                    bimobj.info.dbid.set(-1);
-                }
-            }
+        const context = yield (0, getOrLoadModel_1.getOrLoadModel)(BIMGeocontextServId);
+        const data = yield (0, mergeManualAssignArchiFloor_1.mergeManualAssignArchiFloor)(archiData, manualAssingment, context);
+        const archiDataRes = [];
+        for (const floorArchi of data) {
+            const diff = yield (0, diffFloorWithContext_1.diffFloorWithContext)(floorArchi, context, manualAssingment);
+            archiDataRes.push({ diff, floorArchi });
         }
+        return archiDataRes;
     });
 }
-exports.updateDbIds = updateDbIds;
-//# sourceMappingURL=updateDbIds.js.map
+exports.diffArchiWithContextBIMGeo = diffArchiWithContextBIMGeo;
+//# sourceMappingURL=diffArchiWithContextBIMGeo.js.map

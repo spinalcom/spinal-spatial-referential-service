@@ -35,3 +35,6 @@ export * from './projection';
 export * from './waitGetServerId';
 export * from './waitPathSendToHub';
 export * from './getViewer';
+export * from './getOrLoadModel';
+export * from './createBIMGeoContext';
+export * from './getBimGeoContexts';
