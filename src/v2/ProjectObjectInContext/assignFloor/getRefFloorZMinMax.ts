@@ -41,7 +41,7 @@ export async function getRefFloorZMinMax(
     }
     const p = await Promise.all(promise);
     for (const z of p) {
-      if (min === null || z < min) min = z;
+      if (!isNaN(z) && (min === null || z < min)) min = z;
     }
     const res = { min, max: null, floorId: id, distance: null };
     record[id] = res;
@@ -68,7 +68,12 @@ export async function getRefFloorZMinMax(
 }
 
 async function getMinZ(dbid: number, model: Autodesk.Viewing.Model) {
-  const fragIds = await getFragIds(dbid, model);
-  const bbox = getWorldBoundingBox(fragIds, model);
-  return bbox.min.z;
+  try {
+    const fragIds = await getFragIds(dbid, model);
+    const bbox = getWorldBoundingBox(fragIds, model);
+    return bbox.min.z;
+  } catch (error) {
+    console.error(error);
+    return NaN;
+  }
 }

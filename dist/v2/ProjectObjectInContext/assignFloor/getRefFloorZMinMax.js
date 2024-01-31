@@ -49,7 +49,7 @@ function getRefFloorZMinMax(data) {
             }
             const p = yield Promise.all(promise);
             for (const z of p) {
-                if (min === null || z < min)
+                if (!isNaN(z) && (min === null || z < min))
                     min = z;
             }
             const res = { min, max: null, floorId: id, distance: null };
@@ -79,9 +79,15 @@ function getRefFloorZMinMax(data) {
 exports.getRefFloorZMinMax = getRefFloorZMinMax;
 function getMinZ(dbid, model) {
     return __awaiter(this, void 0, void 0, function* () {
-        const fragIds = yield (0, getFragIds_1.getFragIds)(dbid, model);
-        const bbox = (0, getWorldBoundingBox_1.getWorldBoundingBox)(fragIds, model);
-        return bbox.min.z;
+        try {
+            const fragIds = yield (0, getFragIds_1.getFragIds)(dbid, model);
+            const bbox = (0, getWorldBoundingBox_1.getWorldBoundingBox)(fragIds, model);
+            return bbox.min.z;
+        }
+        catch (error) {
+            console.error(error);
+            return NaN;
+        }
     });
 }
 //# sourceMappingURL=getRefFloorZMinMax.js.map

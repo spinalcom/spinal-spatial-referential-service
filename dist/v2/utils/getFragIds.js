@@ -36,7 +36,7 @@ function getFragIds(dbId, model) {
             if (ids.length === 0) {
                 setTimeout(() => {
                     if (ids.length === 0) {
-                        return reject();
+                        return reject(`no fragIds found for dbId ${dbId}`);
                     }
                     resolve(ids);
                 }, 1000);
