@@ -37,7 +37,6 @@ import { getFragIds } from '../../utils/getFragIds';
 // raycast job don't use webworker
 import { raycastJob } from '../rayUtils/raycastJob';
 // also raycast job but use webworker
-import { RayWorkerManager } from '../rayUtils/workerManager';
 
 export async function raycastItemToMesh(
   from: IAggregateDbidByModelItem[],
@@ -50,12 +49,6 @@ export async function raycastItemToMesh(
       getMeshsData(to, viewer),
     ]);
     console.log('raycastItemToMesh', centerPoints, geometries);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!(<any>window)._hmr) {
-      // use worker only on build, aka without HRM
-      const rayWorkerManager = RayWorkerManager.getInstance();
-      return rayWorkerManager.work({ centerPoints, geometries }); // send the worker a message
-    }
     return raycastJob({ centerPoints, geometries });
   } catch (e) {
     console.error(e);

@@ -40,7 +40,6 @@ const getFragIds_1 = require("../../utils/getFragIds");
 // raycast job don't use webworker
 const raycastJob_1 = require("../rayUtils/raycastJob");
 // also raycast job but use webworker
-const workerManager_1 = require("../rayUtils/workerManager");
 function raycastItemToMesh(from, to, viewer) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -49,12 +48,6 @@ function raycastItemToMesh(from, to, viewer) {
                 getMeshsData(to, viewer),
             ]);
             console.log('raycastItemToMesh', centerPoints, geometries);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            if (!window._hmr) {
-                // use worker only on build, aka without HRM
-                const rayWorkerManager = workerManager_1.RayWorkerManager.getInstance();
-                return rayWorkerManager.work({ centerPoints, geometries }); // send the worker a message
-            }
             return (0, raycastJob_1.raycastJob)({ centerPoints, geometries });
         }
         catch (e) {

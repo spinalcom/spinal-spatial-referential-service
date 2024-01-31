@@ -54,8 +54,6 @@ __exportStar(require("./projectionConfig/getConfigFromContext"), exports);
 __exportStar(require("./projectionConfig/createConfigNode"), exports);
 __exportStar(require("./projectionConfig/createConfigNodeAndProjGroup"), exports);
 __exportStar(require("./projectionConfig/removeConfigFromContext"), exports);
-__exportStar(require("./rayUtils/raycastWorker"), exports);
-__exportStar(require("./rayUtils/workerManager"), exports);
 __exportStar(require("./rayUtils/enumMeshTriangles"), exports);
 __exportStar(require("./projection/getIntersects"), exports);
 __exportStar(require("./projection/raycastItemToMesh"), exports);

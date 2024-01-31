@@ -15,8 +15,6 @@ export * from './projectionConfig/getConfigFromContext';
 export * from './projectionConfig/createConfigNode';
 export * from './projectionConfig/createConfigNodeAndProjGroup';
 export * from './projectionConfig/removeConfigFromContext';
-export * from './rayUtils/raycastWorker';
-export * from './rayUtils/workerManager';
 export * from './rayUtils/enumMeshTriangles';
 export * from './projection/getIntersects';
 export * from './projection/raycastItemToMesh';
