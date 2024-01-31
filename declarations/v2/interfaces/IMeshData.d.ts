@@ -1,3 +1,4 @@
+/// <reference types="forge-viewer" />
 import type { IMeshGeometry } from './IMeshGeometry';
 export interface IMeshData {
     geometry: IMeshGeometry;

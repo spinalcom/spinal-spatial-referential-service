@@ -232,7 +232,9 @@ function handleLinkedBimGeosInfo(cmd, floorNode, contextGeo) {
             }
         }
         // update child node children
-        yield updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd);
+        const promUpRoom = updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd);
+        const promUpRef = updateLinkedBimGeoFloorNodeRef(floorNode, cmd);
+        yield Promise.all([promUpRoom, promUpRef]);
     });
 }
 function updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd) {
@@ -241,6 +243,7 @@ function updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd) {
         if (cmd.linkedBimGeos.length === 0 && roomNodes.length > 0) {
             return floorNode.removeChildren(roomNodes, Constant_1.GEO_ROOM_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
         }
+        const roomIdsSeen = new Set();
         for (const item of cmd.linkedBimGeos) {
             const bimContext = (0, graphservice_1.getRealNode)(item.contextId);
             if (!bimContext) {
@@ -256,31 +259,66 @@ function updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd) {
             }
             // get rooms
             const bimRoomNodes = yield bimFloorNode.getChildrenInContext(bimContext);
+            bimRoomNodes.forEach((room) => roomIdsSeen.add(room.info.id.get()));
             // get room to add
             const roomsToAdd = bimRoomNodes.filter((nodeBim) => {
                 return !roomNodes.some((nodeGeo) => nodeGeo.info.id.get() === nodeBim.info.id.get());
             });
             // add room to add to floorNode
             const proms = roomsToAdd.map((roomToAdd) => floorNode.addChildInContext(roomToAdd, Constant_1.GEO_ROOM_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeo));
-            // get room to remove
-            const roomsToRm = new Set;
-            const promsGetParent = roomNodes.map((itm) => itm.getParentsInContext(bimContext).then((parents) => {
-                return { room: itm, parent: parents[0] };
-            }));
-            const parentNodes = yield Promise.all(promsGetParent);
-            for (const { parent, room } of parentNodes) {
-                if (parent === bimFloorNode &&
-                    !bimRoomNodes.some((itm) => itm === room)) {
-                    roomsToRm.add(room);
-                }
-                else if (!cmd.linkedBimGeos.some(itm => itm.floorId === parent.info.id.get())) {
-                    roomsToRm.add(room);
-                }
-            }
-            const arrToRm = Array.from(roomsToRm);
-            if (arrToRm.length > 0)
-                yield floorNode.removeChildren(arrToRm, Constant_1.GEO_ROOM_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
             yield Promise.all(proms);
+        }
+        const nodesToRm = roomNodes.reduce((result, nodeGeo) => {
+            if (!roomIdsSeen.has(nodeGeo.info.id.get())) {
+                result.push(nodeGeo);
+            }
+            return result;
+        }, []);
+        if (nodesToRm.length > 0) {
+            yield floorNode.removeChildren(nodesToRm, Constant_1.GEO_ROOM_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+        }
+    });
+}
+function updateLinkedBimGeoFloorNodeRef(targetFloorNode, cmd) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const targetFloorRefs = yield targetFloorNode.getChildren(spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION);
+        // remove all if cmd.linkedBimGeos.length === 0
+        if (cmd.linkedBimGeos.length === 0 && targetFloorRefs.length > 0) {
+            return targetFloorNode.removeChildren(targetFloorRefs, Constant_1.GEO_ROOM_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
+        }
+        const refIdsSeen = new Set();
+        for (const item of cmd.linkedBimGeos) {
+            const bimContext = (0, graphservice_1.getRealNode)(item.contextId);
+            if (!bimContext) {
+                console.error(`Unknown linkedBimGeos contextId [${item.contextId}] for floor node ${targetFloorNode.info.name.get()}`);
+                continue;
+            }
+            // get floor
+            const bimFloorNodes = yield bimContext.getChildrenInContext(bimContext);
+            const bimFloorNode = bimFloorNodes.find((itm) => itm.info.id.get() === item.floorId);
+            if (!bimFloorNode) {
+                console.error(`Unknown linkedBimGeos bimFloorNode [${item.floorId}] from ${bimContext.info.name.get()} context to link to floor node ${targetFloorNode.info.name.get()}`);
+                continue;
+            }
+            // get floor refs
+            const bimFloorRefNodes = yield bimFloorNode.getChildren(spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION);
+            bimFloorRefNodes.forEach((ref) => refIdsSeen.add(ref.info.id.get()));
+            // get floor refs to add
+            const refsToAdd = bimFloorRefNodes.filter((nodeBim) => {
+                return !targetFloorRefs.some((nodeGeo) => nodeGeo.info.id.get() === nodeBim.info.id.get());
+            });
+            // add floor refs to add to floorNode
+            const proms = refsToAdd.map((refToAdd) => targetFloorNode.addChild(refToAdd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE));
+            yield Promise.all(proms);
+        }
+        const nodesToRm = targetFloorRefs.reduce((result, refNode) => {
+            if (!refIdsSeen.has(refNode.info.id.get())) {
+                result.push(refNode);
+            }
+            return result;
+        }, []);
+        if (nodesToRm.length > 0) {
+            yield targetFloorNode.removeChildren(nodesToRm, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
         }
     });
 }

@@ -1,3 +1,4 @@
+/// <reference types="forge-viewer" />
 export interface IPrevewItemToShow {
     dbId: number;
     modelId: number;

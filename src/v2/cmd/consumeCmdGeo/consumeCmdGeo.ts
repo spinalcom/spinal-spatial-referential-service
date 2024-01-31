@@ -266,7 +266,9 @@ async function handleLinkedBimGeosInfo(
     }
   }
   // update child node children
-  await updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd);
+  const promUpRoom = updateLinkedBimGeoFloorNode(floorNode, contextGeo, cmd);
+  const promUpRef = updateLinkedBimGeoFloorNodeRef(floorNode, cmd);
+  await Promise.all([promUpRoom, promUpRef]);
 }
 
 async function updateLinkedBimGeoFloorNode(
@@ -282,11 +284,13 @@ async function updateLinkedBimGeoFloorNode(
       SPINAL_RELATION_PTR_LST_TYPE
     );
   }
+  const roomIdsSeen = new Set<string>();
   for (const item of cmd.linkedBimGeos) {
     const bimContext = getRealNode(item.contextId);
     if (!bimContext) {
       console.error(
-        `Unknown linkedBimGeos contextId [${item.contextId
+        `Unknown linkedBimGeos contextId [${
+          item.contextId
         }] for floor node ${floorNode.info.name.get()}`
       );
       continue;
@@ -298,13 +302,15 @@ async function updateLinkedBimGeoFloorNode(
     );
     if (!bimFloorNode) {
       console.error(
-        `Unknown linkedBimGeos bimFloorNode [${item.floorId
+        `Unknown linkedBimGeos bimFloorNode [${
+          item.floorId
         }] from ${bimContext.info.name.get()} context to link to floor node ${floorNode.info.name.get()}`
       );
       continue;
     }
     // get rooms
     const bimRoomNodes = await bimFloorNode.getChildrenInContext(bimContext);
+    bimRoomNodes.forEach((room) => roomIdsSeen.add(room.info.id.get()));
     // get room to add
     const roomsToAdd = bimRoomNodes.filter((nodeBim) => {
       return !roomNodes.some(
@@ -320,33 +326,98 @@ async function updateLinkedBimGeoFloorNode(
         contextGeo
       )
     );
-
-    // get room to remove
-    const roomsToRm: Set<SpinalNode> = new Set;
-    const promsGetParent = roomNodes.map((itm) =>
-      itm.getParentsInContext(bimContext).then((parents) => {
-        return { room: itm, parent: parents[0] };
-      })
-    );
-    const parentNodes = await Promise.all(promsGetParent);
-    for (const { parent, room } of parentNodes) {
-      if (
-        parent === bimFloorNode &&
-        !bimRoomNodes.some((itm) => itm === room)
-      ) {
-        roomsToRm.add(room);
-      } else if (!cmd.linkedBimGeos.some(itm => itm.floorId === parent.info.id.get())) {
-        roomsToRm.add(room);
-      }
-    }
-    const arrToRm = Array.from(roomsToRm);
-    if (arrToRm.length > 0)
-      await floorNode.removeChildren(
-        arrToRm,
-        GEO_ROOM_RELATION,
-        SPINAL_RELATION_PTR_LST_TYPE
-      );
     await Promise.all(proms);
+  }
+  const nodesToRm = roomNodes.reduce(
+    (result: SpinalNode[], nodeGeo: SpinalNode) => {
+      if (!roomIdsSeen.has(nodeGeo.info.id.get())) {
+        result.push(nodeGeo);
+      }
+      return result;
+    },
+    []
+  );
+  if (nodesToRm.length > 0) {
+    await floorNode.removeChildren(
+      nodesToRm,
+      GEO_ROOM_RELATION,
+      SPINAL_RELATION_PTR_LST_TYPE
+    );
+  }
+}
+
+async function updateLinkedBimGeoFloorNodeRef(
+  targetFloorNode: SpinalNodeFloor,
+  cmd: ICmdNewSpace
+) {
+  const targetFloorRefs = await targetFloorNode.getChildren(REFERENCE_RELATION);
+  // remove all if cmd.linkedBimGeos.length === 0
+  if (cmd.linkedBimGeos.length === 0 && targetFloorRefs.length > 0) {
+    return targetFloorNode.removeChildren(
+      targetFloorRefs,
+      GEO_ROOM_RELATION,
+      SPINAL_RELATION_PTR_LST_TYPE
+    );
+  }
+  const refIdsSeen = new Set<string>();
+  for (const item of cmd.linkedBimGeos) {
+    const bimContext = getRealNode(item.contextId);
+    if (!bimContext) {
+      console.error(
+        `Unknown linkedBimGeos contextId [${
+          item.contextId
+        }] for floor node ${targetFloorNode.info.name.get()}`
+      );
+      continue;
+    }
+    // get floor
+    const bimFloorNodes = await bimContext.getChildrenInContext(bimContext);
+    const bimFloorNode = bimFloorNodes.find(
+      (itm) => itm.info.id.get() === item.floorId
+    );
+    if (!bimFloorNode) {
+      console.error(
+        `Unknown linkedBimGeos bimFloorNode [${
+          item.floorId
+        }] from ${bimContext.info.name.get()} context to link to floor node ${targetFloorNode.info.name.get()}`
+      );
+      continue;
+    }
+    // get floor refs
+    const bimFloorRefNodes = await bimFloorNode.getChildren(REFERENCE_RELATION);
+    bimFloorRefNodes.forEach((ref) => refIdsSeen.add(ref.info.id.get()));
+    // get floor refs to add
+    const refsToAdd = bimFloorRefNodes.filter((nodeBim) => {
+      return !targetFloorRefs.some(
+        (nodeGeo) => nodeGeo.info.id.get() === nodeBim.info.id.get()
+      );
+    });
+    // add floor refs to add to floorNode
+    const proms = refsToAdd.map((refToAdd) =>
+      targetFloorNode.addChild(
+        refToAdd,
+        REFERENCE_RELATION,
+        SPINAL_RELATION_PTR_LST_TYPE
+      )
+    );
+    await Promise.all(proms);
+  }
+
+  const nodesToRm = targetFloorRefs.reduce(
+    (result: SpinalNode[], refNode: SpinalNode) => {
+      if (!refIdsSeen.has(refNode.info.id.get())) {
+        result.push(refNode);
+      }
+      return result;
+    },
+    []
+  );
+  if (nodesToRm.length > 0) {
+    await targetFloorNode.removeChildren(
+      nodesToRm,
+      REFERENCE_RELATION,
+      SPINAL_RELATION_PTR_LST_TYPE
+    );
   }
 }
 
