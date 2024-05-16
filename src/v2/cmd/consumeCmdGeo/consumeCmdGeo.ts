@@ -49,6 +49,17 @@ import { ARCHIVE_RELATION_NAME } from '../../constant';
 import { GEO_EQUIPMENT_RELATION, GEO_ROOM_RELATION } from '../../../Constant';
 import { SpinalNodeFloor } from '../../mergeBimGeo/SpinalNodeFloor';
 
+function safe_call<T>(callback: (...any) => Promise<T>, ...attr): () => Promise<T> {
+  return async () => {
+    try {
+      return await callback.call(null, attr);
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  };
+}
+
 export async function consumeCmdGeo(
   cmds: ICmdNew[][],
   nodeGenerationId: string,
@@ -70,20 +81,27 @@ export async function consumeCmdGeo(
     let isFloors = false;
     for (const cmd of cmdArr) {
       if (cmd.type === 'building') {
-        proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, addBuilding));
+        proms.push(
+          safe_call(consumeNewUpdateCmd, dico, cmd, addBuilding)
+        );
       } else if (cmd.type === 'floor') {
-        proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, addFloor));
+        proms.push(
+          safe_call(consumeNewUpdateCmd, dico, cmd, addFloor)
+        );
         isFloors = true;
       } else if (cmd.type === 'floorRef') {
         proms.push(
-          consumeNewUpdateRefCmd.bind(null, dico, cmd, REFERENCE_RELATION)
+          safe_call(
+            consumeNewUpdateRefCmd, dico, cmd, REFERENCE_RELATION)
         );
       } else if (cmd.type === 'floorRefDel') {
-        proms.push(consumeDeleteCmd.bind(null, dico, cmd, REFERENCE_RELATION));
+        proms.push(
+          safe_call(consumeDeleteCmd, dico, cmd, REFERENCE_RELATION)
+        );
       } else if (cmd.type === 'floorRoomDel') {
         proms.push(
-          consumeDeleteCmd.bind(
-            null,
+          safe_call(
+            consumeDeleteCmd,
             dico,
             cmd,
             ROOM_RELATION,
@@ -92,17 +110,25 @@ export async function consumeCmdGeo(
           )
         );
       } else if (cmd.type === 'room') {
-        proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, addRoom));
+        proms.push(
+          safe_call(consumeNewUpdateCmd, dico, cmd, addRoom)
+        );
       } else if (cmd.type === 'roomRef') {
         proms.push(
-          consumeNewUpdateRefCmd.bind(null, dico, cmd, REFERENCE_ROOM_RELATION)
+          safe_call(
+            consumeNewUpdateRefCmd,
+            dico,
+            cmd,
+            REFERENCE_ROOM_RELATION
+          )
         );
       } else if (cmd.type === 'roomRefDel') {
         proms.push(
-          consumeDeleteCmd.bind(null, dico, cmd, REFERENCE_ROOM_RELATION)
+          safe_call(
+            consumeDeleteCmd, dico, cmd, REFERENCE_ROOM_RELATION)
         );
       } else if (cmd.type === 'RefNode') {
-        proms.push(consumeRefNode.bind(null, dico, cmd));
+        proms.push(safe_call(consumeRefNode, dico, cmd));
       }
     }
     await consumeBatch(proms, isFloors ? 1 : consumeBatchSize, (idx) => {
@@ -132,10 +158,10 @@ async function getBimContext(
 async function consumeRefNode(dico: Record<string, SpinalNode>, cmd: ICmdNew) {
   if (spinal.SHOW_LOG_GENERATION) console.log('consumeRef', cmd);
   const parentNode = dico[cmd.pNId];
-  if (!parentNode) throw new Error(`ParentId for ${cmd.type} not found.`);
+  if (!parentNode) throw new Error(`ParentId for ${cmd.pNId} not found.`);
   const context = dico[cmd.contextId];
   if (!context)
-    throw new Error(`contextId [${cmd.contextId}] for ${cmd.type} not found.`);
+    throw new Error(`contextId [${cmd.contextId}] for ${cmd.pNId} not found.`);
   // find id in parentChildren
   const children = await parentNode.getChildrenInContext(context);
   const child = children.find((node) => node.info.id.get() === cmd.id);
@@ -151,7 +177,12 @@ async function consumeDeleteCmd(
 ): Promise<void> {
   if (spinal.SHOW_LOG_GENERATION) console.log('consumeDeleteCmd', cmd);
   const parentNode = dico[cmd.pNId];
-  if (!parentNode) throw new Error(`ParentId for ${cmd.type} not found.`);
+  if (!parentNode) {
+    console.error(
+      new Error(`consumeDeleteCmd skip, ParentId for ${cmd.pNId} not found.`)
+    );
+    return;
+  }
   const childrenNode = await parentNode.getChildren(relationName);
   const nodesToDel: SpinalNode[] = [];
   for (const id of cmd.nIdToDel) {
@@ -191,10 +222,10 @@ async function consumeNewUpdateCmd(
 ) {
   if (spinal.SHOW_LOG_GENERATION) console.log('consumeNewUpdateCmd', cmd);
   const parentNode = dico[cmd.pNId];
-  if (!parentNode) throw new Error(`ParentId for ${cmd.type} not found.`);
+  if (!parentNode) throw new Error(`ParentId for ${cmd.pNId} not found.`);
   const context = dico[cmd.contextId];
   if (!context)
-    throw new Error(`contextId [${cmd.contextId}] for ${cmd.type} not found.`);
+    throw new Error(`contextId [${cmd.contextId}] for ${cmd.pNId} not found.`);
 
   // find id in parentChildren
   const children = await parentNode.getChildrenInContext(context);
@@ -289,8 +320,7 @@ async function updateLinkedBimGeoFloorNode(
     const bimContext = getRealNode(item.contextId);
     if (!bimContext) {
       console.error(
-        `Unknown linkedBimGeos contextId [${
-          item.contextId
+        `Unknown linkedBimGeos contextId [${item.contextId
         }] for floor node ${floorNode.info.name.get()}`
       );
       continue;
@@ -302,8 +332,7 @@ async function updateLinkedBimGeoFloorNode(
     );
     if (!bimFloorNode) {
       console.error(
-        `Unknown linkedBimGeos bimFloorNode [${
-          item.floorId
+        `Unknown linkedBimGeos bimFloorNode [${item.floorId
         }] from ${bimContext.info.name.get()} context to link to floor node ${floorNode.info.name.get()}`
       );
       continue;
@@ -364,8 +393,7 @@ async function updateLinkedBimGeoFloorNodeRef(
     const bimContext = getRealNode(item.contextId);
     if (!bimContext) {
       console.error(
-        `Unknown linkedBimGeos contextId [${
-          item.contextId
+        `Unknown linkedBimGeos contextId [${item.contextId
         }] for floor node ${targetFloorNode.info.name.get()}`
       );
       continue;
@@ -377,8 +405,7 @@ async function updateLinkedBimGeoFloorNodeRef(
     );
     if (!bimFloorNode) {
       console.error(
-        `Unknown linkedBimGeos bimFloorNode [${
-          item.floorId
+        `Unknown linkedBimGeos bimFloorNode [${item.floorId
         }] from ${bimContext.info.name.get()} context to link to floor node ${targetFloorNode.info.name.get()}`
       );
       continue;

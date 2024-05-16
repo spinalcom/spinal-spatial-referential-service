@@ -45,6 +45,17 @@ const waitGetServerId_1 = require("../../utils/waitGetServerId");
 const getBimContextByBimFileId_1 = require("../../utils/getBimContextByBimFileId");
 const constant_1 = require("../../constant");
 const Constant_1 = require("../../../Constant");
+function safe_call(callback, ...attr) {
+    return () => __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield callback.call(null, attr);
+        }
+        catch (error) {
+            console.error(error);
+            return undefined;
+        }
+    });
+}
 function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg, consumeBatchSize = 20) {
     return __awaiter(this, void 0, void 0, function* () {
         const graph = (0, graphservice_1.getGraph)();
@@ -61,32 +72,32 @@ function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg
             let isFloors = false;
             for (const cmd of cmdArr) {
                 if (cmd.type === 'building') {
-                    proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.addBuilding));
+                    proms.push(safe_call(consumeNewUpdateCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.addBuilding));
                 }
                 else if (cmd.type === 'floor') {
-                    proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.addFloor));
+                    proms.push(safe_call(consumeNewUpdateCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.addFloor));
                     isFloors = true;
                 }
                 else if (cmd.type === 'floorRef') {
-                    proms.push(consumeNewUpdateRefCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION));
+                    proms.push(safe_call(consumeNewUpdateRefCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION));
                 }
                 else if (cmd.type === 'floorRefDel') {
-                    proms.push(consumeDeleteCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION));
+                    proms.push(safe_call(consumeDeleteCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION));
                 }
                 else if (cmd.type === 'floorRoomDel') {
-                    proms.push(consumeDeleteCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.ROOM_RELATION, nodeGenerationId, contextGenerationId));
+                    proms.push(safe_call(consumeDeleteCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.ROOM_RELATION, nodeGenerationId, contextGenerationId));
                 }
                 else if (cmd.type === 'room') {
-                    proms.push(consumeNewUpdateCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.addRoom));
+                    proms.push(safe_call(consumeNewUpdateCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.addRoom));
                 }
                 else if (cmd.type === 'roomRef') {
-                    proms.push(consumeNewUpdateRefCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_ROOM_RELATION));
+                    proms.push(safe_call(consumeNewUpdateRefCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_ROOM_RELATION));
                 }
                 else if (cmd.type === 'roomRefDel') {
-                    proms.push(consumeDeleteCmd.bind(null, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_ROOM_RELATION));
+                    proms.push(safe_call(consumeDeleteCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_ROOM_RELATION));
                 }
                 else if (cmd.type === 'RefNode') {
-                    proms.push(consumeRefNode.bind(null, dico, cmd));
+                    proms.push(safe_call(consumeRefNode, dico, cmd));
                 }
             }
             yield (0, consumeBatch_1.consumeBatch)(proms, isFloors ? 1 : consumeBatchSize, (idx) => {
@@ -121,10 +132,10 @@ function consumeRefNode(dico, cmd) {
             console.log('consumeRef', cmd);
         const parentNode = dico[cmd.pNId];
         if (!parentNode)
-            throw new Error(`ParentId for ${cmd.type} not found.`);
+            throw new Error(`ParentId for ${cmd.pNId} not found.`);
         const context = dico[cmd.contextId];
         if (!context)
-            throw new Error(`contextId [${cmd.contextId}] for ${cmd.type} not found.`);
+            throw new Error(`contextId [${cmd.contextId}] for ${cmd.pNId} not found.`);
         // find id in parentChildren
         const children = yield parentNode.getChildrenInContext(context);
         const child = children.find((node) => node.info.id.get() === cmd.id);
@@ -136,8 +147,10 @@ function consumeDeleteCmd(dico, cmd, relationName, nodeGenerationId, contextGene
         if (spinal.SHOW_LOG_GENERATION)
             console.log('consumeDeleteCmd', cmd);
         const parentNode = dico[cmd.pNId];
-        if (!parentNode)
-            throw new Error(`ParentId for ${cmd.type} not found.`);
+        if (!parentNode) {
+            console.error(new Error(`consumeDeleteCmd skip, ParentId for ${cmd.pNId} not found.`));
+            return;
+        }
         const childrenNode = yield parentNode.getChildren(relationName);
         const nodesToDel = [];
         for (const id of cmd.nIdToDel) {
@@ -167,10 +180,10 @@ function consumeNewUpdateCmd(dico, cmd, createMtd) {
             console.log('consumeNewUpdateCmd', cmd);
         const parentNode = dico[cmd.pNId];
         if (!parentNode)
-            throw new Error(`ParentId for ${cmd.type} not found.`);
+            throw new Error(`ParentId for ${cmd.pNId} not found.`);
         const context = dico[cmd.contextId];
         if (!context)
-            throw new Error(`contextId [${cmd.contextId}] for ${cmd.type} not found.`);
+            throw new Error(`contextId [${cmd.contextId}] for ${cmd.pNId} not found.`);
         // find id in parentChildren
         const children = yield parentNode.getChildrenInContext(context);
         let child = children.find((node) => node.info.id.get() === cmd.id);
