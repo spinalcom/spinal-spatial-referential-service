@@ -30,5 +30,5 @@ var ETreeItemStatus;
     ETreeItemStatus[ETreeItemStatus["newItem"] = 1] = "newItem";
     ETreeItemStatus[ETreeItemStatus["deleteItem"] = 2] = "deleteItem";
     ETreeItemStatus[ETreeItemStatus["unknown"] = 3] = "unknown";
-})(ETreeItemStatus = exports.ETreeItemStatus || (exports.ETreeItemStatus = {}));
+})(ETreeItemStatus || (exports.ETreeItemStatus = ETreeItemStatus = {}));
 //# sourceMappingURL=ITreeItem.js.map

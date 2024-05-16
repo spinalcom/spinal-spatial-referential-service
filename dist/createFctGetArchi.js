@@ -183,7 +183,7 @@ function createFctGetArchi(config) {
           let found =  false;
           for (const propertie of properties) {
             if (propertie.name.toLowerCase() === attrNameLowerCase && propertie.category !== '__internalref__') {
-              if (propertie.value !== value) {
+              if (value && propertie.value !== value) {
                 propertie.oldValue = propertie.value
                 propertie.value = value
               }

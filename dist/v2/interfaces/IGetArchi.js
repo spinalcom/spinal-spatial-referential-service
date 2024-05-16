@@ -33,5 +33,5 @@ var EModificationType;
     EModificationType[EModificationType["updateAttr"] = 16] = "updateAttr";
     EModificationType[EModificationType["updateChildren"] = 32] = "updateChildren";
     EModificationType[EModificationType["delete"] = 64] = "delete";
-})(EModificationType = exports.EModificationType || (exports.EModificationType = {}));
+})(EModificationType || (exports.EModificationType = EModificationType = {}));
 //# sourceMappingURL=IGetArchi.js.map

@@ -36,9 +36,9 @@ export declare enum EModificationType {
     none = 0,
     update = 1,
     create = 2,
-    updateNode = 8,
-    updateAttr = 16,
-    updateChildren = 32,
+    updateNode = 8,// update on node
+    updateAttr = 16,// update on attr
+    updateChildren = 32,// change in children
     delete = 64
 }
 export interface IDiffNodeInfoAttr {
