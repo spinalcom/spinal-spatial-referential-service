@@ -56,8 +56,8 @@ function safe_call(callback, ...attr) {
         }
     });
 }
-function consumeCmdGeo(cmds, nodeGenerationId, contextGenerationId, callbackProg, consumeBatchSize = 20) {
-    return __awaiter(this, void 0, void 0, function* () {
+function consumeCmdGeo(cmds_1, nodeGenerationId_1, contextGenerationId_1, callbackProg_1) {
+    return __awaiter(this, arguments, void 0, function* (cmds, nodeGenerationId, contextGenerationId, callbackProg, consumeBatchSize = 20) {
         const graph = (0, graphservice_1.getGraph)();
         const contextGeo = yield (0, getContextSpatial_1.getContextSpatial)(graph);
         const dico = {};
@@ -344,8 +344,8 @@ function removeFromContextGen(roomNode) {
     });
 }
 function createOrUpdateBimObjByBimFileId(dico, id, bimFileId, name, dbId, externalId) {
-    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const bimContext = yield getBimContext(dico, bimFileId);
         const bimobjs = yield bimContext.getChildren(Constant_1.GEO_EQUIPMENT_RELATION);

@@ -51,8 +51,8 @@ const spinal_model_graph_2 = require("spinal-model-graph");
 const getBimFileByBimFileId_1 = require("./getBimFileByBimFileId");
 const constant_1 = require("../constant");
 const createBimContextIt = new Map();
-function getBimContextByBimFileId(bimFileId, doCreate = false) {
-    return __awaiter(this, void 0, void 0, function* () {
+function getBimContextByBimFileId(bimFileId_1) {
+    return __awaiter(this, arguments, void 0, function* (bimFileId, doCreate = false) {
         const bimFile = yield (0, getBimFileByBimFileId_1.getBimFileByBimFileId)(bimFileId);
         const bimContexts = yield bimFile.getChildren(constant_1.BIMCONTEXT_RELATION_NAME);
         if (bimContexts.length > 0) {

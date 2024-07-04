@@ -86,11 +86,19 @@ function viewDataAssignInViewer(dbid, bimFileId, roomId, parentValidId, parentNo
             yield getRoomRefsInfo((0, utils_1.getRealNode)(parentNodeId), aggrData, colorParent);
         if (parentValidId)
             yield getRoomRefsInfo((0, utils_1.getRealNode)(parentValidId), aggrData, colorValid);
-        viewer.fitToView(Array.from(aggrData[0].dbId), aggrData[0].model);
-        const data = aggrData.map((itm) => {
+        const dataFit = aggrData.map((itm) => {
             return {
                 model: itm.model,
                 selection: Array.from(itm.dbId),
+            };
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        viewer.fitToView(dataFit);
+        const data = aggrData.map((itm) => {
+            return {
+                model: itm.model,
+                ids: Array.from(itm.dbId),
             };
         });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

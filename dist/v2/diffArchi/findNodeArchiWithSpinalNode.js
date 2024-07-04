@@ -36,8 +36,8 @@ exports.findNodeArchiWithSpinalNode = void 0;
 const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
 const getOrLoadModel_1 = require("../utils/getOrLoadModel");
 function findNodeArchiWithSpinalNode(node, nodeInfosArchi, manualAssingment) {
-    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
         // check ManualAssingment retrun it if found;
         for (const [extId, serverId] of manualAssingment) {
             if ((yield (0, getOrLoadModel_1.getOrLoadModel)(serverId)) === node) {

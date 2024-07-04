@@ -78,8 +78,8 @@ function handleFloorUpdate(floorData, parentNodeId, skipList, bimFileId, refCont
 }
 exports.handleFloorUpdate = handleFloorUpdate;
 function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, skipList, contextId, itemDeletes) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         const updatedRoomSet = new Set();
         floorData.diff.diffRoom.newRooms.forEach((roomArchi) => {
             updatedRoomSet.add(roomArchi.properties.externalId);

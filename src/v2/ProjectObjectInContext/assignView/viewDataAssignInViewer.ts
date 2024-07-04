@@ -81,14 +81,23 @@ export async function viewDataAssignInViewer(
     await getRoomRefsInfo(getRealNode(parentNodeId), aggrData, colorParent);
   if (parentValidId)
     await getRoomRefsInfo(getRealNode(parentValidId), aggrData, colorValid);
-
-  viewer.fitToView(Array.from(aggrData[0].dbId), aggrData[0].model);
-  const data = aggrData.map((itm) => {
+  const dataFit = aggrData.map((itm) => {
     return {
       model: itm.model,
       selection: Array.from(itm.dbId),
     };
   });
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  viewer.fitToView(dataFit);
+  const data = aggrData.map((itm) => {
+    return {
+      model: itm.model,
+      ids: Array.from(itm.dbId),
+    };
+  });
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   viewer.impl.visibilityManager.aggregateIsolate(data);

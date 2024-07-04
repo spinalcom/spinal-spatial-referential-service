@@ -34,8 +34,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getConfigFromContext = void 0;
 const constant_1 = require("../../constant");
-function getConfigFromContext(context, item, updateName = false) {
-    return __awaiter(this, void 0, void 0, function* () {
+function getConfigFromContext(context_1, item_1) {
+    return __awaiter(this, arguments, void 0, function* (context, item, updateName = false) {
         const configNodes = yield context.getChildren(constant_1.PROJECTION_CONFIG_RELATION);
         for (const node of configNodes) {
             if (node.info.uid.get() === item.uid) {

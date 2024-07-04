@@ -92,10 +92,15 @@ async function updateRoomPos(roomNode: SpinalNode): Promise<void> {
         console.log(`${roomNode.info.name.get()}} skipped : model not loaded`);
         continue;
       }
-      const fragIds = await getFragIds(roomRef.info.dbid.get(), model);
-      const bbox = getWorldBoundingBox(fragIds, model);
-      if (!roomBbox) roomBbox = bbox;
-      else roomBbox.union(bbox);
+      try {
+        const fragIds = await getFragIds(roomRef.info.dbid.get(), model);
+        const bbox = getWorldBoundingBox(fragIds, model);
+        if (!roomBbox) roomBbox = bbox;
+        else roomBbox.union(bbox);
+      }
+      catch (e) {
+        console.error(e);
+      }
     }
   }
   if (roomBbox) {
@@ -144,13 +149,17 @@ async function updateBimObj(
         );
         return;
       }
-      const fragIds = await getFragIds(bimObj.info.dbid.get(), model);
-      const bbox = getWorldBoundingBox(fragIds, model);
-      const center = new THREE.Vector3();
-      bbox.getCenter(center);
-      const attr = await getCenterPosAttr(bimObj);
-      const str = `${center.x};${center.y};${center.z}`;
-      attr.value.set(str);
+      try {
+        const fragIds = await getFragIds(bimObj.info.dbid.get(), model);
+        const bbox = getWorldBoundingBox(fragIds, model);
+        const center = new THREE.Vector3();
+        bbox.getCenter(center);
+        const attr = await getCenterPosAttr(bimObj);
+        const str = `${center.x};${center.y};${center.z}`;
+        attr.value.set(str);
+      } catch (e) {
+        console.error(e);
+      }
     });
   }
 }

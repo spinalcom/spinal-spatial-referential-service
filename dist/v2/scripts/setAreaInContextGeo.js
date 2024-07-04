@@ -78,8 +78,8 @@ function updateRoomArea(room, loadedModel) {
     });
 }
 function getADAreaProp(refRoom, loadedModel) {
-    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
         try {
             const dbid = (_a = refRoom.info.dbid) === null || _a === void 0 ? void 0 : _a.get();
             if (dbid && dbid > 0) {

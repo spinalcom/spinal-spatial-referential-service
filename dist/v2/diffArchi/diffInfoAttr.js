@@ -38,8 +38,8 @@ const IGetArchi_1 = require("../interfaces/IGetArchi");
 const checkDiffObj_1 = require("./checkDiffObj");
 const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
 function diffInfoAttr(nodeInfo, spinalNode) {
-    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
         nodeInfo.spinalnodeServerId = spinalNode._server_id;
         nodeInfo.modificationType = 0;
         const diffInfo = [];

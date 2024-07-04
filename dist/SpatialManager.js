@@ -226,8 +226,8 @@ class SpatialManager {
             });
         });
     }
-    addReferenceObject(dbId, name, model, targetNode, relationName = Constant_1.GEO_REFERENCE_RELATION) {
-        return __awaiter(this, void 0, void 0, function* () {
+    addReferenceObject(dbId_1, name_1, model_1, targetNode_1) {
+        return __awaiter(this, arguments, void 0, function* (dbId, name, model, targetNode, relationName = Constant_1.GEO_REFERENCE_RELATION) {
             // @ts-ignore
             let bimObj = yield window.spinal.BimObjectService.getBIMObject(dbId, model);
             if (typeof bimObj === 'undefined') {

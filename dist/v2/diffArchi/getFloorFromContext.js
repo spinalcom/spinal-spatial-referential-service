@@ -37,8 +37,8 @@ const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
 const getOrLoadModel_1 = require("../utils/getOrLoadModel");
 const Constant_1 = require("../../Constant");
 function getFloorFromContext(context, floorArchi, manualAssingment, buildingServId) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         // check ManualAssingment retrun it if found;
         const serverId = manualAssingment.get(floorArchi.properties.externalId);
         if (serverId)

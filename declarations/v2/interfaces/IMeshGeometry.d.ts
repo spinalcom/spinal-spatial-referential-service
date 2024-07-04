@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 export interface IMeshGeometry {
     vb: Float32Array;
     vblayout: any;

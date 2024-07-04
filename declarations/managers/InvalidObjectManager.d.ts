@@ -8,7 +8,7 @@ export declare class InvalidObjectManager {
     private spatialStartNode;
     private readonly initialized;
     constructor();
-    addObject(nodeId: any): Promise<import("spinal-model-graph/declarations/Nodes/SpinalNode").default<any>>;
+    addObject(nodeId: any): Promise<import("spinal-env-viewer-graph-service").SpinalNode<any>>;
     private init;
     private getSpatialStartNode;
     private static getContext;

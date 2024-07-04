@@ -40,8 +40,8 @@ function getParentRoom(node, contextGeo) {
         return res[0];
     });
 }
-function getDataAssing({ contextId, selectedNodeId, }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function getDataAssing(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ contextId, selectedNodeId, }) {
         const graph = (0, utils_1.getGraph)();
         const contextGeo = yield (0, utils_1.getContextSpatial)(graph);
         const context = (0, utils_1.getRealNode)(contextId);

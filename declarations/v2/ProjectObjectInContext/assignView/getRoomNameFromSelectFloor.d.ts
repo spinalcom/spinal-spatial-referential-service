@@ -1,1 +1,1 @@
-export declare function getRoomNodeFromSelectFloor(): Promise<import("spinal-model-graph/declarations/Nodes/SpinalNode").default<any>>;
+export declare function getRoomNodeFromSelectFloor(): Promise<import("spinal-model-graph").SpinalNode<any>>;

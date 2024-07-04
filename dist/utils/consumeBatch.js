@@ -33,8 +33,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.consumeBatch = void 0;
-function consumeBatch(promises, batchSize = 10, callBackProgress) {
-    return __awaiter(this, void 0, void 0, function* () {
+function consumeBatch(promises_1) {
+    return __awaiter(this, arguments, void 0, function* (promises, batchSize = 10, callBackProgress) {
         let index = 0;
         const result = [];
         while (index < promises.length) {

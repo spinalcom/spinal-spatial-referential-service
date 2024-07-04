@@ -56,8 +56,8 @@ const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewe
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
 const consumeBatch_1 = require("../../../utils/consumeBatch");
 const lodash_throttle_1 = __importDefault(require("lodash.throttle"));
-function consumeCmdProjection(cmds, nodeId, contextId, callbackProg, consumeBatchSize = 20) {
-    return __awaiter(this, void 0, void 0, function* () {
+function consumeCmdProjection(cmds_1, nodeId_1, contextId_1, callbackProg_1) {
+    return __awaiter(this, arguments, void 0, function* (cmds, nodeId, contextId, callbackProg, consumeBatchSize = 20) {
         const contextGeneration = (0, utils_1.getRealNode)(contextId);
         const nodeGeneration = (0, utils_1.getRealNode)(nodeId);
         const warnNodeGen = getOrCreateGenOutNode(contextGeneration, nodeGeneration, 'warn');
@@ -217,8 +217,8 @@ function updateRevitCategory(child, revitCat, centerPos) {
     });
 }
 function removeOtherParents(child, context, parentNodeId) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         const parents = yield child.getParentsInContext(context);
         const toRm = [];
         try {
@@ -274,8 +274,8 @@ function getBimContext(dico, bimFileId) {
     });
 }
 function createOrUpdateBimObj(bimContext, bimobjs, bimFileId, name, dbid, externalId) {
-    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
         if (externalId) {
             for (const bimObj of bimobjs) {
                 if (externalId === ((_a = bimObj.info.externalId) === null || _a === void 0 ? void 0 : _a.get())) {

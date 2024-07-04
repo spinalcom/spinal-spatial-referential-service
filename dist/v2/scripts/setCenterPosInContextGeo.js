@@ -79,12 +79,17 @@ function updateRoomPos(roomNode) {
                     console.log(`${roomNode.info.name.get()}} skipped : model not loaded`);
                     continue;
                 }
-                const fragIds = yield (0, getFragIds_1.getFragIds)(roomRef.info.dbid.get(), model);
-                const bbox = (0, getWorldBoundingBox_1.getWorldBoundingBox)(fragIds, model);
-                if (!roomBbox)
-                    roomBbox = bbox;
-                else
-                    roomBbox.union(bbox);
+                try {
+                    const fragIds = yield (0, getFragIds_1.getFragIds)(roomRef.info.dbid.get(), model);
+                    const bbox = (0, getWorldBoundingBox_1.getWorldBoundingBox)(fragIds, model);
+                    if (!roomBbox)
+                        roomBbox = bbox;
+                    else
+                        roomBbox.union(bbox);
+                }
+                catch (e) {
+                    console.error(e);
+                }
             }
         }
         if (roomBbox) {
@@ -125,13 +130,18 @@ function updateBimObj(roomNode, context, res) {
                     console.log(`${roomNode.info.name.get()}/${bimObj.info.name.get()} skipped : model not loaded`);
                     return;
                 }
-                const fragIds = yield (0, getFragIds_1.getFragIds)(bimObj.info.dbid.get(), model);
-                const bbox = (0, getWorldBoundingBox_1.getWorldBoundingBox)(fragIds, model);
-                const center = new THREE.Vector3();
-                bbox.getCenter(center);
-                const attr = yield getCenterPosAttr(bimObj);
-                const str = `${center.x};${center.y};${center.z}`;
-                attr.value.set(str);
+                try {
+                    const fragIds = yield (0, getFragIds_1.getFragIds)(bimObj.info.dbid.get(), model);
+                    const bbox = (0, getWorldBoundingBox_1.getWorldBoundingBox)(fragIds, model);
+                    const center = new THREE.Vector3();
+                    bbox.getCenter(center);
+                    const attr = yield getCenterPosAttr(bimObj);
+                    const str = `${center.x};${center.y};${center.z}`;
+                    attr.value.set(str);
+                }
+                catch (e) {
+                    console.error(e);
+                }
             }));
         }
     });

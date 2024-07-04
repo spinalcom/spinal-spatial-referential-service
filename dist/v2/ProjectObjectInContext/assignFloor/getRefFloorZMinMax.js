@@ -36,8 +36,8 @@ exports.getRefFloorZMinMax = void 0;
 const getFragIds_1 = require("../../utils/getFragIds");
 const getWorldBoundingBox_1 = require("../../utils/getWorldBoundingBox");
 function getRefFloorZMinMax(data) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         const record = {};
         for (const id in data) {
             const promise = [];
