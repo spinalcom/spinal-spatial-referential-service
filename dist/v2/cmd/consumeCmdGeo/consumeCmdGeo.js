@@ -48,7 +48,7 @@ const Constant_1 = require("../../../Constant");
 function safe_call(callback, ...attr) {
     return () => __awaiter(this, void 0, void 0, function* () {
         try {
-            return yield callback.call(null, attr);
+            return yield callback.call(null, ...attr);
         }
         catch (error) {
             console.error(error);

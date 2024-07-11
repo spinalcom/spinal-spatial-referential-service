@@ -52,7 +52,7 @@ import { SpinalNodeFloor } from '../../mergeBimGeo/SpinalNodeFloor';
 function safe_call<T>(callback: (...any) => Promise<T>, ...attr): () => Promise<T> {
   return async () => {
     try {
-      return await callback.call(null, attr);
+      return await callback.call(null, ...attr);
     } catch (error) {
       console.error(error);
       return undefined;
