@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadConfig = void 0;
+exports.loadConfig = loadConfig;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const SpatialConfig_1 = require("../../models/SpatialConfig");
 function loadConfig(graph) {
@@ -58,5 +58,4 @@ function loadConfig(graph) {
         return config.element.load();
     });
 }
-exports.loadConfig = loadConfig;
 //# sourceMappingURL=loadConfig.js.map

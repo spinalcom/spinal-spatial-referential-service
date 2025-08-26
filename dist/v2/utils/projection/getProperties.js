@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProperties = void 0;
+exports.getProperties = getProperties;
 const getModelByModelId_1 = require("./getModelByModelId");
 function getProperties(model, dbId) {
     let m;
@@ -43,5 +43,4 @@ function getProperties(model, dbId) {
         }, (err) => reject(err));
     });
 }
-exports.getProperties = getProperties;
 //# sourceMappingURL=getProperties.js.map

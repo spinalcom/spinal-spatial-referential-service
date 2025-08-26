@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 import type { IRaycastIntersectRes } from '../../interfaces/IRaycastIntersectRes';
 import type { IAggregateDbidSetByModelItem } from '../../interfaces/IAggregateDbidSetByModelItem';
 import type { IAggregateDbidByModelItem } from '../../interfaces/IAggregateDbidByModelItem';

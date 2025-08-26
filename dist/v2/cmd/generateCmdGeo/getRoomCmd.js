@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoomCmd = void 0;
+exports.getRoomCmd = getRoomCmd;
 const transformArchi_1 = require("../../scripts/transformArchi");
 const guid_1 = require("../../utils/guid");
 const getRefCmd_1 = require("./getRefCmd");
@@ -75,7 +75,6 @@ function getRoomCmd(roomArchi, pNId, bimFileId, roomCmds, roomRefCmds, refContex
         });
     });
 }
-exports.getRoomCmd = getRoomCmd;
 function getRoomFromRefByName(refContext, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const children = yield refContext.getChildren(Constant_1.GEO_ROOM_RELATION);

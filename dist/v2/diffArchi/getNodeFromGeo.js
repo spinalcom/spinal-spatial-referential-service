@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNodeFromGeo = void 0;
+exports.getNodeFromGeo = getNodeFromGeo;
 const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
 const getOrLoadModel_1 = require("../utils/getOrLoadModel");
 function getNodeFromGeo(geoNodes, nodeInfo, manualAssingment) {
@@ -56,5 +56,4 @@ function getNodeFromGeo(geoNodes, nodeInfo, manualAssingment) {
         }
     });
 }
-exports.getNodeFromGeo = getNodeFromGeo;
 //# sourceMappingURL=getNodeFromGeo.js.map

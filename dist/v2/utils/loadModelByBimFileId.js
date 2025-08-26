@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadModelByBimFileId = void 0;
+exports.loadModelByBimFileId = loadModelByBimFileId;
 const getBimFileByBimFileId_1 = require("./getBimFileByBimFileId");
 const loadBimFile_1 = require("../scripts/loadBimFile");
 const getViewer_1 = require("./getViewer");
@@ -43,5 +43,4 @@ function loadModelByBimFileId(bimFileId) {
         return (0, loadBimFile_1.loadBimFile)(bimFile, viewer);
     });
 }
-exports.loadModelByBimFileId = loadModelByBimFileId;
 //# sourceMappingURL=loadModelByBimFileId.js.map

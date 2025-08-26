@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setAreaInContextGeo = void 0;
+exports.setAreaInContextGeo = setAreaInContextGeo;
 const getContextSpatial_1 = require("../utils/getContextSpatial");
 const Constant_1 = require("../../Constant");
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
@@ -132,5 +132,4 @@ function setAreaInContextGeo(graph) {
         }
     });
 }
-exports.setAreaInContextGeo = setAreaInContextGeo;
 //# sourceMappingURL=setAreaInContextGeo.js.map

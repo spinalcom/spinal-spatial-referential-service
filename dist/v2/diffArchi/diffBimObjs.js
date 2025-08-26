@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diffBimObjs = void 0;
+exports.diffBimObjs = diffBimObjs;
 const IGetArchi_1 = require("../interfaces/IGetArchi");
 const getNodeFromGeo_1 = require("./getNodeFromGeo");
 const findNodeArchiWithSpinalNode_1 = require("./findNodeArchiWithSpinalNode");
@@ -57,5 +57,4 @@ function diffBimObjs(bimObjInfos, bimObjNodes, manualAssingment) {
         return { newBimObj, delBimObj };
     });
 }
-exports.diffBimObjs = diffBimObjs;
 //# sourceMappingURL=diffBimObjs.js.map

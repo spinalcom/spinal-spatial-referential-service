@@ -35,7 +35,7 @@ var __await = (this && this.__await) || function (v) { return this instanceof __
 var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
+    return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
     function awaitReturn(f) { return function (v) { return Promise.resolve(v).then(f, reject); }; }
     function verb(n, f) { if (g[n]) { i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; if (f) i[n] = f(i[n]); } }
     function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
@@ -48,7 +48,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consumeCmdProjection = void 0;
+exports.consumeCmdProjection = consumeCmdProjection;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const utils_1 = require("../../utils");
 const Constant_1 = require("../../../Constant");
@@ -105,7 +105,6 @@ function consumeCmdProjection(cmds_1, nodeId_1, contextId_1, callbackProg_1) {
         yield (0, consumeBatch_1.consumeBatch)(proms, consumeBatchSize);
     });
 }
-exports.consumeCmdProjection = consumeCmdProjection;
 function getOrCreateGenOutNode(contextGeneration, nodeGeneration, type) {
     return __asyncGenerator(this, arguments, function* getOrCreateGenOutNode_1() {
         let resNode;

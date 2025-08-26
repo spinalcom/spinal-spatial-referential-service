@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addBimFloorToFloor = void 0;
+exports.addBimFloorToFloor = addBimFloorToFloor;
 const ITreeItem_1 = require("./ITreeItem");
 const Constant_1 = require("../../Constant");
 const constant_1 = require("../constant");
@@ -40,5 +40,4 @@ function addBimFloorToFloor(selectedItem, bimFloorItem) {
         }
     }
 }
-exports.addBimFloorToFloor = addBimFloorToFloor;
 //# sourceMappingURL=addBimFloorToFloor.js.map

@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.spatialTreeCreateBuilding = void 0;
+exports.spatialTreeCreateBuilding = spatialTreeCreateBuilding;
 const Constant_1 = require("../../Constant");
 const utils_1 = require("../utils");
 const ITreeItem_1 = require("./ITreeItem");
@@ -40,5 +40,4 @@ function spatialTreeCreateBuilding(parent, name, contextId) {
     else
         throw new Error('Parent Item must be the Geographic Context or a Site');
 }
-exports.spatialTreeCreateBuilding = spatialTreeCreateBuilding;
 //# sourceMappingURL=spatialTreeCreateBuilding.js.map

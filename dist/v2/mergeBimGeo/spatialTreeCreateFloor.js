@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.spatialTreeCreateFloor = void 0;
+exports.spatialTreeCreateFloor = spatialTreeCreateFloor;
 const Constant_1 = require("../../Constant");
 const utils_1 = require("../utils");
 const ITreeItem_1 = require("./ITreeItem");
@@ -40,5 +40,4 @@ function spatialTreeCreateFloor(parent, name, contextId) {
     else
         throw new Error('Parent Item must be an Building');
 }
-exports.spatialTreeCreateFloor = spatialTreeCreateFloor;
 //# sourceMappingURL=spatialTreeCreateFloor.js.map

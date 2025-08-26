@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCenterPos = void 0;
+exports.getCenterPos = getCenterPos;
 const utils_1 = require("../../utils");
 function getCenterPos(auProp) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -44,5 +44,4 @@ function getCenterPos(auProp) {
         return `${center.x};${center.y};${center.z}`;
     });
 }
-exports.getCenterPos = getCenterPos;
 //# sourceMappingURL=getCenterPos.js.map

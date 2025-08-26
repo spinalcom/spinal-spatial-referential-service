@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoomNodesFromFloor = void 0;
+exports.getRoomNodesFromFloor = getRoomNodesFromFloor;
 const getOrLoadModel_1 = require("../getOrLoadModel");
 const Constant_1 = require("../../../Constant");
 function getRoomNodesFromFloor(floorServerId) {
@@ -41,5 +41,4 @@ function getRoomNodesFromFloor(floorServerId) {
         return floorNode.find([Constant_1.GEO_ROOM_RELATION, Constant_1.GEO_ZONE_RELATION], (node) => Constant_1.GEO_ROOM_TYPE === node.info.type.get());
     });
 }
-exports.getRoomNodesFromFloor = getRoomNodesFromFloor;
 //# sourceMappingURL=getRoomNodesFromFloor.js.map

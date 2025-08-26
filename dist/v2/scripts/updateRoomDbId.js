@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateRoomDbId = void 0;
+exports.updateRoomDbId = updateRoomDbId;
 const getContextSpatial_1 = require("../utils/getContextSpatial");
 const Constant_1 = require("../../Constant");
 function updateDbId(spinalNode) {
@@ -72,5 +72,4 @@ function updateRoomDbId(graph) {
         }
     });
 }
-exports.updateRoomDbId = updateRoomDbId;
 //# sourceMappingURL=updateRoomDbId.js.map

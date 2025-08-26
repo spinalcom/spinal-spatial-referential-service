@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLeafDbIds = void 0;
+exports.getLeafDbIds = getLeafDbIds;
 const getDbIdChildren_1 = require("./getDbIdChildren");
 function getLeafDbIds(model, rootId) {
     const tree = model.getInstanceTree();
@@ -49,5 +49,4 @@ function getLeafDbIds(model, rootId) {
     });
     return { model: model, selection: dbIds };
 }
-exports.getLeafDbIds = getLeafDbIds;
 //# sourceMappingURL=getLeafDbIds.js.map

@@ -23,12 +23,11 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.transformRtzToXyz = void 0;
+exports.transformRtzToXyz = transformRtzToXyz;
 function transformRtzToXyz(obj) {
     const angle = (obj.t * Math.PI) / 180;
     const x = obj.r * Math.cos(angle);
     const y = obj.r * Math.sin(angle);
     return { x, y, z: obj.z };
 }
-exports.transformRtzToXyz = transformRtzToXyz;
 //# sourceMappingURL=transformRtzToXyz.js.map

@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRefFloorZMinMax = void 0;
+exports.getRefFloorZMinMax = getRefFloorZMinMax;
 const getFragIds_1 = require("../../utils/getFragIds");
 const getWorldBoundingBox_1 = require("../../utils/getWorldBoundingBox");
 function getRefFloorZMinMax(data) {
@@ -76,7 +76,6 @@ function getRefFloorZMinMax(data) {
         return result;
     });
 }
-exports.getRefFloorZMinMax = getRefFloorZMinMax;
 function getMinZ(dbid, model) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

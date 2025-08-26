@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPointOffset = void 0;
+exports.getPointOffset = getPointOffset;
 function getPointOffset(orig, offset, matrixWorld) {
     const inverseMatrix = new THREE.Matrix4();
     const point = new THREE.Vector3(orig.x, orig.y, orig.z);
@@ -34,5 +34,4 @@ function getPointOffset(orig, offset, matrixWorld) {
     point.applyMatrix4(matrixWorld);
     return point;
 }
-exports.getPointOffset = getPointOffset;
 //# sourceMappingURL=getPointOffset.js.map

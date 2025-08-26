@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCmdProjectionForManualAssing = void 0;
+exports.createCmdProjectionForManualAssing = createCmdProjectionForManualAssing;
 const consumeBatch_1 = require("../../../utils/consumeBatch");
 const utils_1 = require("../../utils");
 const getProperties_1 = require("../../utils/projection/getProperties");
@@ -56,7 +56,6 @@ function createCmdProjectionForManualAssing(warnArr, errorArr) {
         return { cmd: res, cmdMiss: resMiss };
     });
 }
-exports.createCmdProjectionForManualAssing = createCmdProjectionForManualAssing;
 function handleErrCmd(err, bimObjectDbId, res, resMiss) {
     return __awaiter(this, void 0, void 0, function* () {
         const bimObjectModel = (0, utils_1.getModelByBimFileIdLoaded)(err.bimFileId);

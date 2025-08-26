@@ -1,1 +1,1 @@
-{"version":3,"file":"isProjectionGroup.js","sourceRoot":"","sources":["../../../../src/v2/utils/projection/isProjectionGroup.ts"],"names":[],"mappings":";AAAA;;;;;;;;;;;;;;;;;;;;;;GAsBG;;;AAEH,iGAA8F;AAE9F,SAAgB,iBAAiB,CAAC,IAAa;IAC7C,OAAO,IAAI,YAAY,iCAAe,CAAC;AACzC,CAAC;AAFD,8CAEC"}
+{"version":3,"file":"isProjectionGroup.js","sourceRoot":"","sources":["../../../../src/v2/utils/projection/isProjectionGroup.ts"],"names":[],"mappings":";AAAA;;;;;;;;;;;;;;;;;;;;;;GAsBG;;AAIH,8CAEC;AAJD,iGAA8F;AAE9F,SAAgB,iBAAiB,CAAC,IAAa;IAC7C,OAAO,IAAI,YAAY,iCAAe,CAAC;AACzC,CAAC"}

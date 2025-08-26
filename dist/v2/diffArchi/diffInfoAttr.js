@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diffInfoAttr = void 0;
+exports.diffInfoAttr = diffInfoAttr;
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
 const IGetArchi_1 = require("../interfaces/IGetArchi");
 const checkDiffObj_1 = require("./checkDiffObj");
@@ -88,5 +88,4 @@ function diffInfoAttr(nodeInfo, spinalNode) {
         };
     });
 }
-exports.diffInfoAttr = diffInfoAttr;
 //# sourceMappingURL=diffInfoAttr.js.map

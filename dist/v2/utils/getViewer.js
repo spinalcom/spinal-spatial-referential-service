@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getViewer = void 0;
+exports.getViewer = getViewer;
 function getViewer() {
     try {
         return window.spinal.SpinalForgeViewer.viewerManager.viewer;
@@ -32,5 +32,4 @@ function getViewer() {
         return window.spinal.ForgeViewer.viewer;
     }
 }
-exports.getViewer = getViewer;
 //# sourceMappingURL=getViewer.js.map

@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCmdNotFound = void 0;
+exports.createCmdNotFound = createCmdNotFound;
 const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
 const getDiffSelection_1 = require("./getDiffSelection");
 const createCmdNotFoundItm_1 = require("./createCmdNotFoundItm");
@@ -50,7 +50,6 @@ function createCmdNotFound(intersectRes) {
         return res;
     });
 }
-exports.createCmdNotFound = createCmdNotFound;
 function getItemNames(data) {
     return __awaiter(this, void 0, void 0, function* () {
         const res = [];

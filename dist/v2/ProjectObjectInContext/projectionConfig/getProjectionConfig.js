@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProjectionConfig = void 0;
+exports.getProjectionConfig = getProjectionConfig;
 const constant_1 = require("../../constant");
 const ProjectionGroupConfig_1 = require("../ProjectionItem/ProjectionGroupConfig");
 const utils_1 = require("../../utils");
@@ -55,5 +55,4 @@ function getProjectionConfig(context) {
         return res;
     });
 }
-exports.getProjectionConfig = getProjectionConfig;
 //# sourceMappingURL=getProjectionConfig.js.map

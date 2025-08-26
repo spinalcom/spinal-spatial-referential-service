@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCategory = void 0;
+exports.getCategory = getCategory;
 function getCategory(props) {
     for (const prop of props.properties) {
         if (prop.attributeName === 'Category' &&
@@ -32,5 +32,4 @@ function getCategory(props) {
         }
     }
 }
-exports.getCategory = getCategory;
 //# sourceMappingURL=getCategory.js.map

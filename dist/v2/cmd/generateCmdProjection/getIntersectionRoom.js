@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIntersectionRoom = void 0;
+exports.getIntersectionRoom = getIntersectionRoom;
 const utils_1 = require("../../utils");
 const getModelByModelId_1 = require("../../utils/projection/getModelByModelId");
 const Constant_1 = require("../../../Constant");
@@ -28,5 +28,4 @@ function getIntersectionRoom(dbId, modelId, dicoBimObjs, contextGeoId) {
         return room;
     });
 }
-exports.getIntersectionRoom = getIntersectionRoom;
 //# sourceMappingURL=getIntersectionRoom.js.map

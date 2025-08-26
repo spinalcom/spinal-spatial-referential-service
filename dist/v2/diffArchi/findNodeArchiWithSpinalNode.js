@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findNodeArchiWithSpinalNode = void 0;
+exports.findNodeArchiWithSpinalNode = findNodeArchiWithSpinalNode;
 const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
 const getOrLoadModel_1 = require("../utils/getOrLoadModel");
 function findNodeArchiWithSpinalNode(node, nodeInfosArchi, manualAssingment) {
@@ -63,5 +63,4 @@ function findNodeArchiWithSpinalNode(node, nodeInfosArchi, manualAssingment) {
         }
     });
 }
-exports.findNodeArchiWithSpinalNode = findNodeArchiWithSpinalNode;
 //# sourceMappingURL=findNodeArchiWithSpinalNode.js.map

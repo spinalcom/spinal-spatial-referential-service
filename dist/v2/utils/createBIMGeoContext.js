@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createBIMGeoContext = void 0;
+exports.createBIMGeoContext = createBIMGeoContext;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const constant_1 = require("../constant");
 const graphservice_1 = require("./graphservice");
@@ -32,5 +32,4 @@ function createBIMGeoContext(contextName) {
     const context = new spinal_model_graph_1.SpinalContext(contextName, constant_1.BIM_GEO_CONTEXT_TYPE);
     return graph.addContext(context);
 }
-exports.createBIMGeoContext = createBIMGeoContext;
 //# sourceMappingURL=createBIMGeoContext.js.map

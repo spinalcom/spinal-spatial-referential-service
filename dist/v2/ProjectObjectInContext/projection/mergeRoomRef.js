@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeRoomRef = void 0;
+exports.mergeRoomRef = mergeRoomRef;
 const getRoomRef_1 = require("./getRoomRef");
 function mergeRoomRef(data) {
     const result = [];
@@ -39,5 +39,4 @@ function mergeRoomRef(data) {
     }
     return result;
 }
-exports.mergeRoomRef = mergeRoomRef;
 //# sourceMappingURL=mergeRoomRef.js.map

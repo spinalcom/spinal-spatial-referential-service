@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoomRefByFloor = void 0;
+exports.getRoomRefByFloor = getRoomRefByFloor;
 const Constant_1 = require("../../../Constant");
 const getModelByBimFileIdLoaded_1 = require("../../utils/projection/getModelByBimFileIdLoaded");
 const getRoomRef_1 = require("../projection/getRoomRef");
@@ -82,5 +82,4 @@ function getRoomRefByFloor() {
         return result;
     });
 }
-exports.getRoomRefByFloor = getRoomRefByFloor;
 //# sourceMappingURL=getRoomRefByFloor.js.map

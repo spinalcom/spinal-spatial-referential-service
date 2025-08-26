@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diffRoomChildren = void 0;
+exports.diffRoomChildren = diffRoomChildren;
 const IGetArchi_1 = require("../interfaces/IGetArchi");
 const getNodeFromGeo_1 = require("./getNodeFromGeo");
 const findNodeArchiWithSpinalNode_1 = require("./findNodeArchiWithSpinalNode");
@@ -74,5 +74,4 @@ function diffRoomChildren(floorNode, contextGeo, floorArchi, manualAssingment) {
         return { newRooms, updateRooms, delRooms };
     });
 }
-exports.diffRoomChildren = diffRoomChildren;
 //# sourceMappingURL=diffRoomChildren.js.map

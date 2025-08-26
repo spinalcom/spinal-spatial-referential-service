@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getModelByBimFileId = void 0;
+exports.getModelByBimFileId = getModelByBimFileId;
 const loadModelByBimFileId_1 = require("./loadModelByBimFileId");
 function getModelByBimFileId(bimFileId, loadedModel) {
     if (loadedModel.has(bimFileId))
@@ -32,5 +32,4 @@ function getModelByBimFileId(bimFileId, loadedModel) {
     loadedModel.set(bimFileId, prom);
     return prom;
 }
-exports.getModelByBimFileId = getModelByBimFileId;
 //# sourceMappingURL=getModelByBimFileId.js.map

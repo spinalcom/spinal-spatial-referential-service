@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.raycastItemToMesh = void 0;
+exports.raycastItemToMesh = raycastItemToMesh;
 const utils_1 = require("../../utils");
 const getModifiedWorldBoundingBox_1 = require("../../utils/projection/getModifiedWorldBoundingBox");
 const getPointOffset_1 = require("../../utils/projection/getPointOffset");
@@ -56,7 +56,6 @@ function raycastItemToMesh(from, to, viewer) {
         }
     });
 }
-exports.raycastItemToMesh = raycastItemToMesh;
 function getCenterObjects(array, viewer) {
     const res = [];
     for (const obj of array) {

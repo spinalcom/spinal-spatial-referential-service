@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.waitGetServerId = void 0;
+exports.waitGetServerId = waitGetServerId;
 const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 function waitGetServerId(model) {
     if (typeof spinal_core_connectorjs_1.FileSystem._objects[model._server_id] !== 'undefined')
@@ -37,5 +37,4 @@ function waitGetServerId(model) {
         }, 100);
     });
 }
-exports.waitGetServerId = waitGetServerId;
 //# sourceMappingURL=waitGetServerId.js.map

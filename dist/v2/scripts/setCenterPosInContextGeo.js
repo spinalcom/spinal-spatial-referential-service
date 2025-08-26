@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setCenterPosInContextGeo = void 0;
+exports.setCenterPosInContextGeo = setCenterPosInContextGeo;
 const getContextSpatial_1 = require("../utils/getContextSpatial");
 const Constant_1 = require("../../Constant");
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
@@ -66,7 +66,6 @@ function setCenterPosInContextGeo(graph, cb) {
         cb(`done`);
     });
 }
-exports.setCenterPosInContextGeo = setCenterPosInContextGeo;
 function updateRoomPos(roomNode) {
     return __awaiter(this, void 0, void 0, function* () {
         const roomRefs = yield roomNode.getChildren(Constant_1.GEO_REFERENCE_ROOM_RELATION);

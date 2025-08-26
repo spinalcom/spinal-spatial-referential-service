@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrLoadModel = void 0;
+exports.getOrLoadModel = getOrLoadModel;
 const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 function getOrLoadModel(serverId) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -44,5 +44,4 @@ function getOrLoadModel(serverId) {
         return spinal_core_connectorjs_1.spinalCore.load_ptr(spinal_core_connectorjs_1.FileSystem.get_inst(), serverId);
     });
 }
-exports.getOrLoadModel = getOrLoadModel;
 //# sourceMappingURL=getOrLoadModel.js.map

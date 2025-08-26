@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAttr = void 0;
+exports.updateAttr = updateAttr;
 const spinal_env_viewer_plugin_documentation_service_1 = require("spinal-env-viewer-plugin-documentation-service");
 const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 function updateAttr(node, attrs) {
@@ -71,5 +71,4 @@ function updateAttr(node, attrs) {
         }
     });
 }
-exports.updateAttr = updateAttr;
 //# sourceMappingURL=updateAttr.js.map

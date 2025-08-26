@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleFloorUpdate = void 0;
+exports.handleFloorUpdate = handleFloorUpdate;
 const isInSkipList_1 = require("../../utils/archi/isInSkipList");
 const getRoomCmd_1 = require("./getRoomCmd");
 const getRefCmd_1 = require("./getRefCmd");
@@ -76,7 +76,6 @@ function handleFloorUpdate(floorData, parentNodeId, skipList, bimFileId, refCont
         yield getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, skipList, contextId, itemDeletes);
     });
 }
-exports.handleFloorUpdate = handleFloorUpdate;
 function getRoomCmdUp(floorData, floorNode, roomCmds, bimFileId, roomRefCmds, skipList, contextId, itemDeletes) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;

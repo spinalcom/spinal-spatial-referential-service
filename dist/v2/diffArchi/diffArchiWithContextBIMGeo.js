@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diffArchiWithContextBIMGeo = void 0;
+exports.diffArchiWithContextBIMGeo = diffArchiWithContextBIMGeo;
 const diffFloorWithContext_1 = require("./diffFloorWithContext");
 const mergeManualAssignArchiFloor_1 = require("./mergeManualAssignArchiFloor");
 const getOrLoadModel_1 = require("../utils/getOrLoadModel");
@@ -48,5 +48,4 @@ function diffArchiWithContextBIMGeo(archiData, BIMGeocontextServId, manualAssing
         return archiDataRes;
     });
 }
-exports.diffArchiWithContextBIMGeo = diffArchiWithContextBIMGeo;
 //# sourceMappingURL=diffArchiWithContextBIMGeo.js.map

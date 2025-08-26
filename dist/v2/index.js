@@ -45,4 +45,5 @@ __exportStar(require("./diffArchi"), exports);
 __exportStar(require("./ProjectObjectInContext"), exports);
 __exportStar(require("./mergeBimGeo"), exports);
 __exportStar(require("./constant"), exports);
+__exportStar(require("./FloorOnlyImport"), exports);
 //# sourceMappingURL=index.js.map

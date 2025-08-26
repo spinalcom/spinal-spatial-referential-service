@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getModType = void 0;
+exports.getModType = getModType;
 const IGetArchi_1 = require("../../interfaces/IGetArchi");
 function getModType(modificationType) {
     if (modificationType & IGetArchi_1.EModificationType.update)
@@ -34,5 +34,4 @@ function getModType(modificationType) {
         return IGetArchi_1.EModificationType.delete;
     return IGetArchi_1.EModificationType.none;
 }
-exports.getModType = getModType;
 //# sourceMappingURL=getModType.js.map

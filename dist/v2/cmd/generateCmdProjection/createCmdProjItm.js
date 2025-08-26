@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCmdProjItm = void 0;
+exports.createCmdProjItm = createCmdProjItm;
 const getCategory_1 = require("./getCategory");
 const getBimFileIdByModelId_1 = require("../../utils/projection/getBimFileIdByModelId");
 function createCmdProjItm(target, auProp, pNId, centerPos, flagWarining) {
@@ -62,5 +62,4 @@ function createCmdProjItm(target, auProp, pNId, centerPos, flagWarining) {
         });
     }
 }
-exports.createCmdProjItm = createCmdProjItm;
 //# sourceMappingURL=createCmdProjItm.js.map

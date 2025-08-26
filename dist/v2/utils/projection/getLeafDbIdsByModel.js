@@ -23,10 +23,9 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLeafDbIdsByModel = void 0;
+exports.getLeafDbIdsByModel = getLeafDbIdsByModel;
 const getLeafDbIds_1 = require("./getLeafDbIds");
 function getLeafDbIdsByModel(model, dbIds) {
     return (0, getLeafDbIds_1.getLeafDbIds)(model, dbIds).selection;
 }
-exports.getLeafDbIdsByModel = getLeafDbIdsByModel;
 //# sourceMappingURL=getLeafDbIdsByModel.js.map

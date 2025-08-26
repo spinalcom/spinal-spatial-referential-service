@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 import { type SpinalGraph, SpinalNode } from 'spinal-model-graph';
 import GuiViewer3D = Autodesk.Viewing.GuiViewer3D;
 import Viewer3D = Autodesk.Viewing.Viewer3D;

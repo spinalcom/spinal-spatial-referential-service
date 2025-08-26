@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createConfigNodeAndProjGroup = void 0;
+exports.createConfigNodeAndProjGroup = createConfigNodeAndProjGroup;
 const ProjectionGroupConfig_1 = require("../ProjectionItem/ProjectionGroupConfig");
 const spinal_model_graph_1 = require("spinal-model-graph");
 const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
@@ -49,5 +49,4 @@ function createConfigNodeAndProjGroup(context, name) {
         return cfgGroup;
     });
 }
-exports.createConfigNodeAndProjGroup = createConfigNodeAndProjGroup;
 //# sourceMappingURL=createConfigNodeAndProjGroup.js.map

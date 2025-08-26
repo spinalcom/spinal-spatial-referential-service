@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFragIds = void 0;
+exports.getFragIds = getFragIds;
 function getFragIds(dbId, model) {
     return new Promise((resolve, reject) => {
         const it = model.getInstanceTree();
@@ -46,5 +46,4 @@ function getFragIds(dbId, model) {
         }, 500);
     });
 }
-exports.getFragIds = getFragIds;
 //# sourceMappingURL=getFragIds.js.map

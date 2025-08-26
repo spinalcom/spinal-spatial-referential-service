@@ -32,7 +32,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pushToAggregateSetDbidByModel = exports.getRoomRef = void 0;
+exports.getRoomRef = getRoomRef;
+exports.pushToAggregateSetDbidByModel = pushToAggregateSetDbidByModel;
 const Constant_1 = require("../../../Constant");
 const getModelByBimFileIdLoaded_1 = require("../../utils/projection/getModelByBimFileIdLoaded");
 function getRoomRef(context) {
@@ -70,7 +71,6 @@ function getRoomRef(context) {
         return result;
     });
 }
-exports.getRoomRef = getRoomRef;
 function pushToAggregateSetDbidByModel(targetArray, id, model) {
     if (id === -1)
         return;
@@ -87,5 +87,4 @@ function pushToAggregateSetDbidByModel(targetArray, id, model) {
         dbId: idSet,
     });
 }
-exports.pushToAggregateSetDbidByModel = pushToAggregateSetDbidByModel;
 //# sourceMappingURL=getRoomRef.js.map

@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeBimFloor = void 0;
+exports.removeBimFloor = removeBimFloor;
 const ITreeItem_1 = require("./ITreeItem");
 function removeBimFloor(contextGeoTree, bimFloorItem) {
     if (bimFloorItem.status === ITreeItem_1.ETreeItemStatus.newItem) {
@@ -55,5 +55,4 @@ function removeBimFloor(contextGeoTree, bimFloorItem) {
         bimFloorItem.status = ITreeItem_1.ETreeItemStatus.deleteItem;
     }
 }
-exports.removeBimFloor = removeBimFloor;
 //# sourceMappingURL=removeBimFloor.js.map

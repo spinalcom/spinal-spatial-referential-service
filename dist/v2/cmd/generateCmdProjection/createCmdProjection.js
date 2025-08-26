@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCmdProjection = void 0;
+exports.createCmdProjection = createCmdProjection;
 const graphservice_1 = require("../../utils/graphservice");
 const getModelByModelId_1 = require("../../utils/projection/getModelByModelId");
 const getProperties_1 = require("../../utils/projection/getProperties");
@@ -52,7 +52,6 @@ function createCmdProjection(intersects, contextGeoId, floorsData) {
         return res;
     });
 }
-exports.createCmdProjection = createCmdProjection;
 function handleCreateCmd(spinalIntersection, dicoBimObjs, contextGeoId, floorsData, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const bimObjectDbId = spinalIntersection.origin.dbId;

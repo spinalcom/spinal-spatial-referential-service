@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoomNodeFromSelectFloor = void 0;
+exports.getRoomNodeFromSelectFloor = getRoomNodeFromSelectFloor;
 const utils_1 = require("../../utils");
 const Constant_1 = require("../../../Constant");
 function getRoomNodeFromSelectFloor() {
@@ -44,7 +44,6 @@ function getRoomNodeFromSelectFloor() {
         }
     });
 }
-exports.getRoomNodeFromSelectFloor = getRoomNodeFromSelectFloor;
 function getFloorSelectedBimObj() {
     return __awaiter(this, void 0, void 0, function* () {
         const aggregateSelection = (0, utils_1.getViewer)().getAggregateSelection();

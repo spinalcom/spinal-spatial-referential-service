@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createConfigNode = void 0;
+exports.createConfigNode = createConfigNode;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
 const constant_1 = require("../../constant");
@@ -45,5 +45,4 @@ function createConfigNode(context, item) {
         return config;
     });
 }
-exports.createConfigNode = createConfigNode;
 //# sourceMappingURL=createConfigNode.js.map

@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBBoxAndMatrixs = void 0;
+exports.getBBoxAndMatrixs = getBBoxAndMatrixs;
 const getModelByModelId_1 = require("./getModelByModelId");
 const getBBoxAndMatrix_1 = require("./getBBoxAndMatrix");
 function getBBoxAndMatrixs(current, viewer) {
@@ -50,5 +50,4 @@ function getBBoxAndMatrixs(current, viewer) {
         yield Promise.all(prom);
     });
 }
-exports.getBBoxAndMatrixs = getBBoxAndMatrixs;
 //# sourceMappingURL=getBBoxAndMatrixs.js.map

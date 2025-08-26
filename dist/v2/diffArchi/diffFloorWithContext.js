@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diffFloorWithContext = void 0;
+exports.diffFloorWithContext = diffFloorWithContext;
 const IGetArchi_1 = require("../interfaces/IGetArchi");
 const getFloorFromContext_1 = require("./getFloorFromContext");
 const getDiffRefFloor_1 = require("./getDiffRefFloor");
@@ -62,5 +62,4 @@ function diffFloorWithContext(floorArchi, context, manualAssingment, buildingSer
         };
     });
 }
-exports.diffFloorWithContext = diffFloorWithContext;
 //# sourceMappingURL=diffFloorWithContext.js.map

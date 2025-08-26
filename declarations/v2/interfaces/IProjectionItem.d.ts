@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 import type { IProjectionOffset } from './IProjectionOffset';
 export interface IProjectionItem {
     name: string;

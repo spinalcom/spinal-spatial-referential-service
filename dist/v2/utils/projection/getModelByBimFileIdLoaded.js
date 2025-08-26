@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getModelByBimFileIdLoaded = void 0;
+exports.getModelByBimFileIdLoaded = getModelByBimFileIdLoaded;
 function getModelByBimFileIdLoaded(bimFileId) {
     const mappingBimFileIdModelId = window.spinal.BimObjectService.mappingBimFileIdModelId;
     if (Object.prototype.hasOwnProperty.call(mappingBimFileIdModelId, bimFileId)) {
@@ -33,5 +33,4 @@ function getModelByBimFileIdLoaded(bimFileId) {
         }
     }
 }
-exports.getModelByBimFileIdLoaded = getModelByBimFileIdLoaded;
 //# sourceMappingURL=getModelByBimFileIdLoaded.js.map

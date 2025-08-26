@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBimGeoContexts = void 0;
+exports.getBimGeoContexts = getBimGeoContexts;
 const constant_1 = require("../constant");
 const graphservice_1 = require("./graphservice");
 function getBimGeoContexts() {
@@ -42,5 +42,4 @@ function getBimGeoContexts() {
         return contexts.filter((context) => context.info.type.get() === constant_1.BIM_GEO_CONTEXT_TYPE);
     });
 }
-exports.getBimGeoContexts = getBimGeoContexts;
 //# sourceMappingURL=getBimGeoContexts.js.map

@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateLoadedModel = void 0;
+exports.updateLoadedModel = updateLoadedModel;
 const getViewer_1 = require("../getViewer");
 function updateLoadedModel(loadedModel) {
     const viewer = (0, getViewer_1.getViewer)();
@@ -43,5 +43,4 @@ function updateLoadedModel(loadedModel) {
         console.log('updateLoadedModel fail load existing model list, ignore it if no model loaded');
     }
 }
-exports.updateLoadedModel = updateLoadedModel;
 //# sourceMappingURL=updateLoadedModel.js.map

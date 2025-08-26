@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBulkProperties = void 0;
+exports.getBulkProperties = getBulkProperties;
 const getModelByModelId_1 = require("./getModelByModelId");
 function getBulkProperties(model, dbIds, props = { propFilter: ['name', 'externalId'] }) {
     let m;
@@ -45,5 +45,4 @@ function getBulkProperties(model, dbIds, props = { propFilter: ['name', 'externa
         }, (err) => reject(err));
     });
 }
-exports.getBulkProperties = getBulkProperties;
 //# sourceMappingURL=getBulkProperties.js.map

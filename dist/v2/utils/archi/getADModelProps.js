@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getADModelProps = void 0;
+exports.getADModelProps = getADModelProps;
 function getADModelProps(model, dbid) {
     return new Promise((resolve, reject) => {
         model.getProperties(dbid, (res) => {
@@ -31,5 +31,4 @@ function getADModelProps(model, dbid) {
         }, reject);
     });
 }
-exports.getADModelProps = getADModelProps;
 //# sourceMappingURL=getADModelProps.js.map

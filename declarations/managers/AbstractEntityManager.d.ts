@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 import Model = Autodesk.Viewing.Model;
 import { SpinalNodeRef, SpinalNode } from 'spinal-env-viewer-graph-service';
 export interface EntityProp {

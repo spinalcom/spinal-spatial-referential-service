@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDiffRefFloor = void 0;
+exports.getDiffRefFloor = getDiffRefFloor;
 const Constant_1 = require("../../Constant");
 const diffBimObjs_1 = require("./diffBimObjs");
 function getDiffRefFloor(floorNode, floorArchi, manualAssingment) {
@@ -42,5 +42,4 @@ function getDiffRefFloor(floorNode, floorArchi, manualAssingment) {
         return (0, diffBimObjs_1.diffBimObjs)(structures, floorNodeRefObjs, manualAssingment);
     });
 }
-exports.getDiffRefFloor = getDiffRefFloor;
 //# sourceMappingURL=getDiffRefFloor.js.map

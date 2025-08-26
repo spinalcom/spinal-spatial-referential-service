@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDataAssing = void 0;
+exports.getDataAssing = getDataAssing;
 const utils_1 = require("../../utils");
 function getParentRoom(node, contextGeo) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -78,5 +78,4 @@ function getDataAssing(_a) {
         };
     });
 }
-exports.getDataAssing = getDataAssing;
 //# sourceMappingURL=getDataAssing.js.map

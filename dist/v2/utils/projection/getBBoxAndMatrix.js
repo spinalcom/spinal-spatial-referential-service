@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBBoxAndMatrix = void 0;
+exports.getBBoxAndMatrix = getBBoxAndMatrix;
 const getFragIds_1 = require("../getFragIds");
 const getModifiedWorldBoundingBox_1 = require("./getModifiedWorldBoundingBox");
 function getBBoxAndMatrix(dbId, model, viewer) {
@@ -43,5 +43,4 @@ function getBBoxAndMatrix(dbId, model, viewer) {
         return { matrixWorld: matrixWorld.clone(), bbox };
     });
 }
-exports.getBBoxAndMatrix = getBBoxAndMatrix;
 //# sourceMappingURL=getBBoxAndMatrix.js.map

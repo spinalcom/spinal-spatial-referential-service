@@ -32,7 +32,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pushToAggregateSetDbidByBimFileId = exports.getSpatialTree = void 0;
+exports.getSpatialTree = getSpatialTree;
+exports.pushToAggregateSetDbidByBimFileId = pushToAggregateSetDbidByBimFileId;
 const Constant_1 = require("../../../Constant");
 const utils_1 = require("../../utils");
 function getSpatialTree() {
@@ -85,7 +86,6 @@ function getSpatialTree() {
         return Promise.all(proms);
     });
 }
-exports.getSpatialTree = getSpatialTree;
 function pushToAggregateSetDbidByBimFileId(targetArray, id, bimFileId) {
     if (id === -1)
         return;
@@ -102,5 +102,4 @@ function pushToAggregateSetDbidByBimFileId(targetArray, id, bimFileId) {
         dbId: idSet,
     });
 }
-exports.pushToAggregateSetDbidByBimFileId = pushToAggregateSetDbidByBimFileId;
 //# sourceMappingURL=getSpatialTree.js.map

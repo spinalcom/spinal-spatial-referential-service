@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 import Model = Autodesk.Viewing.Model;
 import { SpinalContext, SpinalNode, SpinalNodeRef } from 'spinal-env-viewer-graph-service';
 import { SpatialConfig, IMConfigArchi } from './models/SpatialConfig';
