@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.waitPathSendToHub = void 0;
+exports.waitPathSendToHub = waitPathSendToHub;
 function waitPathSendToHub(path) {
     return new Promise((resolve) => {
         const inter = setInterval(() => {
@@ -34,5 +34,4 @@ function waitPathSendToHub(path) {
         }, 100);
     });
 }
-exports.waitPathSendToHub = waitPathSendToHub;
 //# sourceMappingURL=waitPathSendToHub.js.map

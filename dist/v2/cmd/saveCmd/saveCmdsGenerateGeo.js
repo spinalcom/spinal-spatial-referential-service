@@ -23,11 +23,10 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveCmdsGenerateGeo = void 0;
+exports.saveCmdsGenerateGeo = saveCmdsGenerateGeo;
 const constant_1 = require("../../constant");
 const saveCmds_1 = require("./saveCmds");
 function saveCmdsGenerateGeo(json, local = true) {
     return (0, saveCmds_1.saveCmds)(json, constant_1.GENERATION_GEO_TYPE, local);
 }
-exports.saveCmdsGenerateGeo = saveCmdsGenerateGeo;
 //# sourceMappingURL=saveCmdsGenerateGeo.js.map

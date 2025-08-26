@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMergeBimGeoTrees = void 0;
+exports.getMergeBimGeoTrees = getMergeBimGeoTrees;
 const constant_1 = require("../constant");
 const utils_1 = require("../utils");
 const ITreeItem_1 = require("./ITreeItem");
@@ -88,5 +88,4 @@ function getMergeBimGeoTrees(spatialTree) {
         return res;
     });
 }
-exports.getMergeBimGeoTrees = getMergeBimGeoTrees;
 //# sourceMappingURL=getMergeBimGeoTrees.js.map

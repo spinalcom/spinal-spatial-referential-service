@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getConfigFromContext = void 0;
+exports.getConfigFromContext = getConfigFromContext;
 const constant_1 = require("../../constant");
 function getConfigFromContext(context_1, item_1) {
     return __awaiter(this, arguments, void 0, function* (context, item, updateName = false) {
@@ -47,5 +47,4 @@ function getConfigFromContext(context_1, item_1) {
         }
     });
 }
-exports.getConfigFromContext = getConfigFromContext;
 //# sourceMappingURL=getConfigFromContext.js.map

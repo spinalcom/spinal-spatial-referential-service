@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.floorArchiHasChildren = void 0;
+exports.floorArchiHasChildren = floorArchiHasChildren;
 function floorArchiHasChildren(floorArchi) {
     for (const ext in floorArchi.children) {
         if (Object.prototype.hasOwnProperty.call(floorArchi.children, ext)) {
@@ -32,5 +32,4 @@ function floorArchiHasChildren(floorArchi) {
     }
     return false;
 }
-exports.floorArchiHasChildren = floorArchiHasChildren;
 //# sourceMappingURL=floorArchiHasChildren.js.map

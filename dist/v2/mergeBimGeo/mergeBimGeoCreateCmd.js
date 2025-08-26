@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeBimGeoCreateCmd = void 0;
+exports.mergeBimGeoCreateCmd = mergeBimGeoCreateCmd;
 const Constant_1 = require("../../Constant");
 const ITreeItem_1 = require("./ITreeItem");
 function mergeBimGeoCreateCmd(treeItems) {
@@ -83,7 +83,6 @@ function mergeBimGeoCreateCmd(treeItems) {
         return cmds;
     });
 }
-exports.mergeBimGeoCreateCmd = mergeBimGeoCreateCmd;
 function mergeBimGeoHandleFloor(item, parentId, contextId, cmdsFloor) {
     return __awaiter(this, void 0, void 0, function* () {
         const floorParts = item.children.filter((i) => i.status === ITreeItem_1.ETreeItemStatus.normal ||

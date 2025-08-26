@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getModifiedWorldBoundingBox = void 0;
+exports.getModifiedWorldBoundingBox = getModifiedWorldBoundingBox;
 function getModifiedWorldBoundingBox(fragIds, model) {
     //fragments list array
     const fragList = model.getFragmentList();
@@ -35,5 +35,4 @@ function getModifiedWorldBoundingBox(fragIds, model) {
     });
     return nodebBox;
 }
-exports.getModifiedWorldBoundingBox = getModifiedWorldBoundingBox;
 //# sourceMappingURL=getModifiedWorldBoundingBox.js.map

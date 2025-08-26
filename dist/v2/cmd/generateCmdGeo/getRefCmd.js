@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRefCmd = void 0;
+exports.getRefCmd = getRefCmd;
 const guid_1 = require("../../utils/guid");
 function getRefCmd(properties, pNId, type, bimFileId) {
     let name = '';
@@ -43,5 +43,4 @@ function getRefCmd(properties, pNId, type, bimFileId) {
         },
     };
 }
-exports.getRefCmd = getRefCmd;
 //# sourceMappingURL=getRefCmd.js.map

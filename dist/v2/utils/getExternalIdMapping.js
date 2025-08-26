@@ -23,11 +23,10 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getExternalIdMapping = void 0;
+exports.getExternalIdMapping = getExternalIdMapping;
 function getExternalIdMapping(model) {
     return new Promise((resolve, reject) => {
         model.getExternalIdMapping(resolve, reject);
     });
 }
-exports.getExternalIdMapping = getExternalIdMapping;
 //# sourceMappingURL=getExternalIdMapping.js.map

@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 import type { SpinalVec3 } from '../../interfaces';
 import type { IAggregateDbidByModelItem } from '../../interfaces/IAggregateDbidByModelItem';
 import type { ProjectionGroupConfig } from '../ProjectionItem/ProjectionGroupConfig';

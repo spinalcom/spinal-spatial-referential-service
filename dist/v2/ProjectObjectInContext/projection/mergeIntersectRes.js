@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeIntersectRes = void 0;
+exports.mergeIntersectRes = mergeIntersectRes;
 function mergeIntersectRes(target, item) {
     for (const itemInter of item.intersects) {
         const targetInter = target.intersects.find((t) => {
@@ -55,5 +55,4 @@ function mergeIntersectRes(target, item) {
         }
     }
 }
-exports.mergeIntersectRes = mergeIntersectRes;
 //# sourceMappingURL=mergeIntersectRes.js.map

@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInfoGraphService = exports.getRealNode = exports.getGraph = exports.addNodeGraphService = void 0;
+exports.addNodeGraphService = addNodeGraphService;
+exports.getGraph = getGraph;
+exports.getRealNode = getRealNode;
+exports.getInfoGraphService = getInfoGraphService;
 /*
  * Copyright 2023 SpinalCom - www.spinalcom.com
  *
@@ -30,17 +33,13 @@ function addNodeGraphService(node) {
     // @ts-ignore
     spinal_env_viewer_graph_service_1.SpinalGraphService._addNode(node);
 }
-exports.addNodeGraphService = addNodeGraphService;
 function getGraph() {
     return spinal_env_viewer_graph_service_1.SpinalGraphService.getGraph();
 }
-exports.getGraph = getGraph;
 function getRealNode(nodeId) {
     return spinal_env_viewer_graph_service_1.SpinalGraphService.getRealNode(nodeId);
 }
-exports.getRealNode = getRealNode;
 function getInfoGraphService(nodeId) {
     return spinal_env_viewer_graph_service_1.SpinalGraphService.getInfo(nodeId);
 }
-exports.getInfoGraphService = getInfoGraphService;
 //# sourceMappingURL=graphservice.js.map

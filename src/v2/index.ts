@@ -30,3 +30,4 @@ export * from './diffArchi';
 export * from './ProjectObjectInContext';
 export * from './mergeBimGeo';
 export * from './constant';
+export * from './FloorOnlyImport';

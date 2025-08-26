@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleFloorCmdNew = void 0;
+exports.handleFloorCmdNew = handleFloorCmdNew;
 const transformArchi_1 = require("../../scripts/transformArchi");
 const guid_1 = require("../../utils/guid");
 const isInSkipList_1 = require("../../utils/archi/isInSkipList");
@@ -48,7 +48,6 @@ function handleFloorCmdNew(floorData, parentNodeId, bimFileId, skipList, refCont
         floors.push(floorCmd);
     });
 }
-exports.handleFloorCmdNew = handleFloorCmdNew;
 function getFloorRoomsCmdNew(floorData, floorCmd, bimFileId, skipList, refContext, contextId, roomCmds, roomRefCmds) {
     return __awaiter(this, void 0, void 0, function* () {
         for (const floorExtId in floorData.floorArchi.children) {

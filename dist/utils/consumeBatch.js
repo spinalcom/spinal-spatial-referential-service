@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consumeBatch = void 0;
+exports.consumeBatch = consumeBatch;
 function consumeBatch(promises_1) {
     return __awaiter(this, arguments, void 0, function* (promises, batchSize = 10, callBackProgress) {
         let index = 0;
@@ -51,5 +51,4 @@ function consumeBatch(promises_1) {
         return result;
     });
 }
-exports.consumeBatch = consumeBatch;
 //# sourceMappingURL=consumeBatch.js.map

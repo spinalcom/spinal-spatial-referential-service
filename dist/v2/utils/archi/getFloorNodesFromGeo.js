@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFloorNodesFromGeo = void 0;
+exports.getFloorNodesFromGeo = getFloorNodesFromGeo;
 const graphservice_1 = require("../graphservice");
 const getOrLoadModel_1 = require("../getOrLoadModel");
 const getContextSpatial_1 = require("../getContextSpatial");
@@ -44,5 +44,4 @@ function getFloorNodesFromGeo(buildingServerId) {
         return buildingNode.getChildrenInContext(contextGeo);
     });
 }
-exports.getFloorNodesFromGeo = getFloorNodesFromGeo;
 //# sourceMappingURL=getFloorNodesFromGeo.js.map

@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consumeCmdGeo = void 0;
+exports.consumeCmdGeo = consumeCmdGeo;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const getContextSpatial_1 = require("../../utils/getContextSpatial");
 const spinal_env_viewer_context_geographic_service_1 = require("spinal-env-viewer-context-geographic-service");
@@ -82,7 +82,7 @@ function consumeCmdGeo(cmds_1, nodeGenerationId_1, contextGenerationId_1, callba
                     proms.push(safe_call(consumeNewUpdateRefCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION));
                 }
                 else if (cmd.type === 'floorRefDel') {
-                    proms.push(safe_call(consumeDeleteCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION));
+                    proms.push(safe_call(consumeRemoveFromGraphCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.REFERENCE_RELATION));
                 }
                 else if (cmd.type === 'floorRoomDel') {
                     proms.push(safe_call(consumeDeleteCmd, dico, cmd, spinal_env_viewer_context_geographic_service_1.ROOM_RELATION, nodeGenerationId, contextGenerationId));
@@ -112,7 +112,6 @@ function consumeCmdGeo(cmds_1, nodeGenerationId_1, contextGenerationId_1, callba
         }
     });
 }
-exports.consumeCmdGeo = consumeCmdGeo;
 function getBimContext(dico, bimFileId) {
     return __awaiter(this, void 0, void 0, function* () {
         const bimContext = dico[bimFileId];
@@ -169,6 +168,20 @@ function consumeDeleteCmd(dico, cmd, relationName, nodeGenerationId, contextGene
             }
             yield parentNode.removeChildren(nodesToDel, relationName, spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE);
         }
+    });
+}
+function consumeRemoveFromGraphCmd(dico, cmd, relationName) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (spinal.SHOW_LOG_GENERATION)
+            console.log('consumeRemoveFromGraphCmd', cmd);
+        const parentNode = dico[cmd.pNId];
+        if (!parentNode) {
+            console.error(new Error(`consumeRemoveFromGraphCmd skip, ParentId for ${cmd.pNId} not found.`));
+            return;
+        }
+        const childrenNode = yield parentNode.getChildren(relationName);
+        const nodesToDel = childrenNode.filter((itm) => cmd.nIdToDel.includes(itm.info.id.get()));
+        yield Promise.all(nodesToDel.map((itm) => itm.removeFromGraph()));
     });
 }
 function recordDico(dico, node) {

@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diffArchiWithContextGeo = void 0;
+exports.diffArchiWithContextGeo = diffArchiWithContextGeo;
 const diffFloorWithContext_1 = require("./diffFloorWithContext");
 const utils_1 = require("../utils");
 const mergeManualAssignArchiFloor_1 = require("./mergeManualAssignArchiFloor");
@@ -49,5 +49,4 @@ function diffArchiWithContextGeo(archiData, buildingServerId, manualAssingment) 
         return archiDataRes;
     });
 }
-exports.diffArchiWithContextGeo = diffArchiWithContextGeo;
 //# sourceMappingURL=diffArchiWithContextGeo.js.map

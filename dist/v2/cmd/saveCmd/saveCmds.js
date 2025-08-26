@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveCmds = void 0;
+exports.saveCmds = saveCmds;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const compress_json_1 = require("compress-json");
 const pako_1 = require("pako");
@@ -58,5 +58,4 @@ function saveCmds(json, generationType, local) {
         return { node, context, data: p };
     });
 }
-exports.saveCmds = saveCmds;
 //# sourceMappingURL=saveCmds.js.map

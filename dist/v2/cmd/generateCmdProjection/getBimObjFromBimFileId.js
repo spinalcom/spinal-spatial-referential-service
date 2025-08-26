@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBimObjFromBimFileId = void 0;
+exports.getBimObjFromBimFileId = getBimObjFromBimFileId;
 const getBimObjsOfBimFileId_1 = require("./getBimObjsOfBimFileId");
 function getBimObjFromBimFileId(dico, bimFileId, bimObjectDbId) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -21,5 +21,4 @@ function getBimObjFromBimFileId(dico, bimFileId, bimObjectDbId) {
         }
     });
 }
-exports.getBimObjFromBimFileId = getBimObjFromBimFileId;
 //# sourceMappingURL=getBimObjFromBimFileId.js.map

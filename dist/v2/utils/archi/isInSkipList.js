@@ -23,11 +23,10 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isInSkipList = void 0;
+exports.isInSkipList = isInSkipList;
 function isInSkipList(skipList, id, parentId) {
     if (parentId)
         return skipList.some((itm) => itm.id === parentId || itm.id === id);
     return skipList.some((itm) => itm.id === id);
 }
-exports.isInSkipList = isInSkipList;
 //# sourceMappingURL=isInSkipList.js.map

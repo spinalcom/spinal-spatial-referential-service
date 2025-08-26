@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPropItemFromPropPath = void 0;
+exports.getPropItemFromPropPath = getPropItemFromPropPath;
 const getBulkProperties_1 = require("./getBulkProperties");
 const getDbIdChildren_1 = require("./getDbIdChildren");
 function getPropItemFromPropPath(propPath, model) {
@@ -51,5 +51,4 @@ function getPropItemFromPropPath(propPath, model) {
         return lastFound ? lastFound : undefined;
     });
 }
-exports.getPropItemFromPropPath = getPropItemFromPropPath;
 //# sourceMappingURL=getPropItemFromPropPath.js.map

@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getArchi = void 0;
+exports.getArchi = getArchi;
 const loadConfig_1 = require("../../scripts/loadConfig");
 const loadBimFile_1 = require("../../scripts/loadBimFile");
 const createFctGetArchi_1 = __importDefault(require("../../../createFctGetArchi"));
@@ -56,5 +56,4 @@ function getArchi(graph, configName, bimFile, viewer) {
         return modelArchi;
     });
 }
-exports.getArchi = getArchi;
 //# sourceMappingURL=getArchi.js.map

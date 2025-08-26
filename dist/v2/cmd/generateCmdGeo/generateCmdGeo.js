@@ -32,7 +32,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateCmdBIMGeo = exports.generateCmdGeo = void 0;
+exports.generateCmdGeo = generateCmdGeo;
+exports.generateCmdBIMGeo = generateCmdBIMGeo;
 const IGetArchi_1 = require("../../interfaces/IGetArchi");
 const getModType_1 = require("../../utils/archi/getModType");
 const isInSkipList_1 = require("../../utils/archi/isInSkipList");
@@ -52,7 +53,6 @@ function generateCmdGeo(data, skipList, buildingServerId, bimFileId) {
         return dataToDo;
     });
 }
-exports.generateCmdGeo = generateCmdGeo;
 function generateCmdBIMGeo(data, skipList, BIMGeocontextServId, bimFileId) {
     return __awaiter(this, void 0, void 0, function* () {
         const dataToDo = [];
@@ -63,7 +63,6 @@ function generateCmdBIMGeo(data, skipList, BIMGeocontextServId, bimFileId) {
         return dataToDo;
     });
 }
-exports.generateCmdBIMGeo = generateCmdBIMGeo;
 function generateCmdGeoLoop(data, skipList, parentNodeId, dataToDo, bimFileId, refContext, contextId) {
     return __awaiter(this, void 0, void 0, function* () {
         const floors = [];

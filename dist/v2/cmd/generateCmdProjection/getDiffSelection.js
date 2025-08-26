@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDiffSelection = void 0;
+exports.getDiffSelection = getDiffSelection;
 function getDiffSelection(intersectRes) {
     const data = [];
     for (const { model, dbId } of intersectRes.selection) {
@@ -42,7 +42,6 @@ function getDiffSelection(intersectRes) {
     }
     return data;
 }
-exports.getDiffSelection = getDiffSelection;
 function pushToData(data, dbId, model) {
     for (const item of data) {
         if (item.model.id === model.id) {

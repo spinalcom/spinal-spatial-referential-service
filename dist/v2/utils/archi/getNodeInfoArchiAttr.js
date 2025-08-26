@@ -23,12 +23,11 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNodeInfoArchiAttr = void 0;
+exports.getNodeInfoArchiAttr = getNodeInfoArchiAttr;
 function getNodeInfoArchiAttr(nodeInfo, propName) {
     for (const prop of nodeInfo.properties) {
         if (prop.name === propName)
             return prop.value;
     }
 }
-exports.getNodeInfoArchiAttr = getNodeInfoArchiAttr;
 //# sourceMappingURL=getNodeInfoArchiAttr.js.map

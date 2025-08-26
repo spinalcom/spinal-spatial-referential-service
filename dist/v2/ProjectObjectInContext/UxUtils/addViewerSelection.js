@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addViewerSelection = void 0;
+exports.addViewerSelection = addViewerSelection;
 const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
 const isProjectionGroup_1 = require("../../utils/projection/isProjectionGroup");
 function addViewerSelection(index, list, viewer) {
@@ -76,5 +76,4 @@ function addViewerSelection(index, list, viewer) {
         yield Promise.all(prom);
     });
 }
-exports.addViewerSelection = addViewerSelection;
 //# sourceMappingURL=addViewerSelection.js.map

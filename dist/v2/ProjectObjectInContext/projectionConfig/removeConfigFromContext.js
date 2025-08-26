@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeConfigFromContext = void 0;
+exports.removeConfigFromContext = removeConfigFromContext;
 const constant_1 = require("../../constant");
 function removeConfigFromContext(context, uid) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -44,5 +44,4 @@ function removeConfigFromContext(context, uid) {
         }
     });
 }
-exports.removeConfigFromContext = removeConfigFromContext;
 //# sourceMappingURL=removeConfigFromContext.js.map

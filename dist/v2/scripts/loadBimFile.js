@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadBimFile = void 0;
+exports.loadBimFile = loadBimFile;
 function loadModel(viewer, path, option = {}) {
     return new Promise((resolve, reject) => {
         let m = undefined;
@@ -63,5 +63,4 @@ function loadBimFile(bimFile, viewer) {
         return m;
     });
 }
-exports.loadBimFile = loadBimFile;
 //# sourceMappingURL=loadBimFile.js.map

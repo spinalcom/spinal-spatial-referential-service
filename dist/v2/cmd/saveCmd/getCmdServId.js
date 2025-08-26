@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCmdServId = void 0;
+exports.getCmdServId = getCmdServId;
 const constant_1 = require("../../constant");
 function getCmdServId(node) {
     var _a;
@@ -33,5 +33,4 @@ function getCmdServId(node) {
         throw new Error(`getCmd, spinalnode in agument have no Element`);
     return ((_a = node.element.ptr.data.model) === null || _a === void 0 ? void 0 : _a._server_id) || node.element.ptr.data.value;
 }
-exports.getCmdServId = getCmdServId;
 //# sourceMappingURL=getCmdServId.js.map

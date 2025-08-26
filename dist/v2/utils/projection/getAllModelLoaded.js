@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllModelLoaded = void 0;
+exports.getAllModelLoaded = getAllModelLoaded;
 function getAllModelLoaded() {
     const mappingBimFileIdModelId = window.spinal.BimObjectService.mappingBimFileIdModelId;
     const models = new Set();
@@ -36,5 +36,4 @@ function getAllModelLoaded() {
     }
     return Array.from(models);
 }
-exports.getAllModelLoaded = getAllModelLoaded;
 //# sourceMappingURL=getAllModelLoaded.js.map

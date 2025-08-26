@@ -23,10 +23,9 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isProjectionGroup = void 0;
+exports.isProjectionGroup = isProjectionGroup;
 const ProjectionGroup_1 = require("../../ProjectObjectInContext/ProjectionItem/ProjectionGroup");
 function isProjectionGroup(item) {
     return item instanceof ProjectionGroup_1.ProjectionGroup;
 }
-exports.isProjectionGroup = isProjectionGroup;
 //# sourceMappingURL=isProjectionGroup.js.map

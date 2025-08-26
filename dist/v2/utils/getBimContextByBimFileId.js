@@ -35,7 +35,7 @@ var __await = (this && this.__await) || function (v) { return this instanceof __
 var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
+    return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
     function awaitReturn(f) { return function (v) { return Promise.resolve(v).then(f, reject); }; }
     function verb(n, f) { if (g[n]) { i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; if (f) i[n] = f(i[n]); } }
     function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
@@ -45,7 +45,7 @@ var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _ar
     function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBimContextByBimFileId = void 0;
+exports.getBimContextByBimFileId = getBimContextByBimFileId;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const spinal_model_graph_2 = require("spinal-model-graph");
 const getBimFileByBimFileId_1 = require("./getBimFileByBimFileId");
@@ -68,7 +68,6 @@ function getBimContextByBimFileId(bimFileId_1) {
         }
     });
 }
-exports.getBimContextByBimFileId = getBimContextByBimFileId;
 function _createBimContext(bimFile) {
     return __asyncGenerator(this, arguments, function* _createBimContext_1() {
         const bimContext = new spinal_model_graph_1.SpinalNode('BIMContext', 'SpinalNode');

@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPropPath = void 0;
+exports.getPropPath = getPropPath;
 const getBulkProperties_1 = require("./getBulkProperties");
 function getPropPath(dbId, model) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -55,5 +55,4 @@ function getPropPath(dbId, model) {
         return res.reverse();
     });
 }
-exports.getPropPath = getPropPath;
 //# sourceMappingURL=getPropPath.js.map

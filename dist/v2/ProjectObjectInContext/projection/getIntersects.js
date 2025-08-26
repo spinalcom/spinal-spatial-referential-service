@@ -32,7 +32,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pushToAggregateDbidByModel = exports.getIntersects = void 0;
+exports.getIntersects = getIntersects;
+exports.pushToAggregateDbidByModel = pushToAggregateDbidByModel;
 const raycastItemToMesh_1 = require("./raycastItemToMesh");
 const getLeafDbIdsByModel_1 = require("../../utils/projection/getLeafDbIdsByModel");
 const transformRtzToXyz_1 = require("../../utils/projection/transformRtzToXyz");
@@ -74,7 +75,6 @@ function getIntersects(projectionGroupConfig, mergedRoomRef) {
         }
     });
 }
-exports.getIntersects = getIntersects;
 function pushToAggregateDbidByModel(targetArray, ids, model, offset, rootDbId) {
     for (const obj of targetArray) {
         if (obj.model === model) {
@@ -102,5 +102,4 @@ function pushToAggregateDbidByModel(targetArray, ids, model, offset, rootDbId) {
         dbId,
     });
 }
-exports.pushToAggregateDbidByModel = pushToAggregateDbidByModel;
 //# sourceMappingURL=getIntersects.js.map

@@ -35,7 +35,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getColorPreview = exports.setColorPreview = exports.stopPreview = exports.previewItem = void 0;
+exports.previewItem = void 0;
+exports.stopPreview = stopPreview;
+exports.setColorPreview = setColorPreview;
+exports.getColorPreview = getColorPreview;
 const getBBoxAndMatrixs_1 = require("../../utils/projection/getBBoxAndMatrixs");
 const getLeafDbIdsByModelId_1 = require("../../utils/projection/getLeafDbIdsByModelId");
 const getPointOffset_1 = require("../../utils/projection/getPointOffset");
@@ -82,7 +85,6 @@ function stopPreview(viewer) {
     current = null;
     viewer.impl.invalidate(true, true, true);
 }
-exports.stopPreview = stopPreview;
 function setColorPreview(colorStr) {
     color = colorStr;
     if (sphereMat)
@@ -90,11 +92,9 @@ function setColorPreview(colorStr) {
     if (lineMat)
         lineMat.color.set(color);
 }
-exports.setColorPreview = setColorPreview;
 function getColorPreview() {
     return color;
 }
-exports.getColorPreview = getColorPreview;
 function createNew(item, offset) {
     current = {
         item,

@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkDiffObj = void 0;
+exports.checkDiffObj = checkDiffObj;
 function checkDiffObj(result, label, nodeValue, archiValue, unit) {
     if (nodeValue != archiValue) {
         const p = {
@@ -36,5 +36,4 @@ function checkDiffObj(result, label, nodeValue, archiValue, unit) {
         result.push(p);
     }
 }
-exports.checkDiffObj = checkDiffObj;
 //# sourceMappingURL=checkDiffObj.js.map

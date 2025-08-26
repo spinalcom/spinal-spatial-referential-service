@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addProjectItem = void 0;
+exports.addProjectItem = addProjectItem;
 const ProjectionGroup_1 = require("../ProjectionItem/ProjectionGroup");
 const ProjectionItem_1 = require("../ProjectionItem/ProjectionItem");
 function addProjectItem(list, prop) {
@@ -56,5 +56,4 @@ function addProjectItem(list, prop) {
         yield Promise.all(promRemove);
     });
 }
-exports.addProjectItem = addProjectItem;
 //# sourceMappingURL=addProjectItem.js.map

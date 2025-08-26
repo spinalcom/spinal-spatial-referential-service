@@ -32,7 +32,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearThemingColors = exports.viewDataAssignInViewer = void 0;
+exports.viewDataAssignInViewer = viewDataAssignInViewer;
+exports.clearThemingColors = clearThemingColors;
 const Constant_1 = require("../../../Constant");
 const utils_1 = require("../../utils");
 const getAllModelLoaded_1 = require("../../utils/projection/getAllModelLoaded");
@@ -106,7 +107,6 @@ function viewDataAssignInViewer(dbid, bimFileId, roomId, parentValidId, parentNo
         viewer.impl.visibilityManager.aggregateIsolate(data);
     });
 }
-exports.viewDataAssignInViewer = viewDataAssignInViewer;
 function getRoomRefsInfo(roomNode, aggrData, color) {
     return __awaiter(this, void 0, void 0, function* () {
         const viewer = (0, utils_1.getViewer)();
@@ -130,5 +130,4 @@ function clearThemingColors() {
         viewer.clearThemingColors(model);
     }
 }
-exports.clearThemingColors = clearThemingColors;
 //# sourceMappingURL=viewDataAssignInViewer.js.map

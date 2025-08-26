@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = createFctGetArchi;
 // export interface ArchiSelectUser {
 //   key: RegExp;
 //   value: RegExp;
@@ -305,7 +306,6 @@ function createFctGetArchi(config) {
   }`;
     return fct;
 }
-exports.default = createFctGetArchi;
 // (<any>window).testCreateFctGetArchi = async function () {
 //   const cfg = {
 //     "configName": "default",

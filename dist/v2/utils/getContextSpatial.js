@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getContextSpatial = void 0;
+exports.getContextSpatial = getContextSpatial;
 const spinal_model_graph_1 = require("spinal-model-graph");
 function getContextSpatial(graph) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -44,5 +44,4 @@ function getContextSpatial(graph) {
         return context;
     });
 }
-exports.getContextSpatial = getContextSpatial;
 //# sourceMappingURL=getContextSpatial.js.map

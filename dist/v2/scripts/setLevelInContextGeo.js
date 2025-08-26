@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setLevelInContextGeo = void 0;
+exports.setLevelInContextGeo = setLevelInContextGeo;
 const getContextSpatial_1 = require("../utils/getContextSpatial");
 // // uncomment to add Attr to refobjs
 // import {
@@ -95,5 +95,4 @@ function setLevelInContextGeo(graph) {
         }
     });
 }
-exports.setLevelInContextGeo = setLevelInContextGeo;
 //# sourceMappingURL=setLevelInContextGeo.js.map

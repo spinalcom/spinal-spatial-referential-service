@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFloorsDbIdOfModel = void 0;
+exports.getFloorsDbIdOfModel = getFloorsDbIdOfModel;
 function getFloorsDbIdOfModel(model) {
     const userFct = `function userFunction(pdb) {
     const result = new Set();
@@ -52,5 +52,4 @@ function getFloorsDbIdOfModel(model) {
     // @ts-ignore
     return model.getPropertyDb().executeUserFunction(userFct);
 }
-exports.getFloorsDbIdOfModel = getFloorsDbIdOfModel;
 //# sourceMappingURL=getFloorsDbIdOfModel.js.map

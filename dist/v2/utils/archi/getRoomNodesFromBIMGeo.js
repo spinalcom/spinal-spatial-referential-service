@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoomNodesFromBIMGeo = void 0;
+exports.getRoomNodesFromBIMGeo = getRoomNodesFromBIMGeo;
 const getOrLoadModel_1 = require("../getOrLoadModel");
 const Constant_1 = require("../../../Constant");
 function getRoomNodesFromBIMGeo(bimGeoServerId) {
@@ -47,5 +47,4 @@ function getRoomNodesFromBIMGeo(bimGeoServerId) {
         ], (node) => Constant_1.GEO_ROOM_TYPE === node.info.type.get());
     });
 }
-exports.getRoomNodesFromBIMGeo = getRoomNodesFromBIMGeo;
 //# sourceMappingURL=getRoomNodesFromBIMGeo.js.map

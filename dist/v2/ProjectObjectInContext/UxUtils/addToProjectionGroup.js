@@ -23,10 +23,9 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addToProjectionGroup = void 0;
+exports.addToProjectionGroup = addToProjectionGroup;
 const ProjectionGroup_1 = require("../ProjectionItem/ProjectionGroup");
 function addToProjectionGroup(list, name) {
     list.push(new ProjectionGroup_1.ProjectionGroup(name));
 }
-exports.addToProjectionGroup = addToProjectionGroup;
 //# sourceMappingURL=addToProjectionGroup.js.map

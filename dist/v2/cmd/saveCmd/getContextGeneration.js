@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getContextGeneration = void 0;
+exports.getContextGeneration = getContextGeneration;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const graphservice_1 = require("../../utils/graphservice");
 const constant_1 = require("../../constant");
@@ -48,5 +48,4 @@ function getContextGeneration() {
         return context;
     });
 }
-exports.getContextGeneration = getContextGeneration;
 //# sourceMappingURL=getContextGeneration.js.map

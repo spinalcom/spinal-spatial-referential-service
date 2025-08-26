@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateInfo = void 0;
+exports.updateInfo = updateInfo;
 const updateInfoByKey_1 = require("./updateInfoByKey");
 function updateInfo(node, info) {
     for (const key in info) {
@@ -33,5 +33,4 @@ function updateInfo(node, info) {
         }
     }
 }
-exports.updateInfo = updateInfo;
 //# sourceMappingURL=updateInfo.js.map

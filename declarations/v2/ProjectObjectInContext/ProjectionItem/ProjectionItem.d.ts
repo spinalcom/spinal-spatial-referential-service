@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 import type { IProjectionItem } from '../../interfaces/IProjectionItem';
 import type { IProjectionOffset } from '../../interfaces/IProjectionOffset';
 export declare class ProjectionItem implements IProjectionItem {

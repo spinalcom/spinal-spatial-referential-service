@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeManualAssignArchiFloor = void 0;
+exports.mergeManualAssignArchiFloor = mergeManualAssignArchiFloor;
 const floorArchiHasChildren_1 = require("./floorArchiHasChildren");
 const getFloorFromContext_1 = require("./getFloorFromContext");
 function mergeManualAssignArchiFloor(archiData, manualAssingment, context, buildingServerId) {
@@ -67,7 +67,6 @@ function mergeManualAssignArchiFloor(archiData, manualAssingment, context, build
         return toCreateFromMap.concat(...toCreate);
     });
 }
-exports.mergeManualAssignArchiFloor = mergeManualAssignArchiFloor;
 function pushToMapArray(map, node, floorArchi) {
     let arr = map.get(node);
     if (!arr) {

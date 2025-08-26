@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMergeSpatialTree = void 0;
+exports.getMergeSpatialTree = getMergeSpatialTree;
 const utils_1 = require("../utils");
 const Constant_1 = require("../../Constant");
 const ITreeItem_1 = require("./ITreeItem");
@@ -53,7 +53,6 @@ function getMergeSpatialTree(contextGeoId) {
         return res;
     });
 }
-exports.getMergeSpatialTree = getMergeSpatialTree;
 function handleSpatialCreateTreeRec(targetArr, contextGeo, child) {
     return __awaiter(this, void 0, void 0, function* () {
         if (isSpinalNodeTypeFloor(child)) {

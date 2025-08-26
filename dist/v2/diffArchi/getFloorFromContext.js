@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFloorFromContext = void 0;
+exports.getFloorFromContext = getFloorFromContext;
 const getNodeInfoArchiAttr_1 = require("../utils/archi/getNodeInfoArchiAttr");
 const getOrLoadModel_1 = require("../utils/getOrLoadModel");
 const Constant_1 = require("../../Constant");
@@ -66,5 +66,4 @@ function getFloorFromContext(context, floorArchi, manualAssingment, buildingServ
         }
     });
 }
-exports.getFloorFromContext = getFloorFromContext;
 //# sourceMappingURL=getFloorFromContext.js.map

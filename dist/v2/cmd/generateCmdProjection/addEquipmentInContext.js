@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addEquipmentInContext = void 0;
+exports.addEquipmentInContext = addEquipmentInContext;
 const spinal_model_graph_1 = require("spinal-model-graph");
 const Constant_1 = require("../../../Constant");
 const spinal_core_connectorjs_1 = require("spinal-core-connectorjs");
@@ -89,7 +89,6 @@ function addEquipmentInContext(equipmentInfo, contextId) {
         return res;
     });
 }
-exports.addEquipmentInContext = addEquipmentInContext;
 function getCategory(props) {
     for (const prop of props) {
         // {displayName: "Category", displayValue: "Revit ", displayCategory: "__category__", attributeName: "Category", type: 20}

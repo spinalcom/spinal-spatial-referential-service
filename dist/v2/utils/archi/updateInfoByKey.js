@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateInfoByKey = void 0;
+exports.updateInfoByKey = updateInfoByKey;
 function updateInfoByKey(node, key, value) {
     try {
         if (typeof node.info[key] === 'undefined') {
@@ -38,5 +38,4 @@ function updateInfoByKey(node, key, value) {
         console.log('err', node, { key, value });
     }
 }
-exports.updateInfoByKey = updateInfoByKey;
 //# sourceMappingURL=updateInfoByKey.js.map

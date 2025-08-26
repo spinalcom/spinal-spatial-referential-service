@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addSelectionToList = void 0;
+exports.addSelectionToList = addSelectionToList;
 const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
 const addProjectItem_1 = require("./addProjectItem");
 function addSelectionToList(list, viewer) {
@@ -48,5 +48,4 @@ function addSelectionToList(list, viewer) {
         }
     });
 }
-exports.addSelectionToList = addSelectionToList;
 //# sourceMappingURL=addSelectionToList.js.map

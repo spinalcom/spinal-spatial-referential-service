@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFloorPropForModel = void 0;
+exports.getFloorPropForModel = getFloorPropForModel;
 const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
 const getAllModelLoaded_1 = require("../../utils/projection/getAllModelLoaded");
 const getFloorsDbIdOfModel_1 = require("./getFloorsDbIdOfModel");
@@ -58,5 +58,4 @@ function getFloorPropForModel() {
         return res;
     });
 }
-exports.getFloorPropForModel = getFloorPropForModel;
 //# sourceMappingURL=getFloorPropForModel.js.map

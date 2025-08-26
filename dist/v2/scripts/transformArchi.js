@@ -23,13 +23,13 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.transformArchi = exports.parseUnit = void 0;
+exports.parseUnit = parseUnit;
+exports.transformArchi = transformArchi;
 function parseUnit(str) {
     var _a;
     const data = (_a = /autodesk\.unit\.unit:(.+)-\d+\.\d+\.\d+/.exec(str)) === null || _a === void 0 ? void 0 : _a[1];
     return data ? data : str;
 }
-exports.parseUnit = parseUnit;
 function returnNumberStr(value) {
     if (typeof value === 'number')
         return Number.isInteger(value) ? value.toString() : value.toFixed(2);
@@ -109,5 +109,4 @@ function transformArchi(archi) {
         }
     }
 }
-exports.transformArchi = transformArchi;
 //# sourceMappingURL=transformArchi.js.map

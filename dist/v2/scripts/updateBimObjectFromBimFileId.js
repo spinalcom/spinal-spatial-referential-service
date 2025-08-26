@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateBimObjectFromBimFileId = void 0;
+exports.updateBimObjectFromBimFileId = updateBimObjectFromBimFileId;
 const Constant_1 = require("../../Constant");
 const getBimContextByBimFileId_1 = require("../utils/getBimContextByBimFileId");
 const getExternalIdMapping_1 = require("../utils/getExternalIdMapping");
@@ -65,7 +65,6 @@ function updateBimObjectFromBimFileId(bimFileId, model, updateBimobjectsName, up
         yield Promise.race([Promise.all(promises), timeout(20000)]);
     });
 }
-exports.updateBimObjectFromBimFileId = updateBimObjectFromBimFileId;
 function timeout(ms) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {

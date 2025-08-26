@@ -23,12 +23,11 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getADPropBylabel = void 0;
+exports.getADPropBylabel = getADPropBylabel;
 function getADPropBylabel(props, label) {
     for (const prop of props.properties) {
         if (prop.attributeName === label)
             return prop;
     }
 }
-exports.getADPropBylabel = getADPropBylabel;
 //# sourceMappingURL=getADPropBylabel.js.map

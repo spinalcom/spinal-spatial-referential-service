@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodeCmds = void 0;
+exports.decodeCmds = decodeCmds;
 const compress_json_1 = require("compress-json");
 const pako_1 = require("pako");
 function decodeCmds(compressed) {
@@ -31,5 +31,4 @@ function decodeCmds(compressed) {
     const reversed = (0, compress_json_1.decompress)(JSON.parse(ungzip));
     return reversed;
 }
-exports.decodeCmds = decodeCmds;
 //# sourceMappingURL=decodeCmds.js.map

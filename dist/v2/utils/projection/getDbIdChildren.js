@@ -23,7 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDbIdChildren = void 0;
+exports.getDbIdChildren = getDbIdChildren;
 function getDbIdChildren(tree, id) {
     const res = [];
     tree.enumNodeChildren(id, (childId) => {
@@ -31,5 +31,4 @@ function getDbIdChildren(tree, id) {
     });
     return res;
 }
-exports.getDbIdChildren = getDbIdChildren;
 //# sourceMappingURL=getDbIdChildren.js.map

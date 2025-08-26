@@ -1,4 +1,3 @@
-/// <reference types="forge-viewer" />
 import type { IProjectionOffset } from '../../interfaces/IProjectionOffset';
 import type { IAggregateSelectItem } from '../../interfaces/IAggregateSelectItem';
 import { IProjectionGroupItem } from '../../interfaces/IProjectionGroupItem';
