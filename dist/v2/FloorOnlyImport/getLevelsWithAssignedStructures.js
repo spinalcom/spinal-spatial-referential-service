@@ -39,9 +39,7 @@ function getLevelsWithAssignedStructures(data) {
     for (const level of levels) {
         level.children = structures.filter((s) => getPropLevel(s) === level.dbId);
     }
-    // remove level with no structures
-    const filteredLevels = levels.filter((level) => level.children && level.children.length > 0);
-    console.log('getLevelsWithAssignedStructures =', filteredLevels);
-    return filteredLevels;
+    console.log('getLevelsWithAssignedStructures =', levels);
+    return levels;
 }
 //# sourceMappingURL=getLevelsWithAssignedStructures.js.map

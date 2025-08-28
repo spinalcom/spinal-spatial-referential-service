@@ -69,6 +69,20 @@ function createCmdFloorOnlyImport(bimGeoContext, floorOnlyItems, bimFileId) {
                     }
                 }
             }
+            else if (matchingNodeData.children.length > 0) {
+                floorDataRes.push({
+                    type: 'RefNode',
+                    pNId: bimGeoContext.info.id.get(),
+                    id: matchingNodeData.id,
+                    contextId: bimGeoContext.info.id.get(),
+                });
+                // no new data found for the level but some data found from the past => remove old structures
+                removeStructDataRes.push({
+                    pNId: matchingNodeData.id,
+                    type: 'floorRefDel',
+                    nIdToDel: matchingNodeData.children.map((child) => child.id),
+                });
+            }
         }
         return res;
     });
