@@ -29,6 +29,7 @@ import type {
   ICmdNew,
   ICmdNewDelete,
   ICmdNewRef,
+  ICmdNewRefNode,
   ICmdNewSpace,
 } from '../interfaces';
 import { guid } from '../utils';
@@ -57,7 +58,7 @@ export async function createCmdFloorOnlyImport(
   floorOnlyItems: IFloorOnlyItem[],
   bimFileId: string
 ) {
-  const floorDataRes: ICmdNewSpace[] = [];
+  const floorDataRes: ICmdNewSpace | ICmdNewRefNode[] = [];
   const structDataRes: ICmdNewRef[] = [];
   const removeStructDataRes: ICmdNewDelete[] = [];
 
@@ -112,6 +113,20 @@ export async function createCmdFloorOnlyImport(
           });
         }
       }
+    } else if (matchingNodeData.children.length > 0) {
+      floorDataRes.push({
+        type: 'RefNode',
+        pNId: bimGeoContext.info.id.get(),
+        id: matchingNodeData.id,
+        contextId: bimGeoContext.info.id.get(),
+      } as ICmdNewRefNode);
+
+      // no new data found for the level but some data found from the past => remove old structures
+      removeStructDataRes.push({
+        pNId: matchingNodeData.id,
+        type: 'floorRefDel',
+        nIdToDel: matchingNodeData.children.map((child) => child.id),
+      });
     }
   }
 
@@ -145,7 +160,7 @@ function createStructDataEntry(
 
 function createFloorDataEntry(
   floorData: IFloorOnlyItem,
-  floorDataRes: ICmdNewSpace[],
+  floorDataRes: (ICmdNewSpace | ICmdNewRefNode)[],
   contextId: string,
   bimFileId: string,
   nodeId?: string
