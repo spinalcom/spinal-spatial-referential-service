@@ -32,6 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.setCenterPosInContextGeoByFloors = setCenterPosInContextGeoByFloors;
 exports.setCenterPosInContextGeo = setCenterPosInContextGeo;
 const getContextSpatial_1 = require("../utils/getContextSpatial");
 const Constant_1 = require("../../Constant");
@@ -41,6 +42,17 @@ const consumeBatch_1 = require("../../utils/consumeBatch");
 const getFragIds_1 = require("../utils/getFragIds");
 const getWorldBoundingBox_1 = require("../utils/getWorldBoundingBox");
 const utils_1 = require("../utils");
+function setCenterPosInContextGeoByFloors(contextGeo, floorNodes, cb) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const roomNodes = [];
+        cb(`0/3 room progress: loading rooms from floors`);
+        for (const floorNode of floorNodes) {
+            const rooms = yield floorNode.getChildrenInContext(contextGeo);
+            roomNodes.push(...rooms);
+        }
+        yield processRoomNodesCenterPos(roomNodes, contextGeo, cb);
+    });
+}
 function setCenterPosInContextGeo(graph, cb) {
     return __awaiter(this, void 0, void 0, function* () {
         const context = yield (0, getContextSpatial_1.getContextSpatial)(graph);
@@ -54,6 +66,11 @@ function setCenterPosInContextGeo(graph, cb) {
         const roomNodes = yield context.find(relationNames, (node) => {
             return node.info.type.get() === Constant_1.GEO_ROOM_TYPE;
         });
+        yield processRoomNodesCenterPos(roomNodes, context, cb);
+    });
+}
+function processRoomNodesCenterPos(roomNodes, context, cb) {
+    return __awaiter(this, void 0, void 0, function* () {
         const roomArrProm = [];
         roomNodes.forEach((roomNode) => {
             roomArrProm.push(() => updateRoomPos(roomNode));
