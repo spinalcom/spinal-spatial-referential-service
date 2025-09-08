@@ -44,6 +44,20 @@ import { getFragIds } from '../utils/getFragIds';
 import { getWorldBoundingBox } from '../utils/getWorldBoundingBox';
 import { getModelByBimFileIdLoaded } from '../utils';
 
+export async function setCenterPosInContextGeoByFloors(
+  contextGeo: SpinalContext,
+  floorNodes: SpinalNode[],
+  cb: (msg: string) => void
+): Promise<void> {
+  const roomNodes: SpinalNode[] = [];
+  cb(`0/3 room progress: loading rooms from floors`);
+  for (const floorNode of floorNodes) {
+    const rooms = await floorNode.getChildrenInContext(contextGeo);
+    roomNodes.push(...rooms);
+  }
+  await processRoomNodesCenterPos(roomNodes, contextGeo, cb);
+}
+
 export async function setCenterPosInContextGeo(
   graph: SpinalGraph,
   cb: (msg: string) => void
@@ -59,6 +73,14 @@ export async function setCenterPosInContextGeo(
   const roomNodes = await context.find(relationNames, (node: SpinalNode) => {
     return node.info.type.get() === GEO_ROOM_TYPE;
   });
+  await processRoomNodesCenterPos(roomNodes, context, cb);
+}
+
+async function processRoomNodesCenterPos(
+  roomNodes: SpinalNode<any>[],
+  context: SpinalContext<any>,
+  cb: (msg: string) => void
+) {
   const roomArrProm = [];
   roomNodes.forEach((roomNode) => {
     roomArrProm.push(() => updateRoomPos(roomNode));
@@ -97,8 +119,7 @@ async function updateRoomPos(roomNode: SpinalNode): Promise<void> {
         const bbox = getWorldBoundingBox(fragIds, model);
         if (!roomBbox) roomBbox = bbox;
         else roomBbox.union(bbox);
-      }
-      catch (e) {
+      } catch (e) {
         console.error(e);
       }
     }
