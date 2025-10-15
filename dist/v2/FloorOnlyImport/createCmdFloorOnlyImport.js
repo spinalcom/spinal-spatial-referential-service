@@ -69,7 +69,7 @@ function createCmdFloorOnlyImport(bimGeoContext, floorOnlyItems, bimFileId) {
                     }
                 }
             }
-            else if (matchingNodeData.children.length > 0) {
+            else if ((matchingNodeData === null || matchingNodeData === void 0 ? void 0 : matchingNodeData.children.length) > 0) {
                 floorDataRes.push({
                     type: 'RefNode',
                     pNId: bimGeoContext.info.id.get(),

@@ -113,7 +113,7 @@ export async function createCmdFloorOnlyImport(
           });
         }
       }
-    } else if (matchingNodeData.children.length > 0) {
+    } else if (matchingNodeData?.children.length > 0) {
       floorDataRes.push({
         type: 'RefNode',
         pNId: bimGeoContext.info.id.get(),
