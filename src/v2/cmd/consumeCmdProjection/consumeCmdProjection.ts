@@ -170,8 +170,10 @@ async function* getOrCreateGenOutNode(
       contextGeneration
     );
   }
-  const children = await resNode.getChildrenInContext(contextGeneration);
-  while (true) yield { node: resNode, children };
+  while (true) {
+    const children = await resNode.getChildrenInContext(contextGeneration);
+    yield { node: resNode, children };
+  }
 }
 
 async function consumeCmdMissingProj(

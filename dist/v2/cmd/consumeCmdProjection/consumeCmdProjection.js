@@ -121,9 +121,10 @@ function getOrCreateGenOutNode(contextGeneration, nodeGeneration, type) {
             resNode = new spinal_model_graph_1.SpinalNode(type, `GenerationContextType`);
             nodeGeneration.addChildInContext(resNode, 'hasGenerationContextType', spinal_model_graph_1.SPINAL_RELATION_PTR_LST_TYPE, contextGeneration);
         }
-        const children = yield __await(resNode.getChildrenInContext(contextGeneration));
-        while (true)
+        while (true) {
+            const children = yield __await(resNode.getChildrenInContext(contextGeneration));
             yield yield __await({ node: resNode, children });
+        }
     });
 }
 function consumeCmdMissingProj(errorGen, contextGeo, cmd, bimContext, bimobjs, contextGeneration, callbackProg) {
