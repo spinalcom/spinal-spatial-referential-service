@@ -77,8 +77,6 @@ function getIntersects(projectionGroupConfig, mergedRoomRef) {
                     projectionGroupConfig.progress = ((start + idx + 1) / total) * 66;
                 }
             }
-            console.log('selection', selection);
-            debugger;
             const intersects = yield (0, raycastItemToMesh_1.raycastItemToMesh)(selection, mergedRoomRef, (0, getViewer_1.getViewer)());
             projectionGroupConfig.progress = 100;
             return { selection, intersects };

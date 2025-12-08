@@ -83,8 +83,6 @@ export async function getIntersects(
         projectionGroupConfig.progress = ((start + idx + 1) / total) * 66;
       }
     }
-    console.log('selection', selection);
-    debugger;
     const intersects = await raycastItemToMesh(
       selection,
       mergedRoomRef,
