@@ -23,6 +23,7 @@
  */
 import { ProjectionGroup } from '../ProjectionItem/ProjectionGroup';
 import {
+  type Bool,
   type Lst,
   type Str,
   FileSystem,
@@ -37,6 +38,7 @@ export class ProjectionGroupModel extends Model {
   offset: ProjectionOffsetModel;
   uid: Str;
   data: Lst<ProjectionGroupItemModel>;
+  stopAtLeaf: Bool;
 
   constructor(projectionGroup?: ProjectionGroup) {
     super();
@@ -45,6 +47,7 @@ export class ProjectionGroupModel extends Model {
     this.add_attr('uid', projectionGroup.uid);
     this.add_attr('offset', new ProjectionOffsetModel(projectionGroup.offset));
     this.add_attr('data', []);
+    this.add_attr('stopAtLeaf', projectionGroup.stopAtLeaf || false);
   }
   private async updateData(projectionGroup: ProjectionGroup): Promise<this> {
     const promises: Promise<ProjectionGroupItemModel>[] = [];
@@ -82,11 +85,20 @@ export class ProjectionGroupModel extends Model {
     this.name.set(projectionGroup.name);
     this.uid.set(projectionGroup.uid);
     this.offset.update(projectionGroup.offset);
+    this.offset.update(projectionGroup.offset);
+    if (typeof projectionGroup.stopAtLeaf === 'undefined') {
+      this.add_attr('stopAtLeaf', projectionGroup.stopAtLeaf);
+    } else {
+      this.stopAtLeaf.set(projectionGroup.stopAtLeaf);
+    }
     return this.updateData(projectionGroup);
   }
 
   async toUxModel(): Promise<ProjectionGroup> {
-    const projectionGroup = new ProjectionGroup(this.name.get());
+    const projectionGroup = new ProjectionGroup(
+      this.name.get(),
+      this.stopAtLeaf?.get() || false
+    );
     projectionGroup.offset = this.offset.get();
     projectionGroup.uid = this.uid.get();
     const promises: ReturnType<ProjectionGroupItemModel['toUxModel']>[] = [];

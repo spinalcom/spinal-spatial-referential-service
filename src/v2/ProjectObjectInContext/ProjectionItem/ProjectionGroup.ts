@@ -37,9 +37,11 @@ export class ProjectionGroup {
   )}`;
   data: IAggregateSelectItem[] = [];
   computedData: IProjectionGroupItem[] = [];
+  stopAtLeaf: boolean = false;
 
-  constructor(name: string) {
+  constructor(name: string, stopAtLeaf: boolean = false) {
     this.name = name;
+    this.stopAtLeaf = stopAtLeaf;
   }
 
   async getAndMergeSelection(viewer: Autodesk.Viewing.Viewer3D): Promise<void> {

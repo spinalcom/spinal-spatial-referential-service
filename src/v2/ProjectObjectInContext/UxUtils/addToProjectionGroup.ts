@@ -25,6 +25,10 @@
 import { ProjectionGroup } from '../ProjectionItem/ProjectionGroup';
 import type { TProjectionLst } from '../../interfaces/TProjectionLst';
 
-export function addToProjectionGroup(list: TProjectionLst, name: string): void {
-  list.push(new ProjectionGroup(name));
+export function addToProjectionGroup(
+  list: TProjectionLst,
+  name: string,
+  stopAtLeaf: boolean
+): void {
+  list.push(new ProjectionGroup(name, stopAtLeaf));
 }

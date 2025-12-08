@@ -46,6 +46,7 @@ class ProjectionGroupModel extends spinal_core_connectorjs_1.Model {
         this.add_attr('uid', projectionGroup.uid);
         this.add_attr('offset', new ProjectionOffsetModel_1.ProjectionOffsetModel(projectionGroup.offset));
         this.add_attr('data', []);
+        this.add_attr('stopAtLeaf', projectionGroup.stopAtLeaf || false);
     }
     updateData(projectionGroup) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -85,11 +86,19 @@ class ProjectionGroupModel extends spinal_core_connectorjs_1.Model {
         this.name.set(projectionGroup.name);
         this.uid.set(projectionGroup.uid);
         this.offset.update(projectionGroup.offset);
+        this.offset.update(projectionGroup.offset);
+        if (typeof projectionGroup.stopAtLeaf === 'undefined') {
+            this.add_attr('stopAtLeaf', projectionGroup.stopAtLeaf);
+        }
+        else {
+            this.stopAtLeaf.set(projectionGroup.stopAtLeaf);
+        }
         return this.updateData(projectionGroup);
     }
     toUxModel() {
         return __awaiter(this, void 0, void 0, function* () {
-            const projectionGroup = new ProjectionGroup_1.ProjectionGroup(this.name.get());
+            var _a;
+            const projectionGroup = new ProjectionGroup_1.ProjectionGroup(this.name.get(), ((_a = this.stopAtLeaf) === null || _a === void 0 ? void 0 : _a.get()) || false);
             projectionGroup.offset = this.offset.get();
             projectionGroup.uid = this.uid.get();
             const promises = [];

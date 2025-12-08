@@ -33,6 +33,7 @@ import { transformRtzToXyz } from '../../utils/projection/transformRtzToXyz';
 import { isProjectionGroup } from '../../utils/projection/isProjectionGroup';
 import { getModelByModelId } from '../../utils/projection/getModelByModelId';
 import { getViewer } from '../../utils/getViewer';
+import { getAll3dbIdsByModel } from '../../utils/projection/getAll3dbIdsByModel';
 
 export async function getIntersects(
   projectionGroupConfig: ProjectionGroupConfig,
@@ -41,30 +42,49 @@ export async function getIntersects(
   const selection: IAggregateDbidByModelItem[] = [];
   projectionGroupConfig.progress = 0;
   try {
-    for (let idx = 0; idx < projectionGroupConfig.data.length; idx++) {
-      const itemToProj = projectionGroupConfig.data[idx];
-      const _offset = transformRtzToXyz(itemToProj.offset);
-      if (isProjectionGroup(itemToProj)) {
-        for (const itm of itemToProj.computedData) {
-          const model = getModelByModelId(itm.modelId);
-          const ids = getLeafDbIdsByModel(model, itm.dbId);
-          if (ids.length === 0) continue;
-          pushToAggregateDbidByModel(selection, ids, model, _offset, itm.dbId);
+    const chunkSize = 50;
+    const total = projectionGroupConfig.data.length;
+    for (let start = 0; start < total; start += chunkSize) {
+      const end = Math.min(start + chunkSize, total);
+      const chunk = projectionGroupConfig.data.slice(start, end);
+
+      for (let idx = 0; idx < chunk.length; idx++) {
+        const itemToProj = chunk[idx];
+        const _offset = transformRtzToXyz(itemToProj.offset);
+        if (isProjectionGroup(itemToProj)) {
+          for (const itm of itemToProj.computedData) {
+            const model = getModelByModelId(itm.modelId);
+            let ids: number[] = [];
+            if (itemToProj.stopAtLeaf === true) {
+              ids = getLeafDbIdsByModel(model, itm.dbId);
+            } else {
+              ids = await getAll3dbIdsByModel(model, itm.dbId);
+            }
+            if (ids.length === 0) continue;
+            pushToAggregateDbidByModel(
+              selection,
+              ids,
+              model,
+              _offset,
+              itm.dbId
+            );
+          }
+        } else {
+          const model = getModelByModelId(itemToProj.modelId);
+          const ids = getLeafDbIdsByModel(model, itemToProj.dbId);
+          pushToAggregateDbidByModel(
+            selection,
+            ids,
+            model,
+            _offset,
+            itemToProj.dbId
+          );
         }
-      } else {
-        const model = getModelByModelId(itemToProj.modelId);
-        const ids = getLeafDbIdsByModel(model, itemToProj.dbId);
-        pushToAggregateDbidByModel(
-          selection,
-          ids,
-          model,
-          _offset,
-          itemToProj.dbId
-        );
+        projectionGroupConfig.progress = ((start + idx + 1) / total) * 66;
       }
-      projectionGroupConfig.progress =
-        (projectionGroupConfig.data.length / (idx + 1)) * 66;
     }
+    console.log('selection', selection);
+    debugger;
     const intersects = await raycastItemToMesh(
       selection,
       mergedRoomRef,

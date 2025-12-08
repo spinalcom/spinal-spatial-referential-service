@@ -40,31 +40,45 @@ const transformRtzToXyz_1 = require("../../utils/projection/transformRtzToXyz");
 const isProjectionGroup_1 = require("../../utils/projection/isProjectionGroup");
 const getModelByModelId_1 = require("../../utils/projection/getModelByModelId");
 const getViewer_1 = require("../../utils/getViewer");
+const getAll3dbIdsByModel_1 = require("../../utils/projection/getAll3dbIdsByModel");
 function getIntersects(projectionGroupConfig, mergedRoomRef) {
     return __awaiter(this, void 0, void 0, function* () {
         const selection = [];
         projectionGroupConfig.progress = 0;
         try {
-            for (let idx = 0; idx < projectionGroupConfig.data.length; idx++) {
-                const itemToProj = projectionGroupConfig.data[idx];
-                const _offset = (0, transformRtzToXyz_1.transformRtzToXyz)(itemToProj.offset);
-                if ((0, isProjectionGroup_1.isProjectionGroup)(itemToProj)) {
-                    for (const itm of itemToProj.computedData) {
-                        const model = (0, getModelByModelId_1.getModelByModelId)(itm.modelId);
-                        const ids = (0, getLeafDbIdsByModel_1.getLeafDbIdsByModel)(model, itm.dbId);
-                        if (ids.length === 0)
-                            continue;
-                        pushToAggregateDbidByModel(selection, ids, model, _offset, itm.dbId);
+            const chunkSize = 50;
+            const total = projectionGroupConfig.data.length;
+            for (let start = 0; start < total; start += chunkSize) {
+                const end = Math.min(start + chunkSize, total);
+                const chunk = projectionGroupConfig.data.slice(start, end);
+                for (let idx = 0; idx < chunk.length; idx++) {
+                    const itemToProj = chunk[idx];
+                    const _offset = (0, transformRtzToXyz_1.transformRtzToXyz)(itemToProj.offset);
+                    if ((0, isProjectionGroup_1.isProjectionGroup)(itemToProj)) {
+                        for (const itm of itemToProj.computedData) {
+                            const model = (0, getModelByModelId_1.getModelByModelId)(itm.modelId);
+                            let ids = [];
+                            if (itemToProj.stopAtLeaf === true) {
+                                ids = (0, getLeafDbIdsByModel_1.getLeafDbIdsByModel)(model, itm.dbId);
+                            }
+                            else {
+                                ids = yield (0, getAll3dbIdsByModel_1.getAll3dbIdsByModel)(model, itm.dbId);
+                            }
+                            if (ids.length === 0)
+                                continue;
+                            pushToAggregateDbidByModel(selection, ids, model, _offset, itm.dbId);
+                        }
                     }
+                    else {
+                        const model = (0, getModelByModelId_1.getModelByModelId)(itemToProj.modelId);
+                        const ids = (0, getLeafDbIdsByModel_1.getLeafDbIdsByModel)(model, itemToProj.dbId);
+                        pushToAggregateDbidByModel(selection, ids, model, _offset, itemToProj.dbId);
+                    }
+                    projectionGroupConfig.progress = ((start + idx + 1) / total) * 66;
                 }
-                else {
-                    const model = (0, getModelByModelId_1.getModelByModelId)(itemToProj.modelId);
-                    const ids = (0, getLeafDbIdsByModel_1.getLeafDbIdsByModel)(model, itemToProj.dbId);
-                    pushToAggregateDbidByModel(selection, ids, model, _offset, itemToProj.dbId);
-                }
-                projectionGroupConfig.progress =
-                    (projectionGroupConfig.data.length / (idx + 1)) * 66;
             }
+            console.log('selection', selection);
+            debugger;
             const intersects = yield (0, raycastItemToMesh_1.raycastItemToMesh)(selection, mergedRoomRef, (0, getViewer_1.getViewer)());
             projectionGroupConfig.progress = 100;
             return { selection, intersects };
