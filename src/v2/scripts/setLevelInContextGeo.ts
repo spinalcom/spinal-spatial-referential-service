@@ -72,11 +72,11 @@ export async function setLevelInContextGeo(graph: SpinalGraph) {
 
       for (const room of rooms) {
         proms.push(setLevelAttr(room, floorName));
-        // // uncomment to add Attr to refobjs
-        // const refsRoom = await room.getChildren(GEO_REFERENCE_ROOM_RELATION);
-        // for (const ref of refsRoom) {
-        //   proms.push(setLevelAttr(ref, floorName));
-        // }
+        // // uncomment to add Attr to bimObjs
+        const bimObjs = await room.getChildrenInContext(context);
+        for (const bimObj of bimObjs) {
+          proms.push(setLevelAttr(bimObj, floorName));
+        }
       }
       await Promise.all(proms);
     }
