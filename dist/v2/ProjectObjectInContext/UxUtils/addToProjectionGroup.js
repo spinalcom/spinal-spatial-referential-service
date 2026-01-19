@@ -25,7 +25,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addToProjectionGroup = addToProjectionGroup;
 const ProjectionGroup_1 = require("../ProjectionItem/ProjectionGroup");
-function addToProjectionGroup(list, name, stopAtLeaf) {
-    list.push(new ProjectionGroup_1.ProjectionGroup(name, stopAtLeaf));
+function addToProjectionGroup(list, name, stopAtLeaf, aproximateByLevel = true) {
+    list.push(new ProjectionGroup_1.ProjectionGroup(name, stopAtLeaf, aproximateByLevel));
 }
 //# sourceMappingURL=addToProjectionGroup.js.map

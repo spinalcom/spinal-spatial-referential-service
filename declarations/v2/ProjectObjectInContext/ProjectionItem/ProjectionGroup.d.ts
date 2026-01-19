@@ -8,7 +8,8 @@ export declare class ProjectionGroup {
     data: IAggregateSelectItem[];
     computedData: IProjectionGroupItem[];
     stopAtLeaf: boolean;
-    constructor(name: string, stopAtLeaf?: boolean);
+    aproximateByLevel: boolean;
+    constructor(name: string, stopAtLeaf?: boolean, aproximateByLevel?: boolean);
     getAndMergeSelection(viewer: Autodesk.Viewing.Viewer3D): Promise<void>;
     updateComputed(): Promise<void>;
     deleteItem(item: {

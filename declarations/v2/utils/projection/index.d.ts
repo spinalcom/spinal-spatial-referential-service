@@ -1,3 +1,5 @@
+export * from './getAll3dbIdsByModel';
+export * from './getAllModelLoaded';
 export * from './getBBoxAndMatrixs';
 export * from './getBBoxAndMatrix';
 export * from './getBimFileIdByModelId';
@@ -10,6 +12,7 @@ export * from './getModelByBimFileIdLoaded';
 export * from './getModelByModelId';
 export * from './getModifiedWorldBoundingBox';
 export * from './getPointOffset';
+export * from './getProperties';
 export * from './getPropItemFromPropPath';
 export * from './getPropPath';
 export * from './isProjectionGroup';

@@ -29,6 +29,8 @@ import { addProjectItem } from './addProjectItem';
 
 export async function addSelectionToList(
   list: TProjectionLst,
+  stopAtLeaf: boolean,
+  aproximateByLevel: boolean,
   viewer: Autodesk.Viewing.Viewer3D
 ): Promise<void> {
   const aggregateSelection: readonly IAuAggregateSelectItem[] =
@@ -37,7 +39,7 @@ export async function addSelectionToList(
     const props = await getBulkProperties(select.model, select.selection);
     const prom: Promise<void>[] = [];
     for (const prop of props) {
-      prom.push(addProjectItem(list, prop));
+      prom.push(addProjectItem(list, prop, stopAtLeaf, aproximateByLevel));
     }
     await Promise.all(prom);
   }

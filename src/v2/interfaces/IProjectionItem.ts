@@ -32,4 +32,5 @@ export interface IProjectionItem {
   dbId: number;
   id: string;
   properties: Autodesk.Viewing.Property[];
+  stopAtLeaf?: boolean;
 }

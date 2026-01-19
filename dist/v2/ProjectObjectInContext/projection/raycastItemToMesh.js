@@ -33,6 +33,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.raycastItemToMesh = raycastItemToMesh;
+exports.getCenterObjects = getCenterObjects;
+exports.getMeshsData = getMeshsData;
 const utils_1 = require("../../utils");
 const getModifiedWorldBoundingBox_1 = require("../../utils/projection/getModifiedWorldBoundingBox");
 const getPointOffset_1 = require("../../utils/projection/getPointOffset");
@@ -40,14 +42,13 @@ const getFragIds_1 = require("../../utils/getFragIds");
 // raycast job don't use webworker
 const raycastJob_1 = require("../rayUtils/raycastJob");
 // also raycast job but use webworker
-function raycastItemToMesh(from, to, viewer) {
-    return __awaiter(this, void 0, void 0, function* () {
+function raycastItemToMesh(from_1, to_1) {
+    return __awaiter(this, arguments, void 0, function* (from, to, viewer = (0, utils_1.getViewer)()) {
         try {
             const [centerPoints, geometries] = yield Promise.all([
                 getCenterObjects(from, viewer),
                 getMeshsData(to, viewer),
             ]);
-            console.log('raycastItemToMesh', centerPoints, geometries);
             return (0, raycastJob_1.raycastJob)({ centerPoints, geometries });
         }
         catch (e) {
@@ -59,15 +60,15 @@ function raycastItemToMesh(from, to, viewer) {
 function getCenterObjects(array, viewer) {
     const res = [];
     for (const obj of array) {
-        for (const { dbId, offset } of obj.dbId) {
+        for (const item of obj.dbId) {
             // add offset here
-            const center = getCenter(dbId, offset, obj.model, viewer);
+            const center = getCenter(item.dbId, item.offset, obj.model, viewer, item.levelDbId);
             res.push(center);
         }
     }
     return Promise.all(res);
 }
-function getCenter(dbId, offset, model, viewer) {
+function getCenter(dbId, offset, model, viewer, levelDbId) {
     return __awaiter(this, void 0, void 0, function* () {
         const { matrixWorld, bbox } = yield (0, utils_1.getBBoxAndMatrix)(dbId, model, viewer);
         const center = new THREE.Vector3();
@@ -76,6 +77,7 @@ function getCenter(dbId, offset, model, viewer) {
             dbId,
             modelId: model.id,
             center: (0, getPointOffset_1.getPointOffset)(center, offset, matrixWorld),
+            levelDbId,
         };
     });
 }

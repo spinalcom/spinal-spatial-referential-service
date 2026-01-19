@@ -29,7 +29,9 @@ import { ProjectionItem } from '../ProjectionItem/ProjectionItem';
 
 export async function addProjectItem(
   list: TProjectionLst,
-  prop: AuProps
+  prop: AuProps,
+  stopAtLeaf: boolean,
+  aproximateByLevel: boolean
 ): Promise<void> {
   let found = false;
   const promRemove: Promise<void>[] = [];
@@ -52,7 +54,9 @@ export async function addProjectItem(
         prop.modelId,
         prop.dbId,
         prop.properties,
-        prop.externalId
+        prop.externalId,
+        stopAtLeaf,
+        aproximateByLevel
       )
     );
   }

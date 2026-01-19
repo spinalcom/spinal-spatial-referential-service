@@ -36,18 +36,9 @@ export function getFragIds(
       },
       false
     );
-    // wait 1s or 2 if not yet done
-    setTimeout(() => {
-      if (ids.length === 0) {
-        setTimeout(() => {
-          if (ids.length === 0) {
-            return reject(`no fragIds found for dbId ${dbId}`);
-          }
-          resolve(ids);
-        }, 1000);
-        return;
-      }
-      resolve(ids);
-    }, 500);
+    if (ids.length === 0) {
+      return reject(`no fragIds found for dbId ${dbId}`);
+    }
+    resolve(ids);
   });
 }

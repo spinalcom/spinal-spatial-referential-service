@@ -37,6 +37,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./getAll3dbIdsByModel"), exports);
+__exportStar(require("./getAllModelLoaded"), exports);
 __exportStar(require("./getBBoxAndMatrixs"), exports);
 __exportStar(require("./getBBoxAndMatrix"), exports);
 __exportStar(require("./getBimFileIdByModelId"), exports);
@@ -49,6 +51,7 @@ __exportStar(require("./getModelByBimFileIdLoaded"), exports);
 __exportStar(require("./getModelByModelId"), exports);
 __exportStar(require("./getModifiedWorldBoundingBox"), exports);
 __exportStar(require("./getPointOffset"), exports);
+__exportStar(require("./getProperties"), exports);
 __exportStar(require("./getPropItemFromPropPath"), exports);
 __exportStar(require("./getPropPath"), exports);
 __exportStar(require("./isProjectionGroup"), exports);

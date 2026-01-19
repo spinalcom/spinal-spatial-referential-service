@@ -29,7 +29,7 @@ import type { SpinalVec3 } from '../../interfaces/SpinalVec3';
 import type { IMeshData } from '../../interfaces/IMeshData';
 import type { IDbIdMeshData } from '../../interfaces/IDbIdMeshData';
 import type { IDbIdCenter } from '../../interfaces/IDbIdCenter';
-import { getBBoxAndMatrix } from '../../utils';
+import { getBBoxAndMatrix, getViewer } from '../../utils';
 import { getModifiedWorldBoundingBox } from '../../utils/projection/getModifiedWorldBoundingBox';
 import { getPointOffset } from '../../utils/projection/getPointOffset';
 import { getFragIds } from '../../utils/getFragIds';
@@ -41,14 +41,13 @@ import { raycastJob } from '../rayUtils/raycastJob';
 export async function raycastItemToMesh(
   from: IAggregateDbidByModelItem[],
   to: IAggregateDbidSetByModelItem[],
-  viewer: Autodesk.Viewing.Viewer3D
+  viewer: Autodesk.Viewing.Viewer3D = getViewer()
 ): Promise<IRaycastIntersectRes[]> {
   try {
     const [centerPoints, geometries] = await Promise.all([
       getCenterObjects(from, viewer),
       getMeshsData(to, viewer),
     ]);
-    console.log('raycastItemToMesh', centerPoints, geometries);
     return raycastJob({ centerPoints, geometries });
   } catch (e) {
     console.error(e);
@@ -56,15 +55,21 @@ export async function raycastItemToMesh(
   }
 }
 
-function getCenterObjects(
+export function getCenterObjects(
   array: IAggregateDbidByModelItem[],
   viewer: Autodesk.Viewing.Viewer3D
 ): Promise<IDbIdCenter[]> {
   const res: Promise<IDbIdCenter>[] = [];
   for (const obj of array) {
-    for (const { dbId, offset } of obj.dbId) {
+    for (const item of obj.dbId) {
       // add offset here
-      const center = getCenter(dbId, offset, obj.model, viewer);
+      const center = getCenter(
+        item.dbId,
+        item.offset,
+        obj.model,
+        viewer,
+        item.levelDbId
+      );
       res.push(center);
     }
   }
@@ -75,7 +80,8 @@ async function getCenter(
   dbId: number,
   offset: SpinalVec3,
   model: Autodesk.Viewing.Model,
-  viewer: Autodesk.Viewing.Viewer3D
+  viewer: Autodesk.Viewing.Viewer3D,
+  levelDbId?: number
 ): Promise<IDbIdCenter> {
   const { matrixWorld, bbox } = await getBBoxAndMatrix(dbId, model, viewer);
   const center = new THREE.Vector3();
@@ -84,10 +90,11 @@ async function getCenter(
     dbId,
     modelId: model.id,
     center: getPointOffset(center, offset, matrixWorld),
+    levelDbId,
   };
 }
 
-async function getMeshsData(
+export async function getMeshsData(
   array: IAggregateDbidSetByModelItem[],
   viewer: Autodesk.Viewing.Viewer3D
 ): Promise<IDbIdMeshData[]> {

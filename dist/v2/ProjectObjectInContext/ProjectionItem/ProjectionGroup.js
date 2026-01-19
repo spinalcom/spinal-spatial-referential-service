@@ -36,14 +36,16 @@ exports.ProjectionGroup = void 0;
 const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
 const getModelByModelId_1 = require("../../utils/projection/getModelByModelId");
 class ProjectionGroup {
-    constructor(name, stopAtLeaf = false) {
+    constructor(name, stopAtLeaf = false, aproximateByLevel = false) {
         this.offset = { r: 0, t: 0, z: 0 };
         this.uid = `${Date.now()}-${Math.round(Math.random() * 10000)}-${Math.round(Math.random() * 10000)}`;
         this.data = [];
         this.computedData = [];
         this.stopAtLeaf = false;
+        this.aproximateByLevel = false;
         this.name = name;
         this.stopAtLeaf = stopAtLeaf;
+        this.aproximateByLevel = aproximateByLevel;
     }
     getAndMergeSelection(viewer) {
         return __awaiter(this, void 0, void 0, function* () {

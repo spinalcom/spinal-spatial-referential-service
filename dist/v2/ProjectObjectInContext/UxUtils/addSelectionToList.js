@@ -35,14 +35,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addSelectionToList = addSelectionToList;
 const getBulkProperties_1 = require("../../utils/projection/getBulkProperties");
 const addProjectItem_1 = require("./addProjectItem");
-function addSelectionToList(list, viewer) {
+function addSelectionToList(list, stopAtLeaf, aproximateByLevel, viewer) {
     return __awaiter(this, void 0, void 0, function* () {
         const aggregateSelection = viewer.getAggregateSelection();
         for (const select of aggregateSelection) {
             const props = yield (0, getBulkProperties_1.getBulkProperties)(select.model, select.selection);
             const prom = [];
             for (const prop of props) {
-                prom.push((0, addProjectItem_1.addProjectItem)(list, prop));
+                prom.push((0, addProjectItem_1.addProjectItem)(list, prop, stopAtLeaf, aproximateByLevel));
             }
             yield Promise.all(prom);
         }

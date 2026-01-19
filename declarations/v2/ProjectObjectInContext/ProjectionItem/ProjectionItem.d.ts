@@ -9,6 +9,8 @@ export declare class ProjectionItem implements IProjectionItem {
     dbId: number;
     id: string;
     properties: Autodesk.Viewing.Property[];
-    constructor(name: string, modelId: number, dbId: number, properties: Autodesk.Viewing.Property[], externalId: string);
+    stopAtLeaf: boolean;
+    aproximateByLevel: boolean;
+    constructor(name: string, modelId: number, dbId: number, properties: Autodesk.Viewing.Property[], externalId: string, stopAtLeaf?: boolean, aproximateByLevel?: boolean);
     selectItem(viewer: Autodesk.Viewing.Viewer3D): void;
 }

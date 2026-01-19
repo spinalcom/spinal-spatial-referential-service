@@ -39,7 +39,7 @@ export class ProjectionGroupModel extends Model {
   uid: Str;
   data: Lst<ProjectionGroupItemModel>;
   stopAtLeaf: Bool;
-
+  aproximateByLevel: Bool;
   constructor(projectionGroup?: ProjectionGroup) {
     super();
     if (FileSystem._sig_server === false) return;
@@ -48,6 +48,10 @@ export class ProjectionGroupModel extends Model {
     this.add_attr('offset', new ProjectionOffsetModel(projectionGroup.offset));
     this.add_attr('data', []);
     this.add_attr('stopAtLeaf', projectionGroup.stopAtLeaf || false);
+    this.add_attr(
+      'aproximateByLevel',
+      projectionGroup.aproximateByLevel || false
+    );
   }
   private async updateData(projectionGroup: ProjectionGroup): Promise<this> {
     const promises: Promise<ProjectionGroupItemModel>[] = [];
@@ -86,10 +90,15 @@ export class ProjectionGroupModel extends Model {
     this.uid.set(projectionGroup.uid);
     this.offset.update(projectionGroup.offset);
     this.offset.update(projectionGroup.offset);
-    if (typeof projectionGroup.stopAtLeaf === 'undefined') {
+    if (typeof this.stopAtLeaf === 'undefined') {
       this.add_attr('stopAtLeaf', projectionGroup.stopAtLeaf);
     } else {
       this.stopAtLeaf.set(projectionGroup.stopAtLeaf);
+    }
+    if (typeof this.aproximateByLevel === 'undefined') {
+      this.add_attr('aproximateByLevel', projectionGroup.aproximateByLevel);
+    } else {
+      this.aproximateByLevel.set(projectionGroup.aproximateByLevel);
     }
     return this.updateData(projectionGroup);
   }
@@ -97,7 +106,8 @@ export class ProjectionGroupModel extends Model {
   async toUxModel(): Promise<ProjectionGroup> {
     const projectionGroup = new ProjectionGroup(
       this.name.get(),
-      this.stopAtLeaf?.get() || false
+      this.stopAtLeaf?.get() || false,
+      this.aproximateByLevel?.get() || false
     );
     projectionGroup.offset = this.offset.get();
     projectionGroup.uid = this.uid.get();

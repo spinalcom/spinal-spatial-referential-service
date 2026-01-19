@@ -45,11 +45,17 @@ export * from './projectionConfig/removeConfigFromContext';
 
 export * from './rayUtils/enumMeshTriangles';
 
-export * from './projection/getIntersects';
-export * from './projection/raycastItemToMesh';
+export * from './projection/aproximateItemsToFloors';
+export * from './projection/getBulkProperties_withOptions';
+export * from './projection/getOrCreateProjectionFloorConfig';
+export * from './projection/getRoomRef';
+export * from './projection/initFloorAssign';
 export * from './projection/mergeIntersectRes';
 export * from './projection/mergeRoomRef';
-export * from './projection/getRoomRef';
+export * from './projection/prepareIntersects';
+export * from './projection/pushToAggregateDbidByModel';
+export * from './projection/raycastItemToMesh';
+export * from './projection/updateProjectionFloorConfig';
 
 export * from './assignFloor/getRefFloorZMinMax';
 export * from './assignFloor/getFloorChildrenDbIdOfModel';
@@ -61,3 +67,5 @@ export * from './assignView/getSpatialTree';
 export * from './assignView/getDataAssing';
 export * from './assignView/viewDataAssignInViewer';
 export * from './assignView/getRoomNameFromSelectFloor';
+
+export * from './projectionTest/ProjectionTester';

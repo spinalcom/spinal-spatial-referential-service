@@ -26,15 +26,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectionItem = void 0;
 const getModelByModelId_1 = require("../../utils/projection/getModelByModelId");
 class ProjectionItem {
-    constructor(name, modelId, dbId, properties, externalId) {
+    constructor(name, modelId, dbId, properties, externalId, stopAtLeaf = false, aproximateByLevel = false) {
         this.offset = { r: 0, t: 0, z: 0 };
         this.uid = `${Date.now()}-${Math.round(Math.random() * 10000)}-${Math.round(Math.random() * 10000)}`;
+        this.stopAtLeaf = false;
+        this.aproximateByLevel = false;
         this.name = name;
         this.modelId = modelId;
         this.dbId = dbId;
         this.id = `${modelId}-${dbId}`;
         this.properties = properties;
         this.externalId = externalId;
+        this.stopAtLeaf = stopAtLeaf;
+        this.aproximateByLevel = aproximateByLevel;
     }
     selectItem(viewer) {
         const model = (0, getModelByModelId_1.getModelByModelId)(this.modelId);

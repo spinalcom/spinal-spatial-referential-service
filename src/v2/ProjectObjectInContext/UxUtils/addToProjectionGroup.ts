@@ -28,7 +28,8 @@ import type { TProjectionLst } from '../../interfaces/TProjectionLst';
 export function addToProjectionGroup(
   list: TProjectionLst,
   name: string,
-  stopAtLeaf: boolean
+  stopAtLeaf: boolean,
+  aproximateByLevel: boolean = true
 ): void {
-  list.push(new ProjectionGroup(name, stopAtLeaf));
+  list.push(new ProjectionGroup(name, stopAtLeaf, aproximateByLevel));
 }

@@ -8,6 +8,7 @@ export declare class ProjectionGroupModel extends Model {
     uid: Str;
     data: Lst<ProjectionGroupItemModel>;
     stopAtLeaf: Bool;
+    aproximateByLevel: Bool;
     constructor(projectionGroup?: ProjectionGroup);
     private updateData;
     update(projectionGroup: ProjectionGroup): Promise<this>;

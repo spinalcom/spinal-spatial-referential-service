@@ -37,12 +37,17 @@ export class ProjectionItem implements IProjectionItem {
   dbId: number;
   id: string;
   properties: Autodesk.Viewing.Property[];
+  stopAtLeaf = false;
+  aproximateByLevel = false;
+
   constructor(
     name: string,
     modelId: number,
     dbId: number,
     properties: Autodesk.Viewing.Property[],
-    externalId: string
+    externalId: string,
+    stopAtLeaf: boolean = false,
+    aproximateByLevel: boolean = false
   ) {
     this.name = name;
     this.modelId = modelId;
@@ -50,6 +55,8 @@ export class ProjectionItem implements IProjectionItem {
     this.id = `${modelId}-${dbId}`;
     this.properties = properties;
     this.externalId = externalId;
+    this.stopAtLeaf = stopAtLeaf;
+    this.aproximateByLevel = aproximateByLevel;
   }
   selectItem(viewer: Autodesk.Viewing.Viewer3D) {
     const model = getModelByModelId(this.modelId);

@@ -47,6 +47,7 @@ class ProjectionGroupModel extends spinal_core_connectorjs_1.Model {
         this.add_attr('offset', new ProjectionOffsetModel_1.ProjectionOffsetModel(projectionGroup.offset));
         this.add_attr('data', []);
         this.add_attr('stopAtLeaf', projectionGroup.stopAtLeaf || false);
+        this.add_attr('aproximateByLevel', projectionGroup.aproximateByLevel || false);
     }
     updateData(projectionGroup) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -87,18 +88,24 @@ class ProjectionGroupModel extends spinal_core_connectorjs_1.Model {
         this.uid.set(projectionGroup.uid);
         this.offset.update(projectionGroup.offset);
         this.offset.update(projectionGroup.offset);
-        if (typeof projectionGroup.stopAtLeaf === 'undefined') {
+        if (typeof this.stopAtLeaf === 'undefined') {
             this.add_attr('stopAtLeaf', projectionGroup.stopAtLeaf);
         }
         else {
             this.stopAtLeaf.set(projectionGroup.stopAtLeaf);
         }
+        if (typeof this.aproximateByLevel === 'undefined') {
+            this.add_attr('aproximateByLevel', projectionGroup.aproximateByLevel);
+        }
+        else {
+            this.aproximateByLevel.set(projectionGroup.aproximateByLevel);
+        }
         return this.updateData(projectionGroup);
     }
     toUxModel() {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            const projectionGroup = new ProjectionGroup_1.ProjectionGroup(this.name.get(), ((_a = this.stopAtLeaf) === null || _a === void 0 ? void 0 : _a.get()) || false);
+            var _a, _b;
+            const projectionGroup = new ProjectionGroup_1.ProjectionGroup(this.name.get(), ((_a = this.stopAtLeaf) === null || _a === void 0 ? void 0 : _a.get()) || false, ((_b = this.aproximateByLevel) === null || _b === void 0 ? void 0 : _b.get()) || false);
             projectionGroup.offset = this.offset.get();
             projectionGroup.uid = this.uid.get();
             const promises = [];

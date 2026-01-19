@@ -35,7 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addProjectItem = addProjectItem;
 const ProjectionGroup_1 = require("../ProjectionItem/ProjectionGroup");
 const ProjectionItem_1 = require("../ProjectionItem/ProjectionItem");
-function addProjectItem(list, prop) {
+function addProjectItem(list, prop, stopAtLeaf, aproximateByLevel) {
     return __awaiter(this, void 0, void 0, function* () {
         let found = false;
         const promRemove = [];
@@ -51,7 +51,7 @@ function addProjectItem(list, prop) {
             }
         }
         if (!found) {
-            list.push(new ProjectionItem_1.ProjectionItem(prop.name, prop.modelId, prop.dbId, prop.properties, prop.externalId));
+            list.push(new ProjectionItem_1.ProjectionItem(prop.name, prop.modelId, prop.dbId, prop.properties, prop.externalId, stopAtLeaf, aproximateByLevel));
         }
         yield Promise.all(promRemove);
     });

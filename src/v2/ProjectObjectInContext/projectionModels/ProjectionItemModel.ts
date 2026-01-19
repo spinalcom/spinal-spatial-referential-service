@@ -58,6 +58,7 @@ export class ProjectionItemModel extends Model {
     this.add_attr('uid', projectionItem.uid);
     this.add_attr('bimFileId', getBimFileIdByModelId(projectionItem.modelId));
     this.add_attr('offset', new ProjectionOffsetModel(projectionItem.offset));
+    this.add_attr('stopAtLeaf', projectionItem.stopAtLeaf || false);
   }
 
   async update(projectionItem: ProjectionItem): Promise<this> {
@@ -80,6 +81,16 @@ export class ProjectionItemModel extends Model {
       } else {
         this.externalId.set(projectionItem.externalId);
       }
+    }
+    if (typeof this.stopAtLeaf === 'undefined') {
+      this.add_attr('stopAtLeaf', projectionItem.stopAtLeaf);
+    } else {
+      this.stopAtLeaf.set(projectionItem.stopAtLeaf);
+    }
+    if (typeof this.aproximateByLevel === 'undefined') {
+      this.add_attr('aproximateByLevel', projectionItem.aproximateByLevel);
+    } else {
+      this.aproximateByLevel.set(projectionItem.aproximateByLevel);
     }
     return this;
   }
@@ -111,7 +122,9 @@ export class ProjectionItemModel extends Model {
         model.id,
         props.dbId,
         props.properties,
-        props.externalId
+        props.externalId,
+        this.stopAtLeaf?.get() || false,
+        this.aproximateByLevel?.get() || false
       );
     } else {
       const extMap = await getExternalIdMapping(model);
@@ -127,7 +140,9 @@ export class ProjectionItemModel extends Model {
         model.id,
         dbid,
         props[0].properties,
-        props[0].externalId
+        props[0].externalId,
+        this.stopAtLeaf?.get() || false,
+        this.aproximateByLevel?.get() || false
       );
     }
     projectionItem.uid = this.uid.get();

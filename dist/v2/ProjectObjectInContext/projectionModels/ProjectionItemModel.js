@@ -47,6 +47,7 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
         this.add_attr('uid', projectionItem.uid);
         this.add_attr('bimFileId', (0, utils_1.getBimFileIdByModelId)(projectionItem.modelId));
         this.add_attr('offset', new ProjectionOffsetModel_1.ProjectionOffsetModel(projectionItem.offset));
+        this.add_attr('stopAtLeaf', projectionItem.stopAtLeaf || false);
     }
     update(projectionItem) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -73,11 +74,24 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
                     this.externalId.set(projectionItem.externalId);
                 }
             }
+            if (typeof this.stopAtLeaf === 'undefined') {
+                this.add_attr('stopAtLeaf', projectionItem.stopAtLeaf);
+            }
+            else {
+                this.stopAtLeaf.set(projectionItem.stopAtLeaf);
+            }
+            if (typeof this.aproximateByLevel === 'undefined') {
+                this.add_attr('aproximateByLevel', projectionItem.aproximateByLevel);
+            }
+            else {
+                this.aproximateByLevel.set(projectionItem.aproximateByLevel);
+            }
             return this;
         });
     }
     toUxModel() {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c, _d;
             const model = (0, utils_1.getModelByBimFileIdLoaded)(this.bimFileId.get());
             if (!model) {
                 try {
@@ -96,7 +110,7 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
                 if (!props) {
                     throw new Error(`projectionItemModel [${this.uid.get()}] no item found for path : ${path}`);
                 }
-                projectionItem = new ProjectionItem_1.ProjectionItem(props.name, model.id, props.dbId, props.properties, props.externalId);
+                projectionItem = new ProjectionItem_1.ProjectionItem(props.name, model.id, props.dbId, props.properties, props.externalId, ((_a = this.stopAtLeaf) === null || _a === void 0 ? void 0 : _a.get()) || false, ((_b = this.aproximateByLevel) === null || _b === void 0 ? void 0 : _b.get()) || false);
             }
             else {
                 const extMap = yield (0, getExternalIdMapping_1.getExternalIdMapping)(model);
@@ -105,7 +119,7 @@ class ProjectionItemModel extends spinal_core_connectorjs_1.Model {
                     throw new Error(`projectionItemModel [${this.uid.get()}] skiped - no item found for externalId : ${this.externalId.get()}`);
                 }
                 const props = yield (0, utils_1.getBulkProperties)(model, [dbid]);
-                projectionItem = new ProjectionItem_1.ProjectionItem(props[0].name, model.id, dbid, props[0].properties, props[0].externalId);
+                projectionItem = new ProjectionItem_1.ProjectionItem(props[0].name, model.id, dbid, props[0].properties, props[0].externalId, ((_c = this.stopAtLeaf) === null || _c === void 0 ? void 0 : _c.get()) || false, ((_d = this.aproximateByLevel) === null || _d === void 0 ? void 0 : _d.get()) || false);
             }
             projectionItem.uid = this.uid.get();
             projectionItem.offset = this.offset.get();
