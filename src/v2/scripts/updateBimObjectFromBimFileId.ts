@@ -43,35 +43,35 @@ export async function updateBimObjectFromBimFileId(
   for (const bimobj of bimobjs) {
     if (bimobj.info.bimFileId.get() === bimFileId) {
       const dbid = map[bimobj.info.externalId.get()];
-      if (updateBimobjectsDbid) {
-        if (dbid) bimobj.info.dbid.set(dbid);
-        else {
-          bimobj.info.dbid.set(-1);
-        }
-      } else if (updateBimobjectsName && dbid) {
-        promises.push(updateName(model, dbid, bimobj));
-      }
+      if (dbid) {
+        if (updateBimobjectsDbid) bimobj.info.dbid.set(dbid);
+        if (updateBimobjectsName) updateName(model, dbid, bimobj);
+      } else bimobj.info.dbid.set(-1);
     }
   }
   // 20s timeout
-  await Promise.race([Promise.all(promises), timeout(20000)])
+  await Promise.race([Promise.all(promises), timeout(20000)]);
 }
 
 function timeout(ms: number) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       reject();
-    }, ms)
-  })
+    }, ms);
+  });
 }
 
-function updateName(model: Autodesk.Viewing.Model, dbid: number, bimobj: SpinalNode) {
-  return new Promise<void>(resolve => {
+function updateName(
+  model: Autodesk.Viewing.Model,
+  dbid: number,
+  bimobj: SpinalNode
+) {
+  return new Promise<void>((resolve) => {
     model.getProperties(dbid, (prop) => {
       if (prop?.name) {
         bimobj.info.name.set(prop.name);
       }
       resolve();
     });
-  })
+  });
 }

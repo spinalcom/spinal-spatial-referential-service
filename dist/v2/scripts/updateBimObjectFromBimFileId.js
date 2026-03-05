@@ -49,16 +49,14 @@ function updateBimObjectFromBimFileId(bimFileId, model, updateBimobjectsName, up
         for (const bimobj of bimobjs) {
             if (bimobj.info.bimFileId.get() === bimFileId) {
                 const dbid = map[bimobj.info.externalId.get()];
-                if (updateBimobjectsDbid) {
-                    if (dbid)
+                if (dbid) {
+                    if (updateBimobjectsDbid)
                         bimobj.info.dbid.set(dbid);
-                    else {
-                        bimobj.info.dbid.set(-1);
-                    }
+                    if (updateBimobjectsName)
+                        updateName(model, dbid, bimobj);
                 }
-                else if (updateBimobjectsName && dbid) {
-                    promises.push(updateName(model, dbid, bimobj));
-                }
+                else
+                    bimobj.info.dbid.set(-1);
             }
         }
         // 20s timeout
@@ -73,7 +71,7 @@ function timeout(ms) {
     });
 }
 function updateName(model, dbid, bimobj) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         model.getProperties(dbid, (prop) => {
             if (prop === null || prop === void 0 ? void 0 : prop.name) {
                 bimobj.info.name.set(prop.name);
